@@ -1,0 +1,99 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import '../../styles/case-study.css';
+
+export async function getStaticPaths() {
+  const entries = (await getCollection('case-studies')).sort((a, b) => a.data.order - b.data.order);
+  return entries.map((entry, i) => ({
+    params: { slug: entry.id },
+    props: { entry, next: entries[(i + 1) % entries.length] },
+  }));
+}
+
+const { entry, next } = Astro.props;
+const { Content } = await render(entry);
+const d = entry.data;
+const num = String(d.order).padStart(2, '0');
+---
+<BaseLayout title={`${d.title} · Case Study · Aprizal Triansyah`} description={d.description}>
+<div style="min-height:100vh;background:#fff;color:#111">
+
+<Header variant="case" />
+
+<main style="max-width:1120px;margin:0 auto;padding:0 24px">
+
+  {d.heroLayout === 'split' ? (
+  <section class="g2" style="display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center;padding:72px 0;border-bottom:1px solid #f0f0f0">
+    <div style="display:flex;flex-direction:column;gap:28px">
+      <div style="display:flex;align-items:center;gap:12px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#8a8a8a"><span>{num}</span><span style="width:24px;height:1px;background:#d9d9d9"></span><span style="white-space:nowrap">Case study</span></div>
+      <h1 class="h1" style="margin:0;font-size:clamp(56px,7vw,96px);line-height:.95;letter-spacing:-.05em;font-weight:800">{d.title}</h1>
+      <p style="margin:0;max-width:480px;font-size:20px;line-height:1.45;letter-spacing:-.01em;color:#555;text-wrap:pretty">{d.description}</p>
+      <div class="g4" style="display:grid;grid-template-columns:repeat(4,1fr);gap:24px;padding-top:24px;border-top:1px solid #ececec">
+        {d.meta.map((m) => (
+          <div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#8a8a8a">{m.label}</span><span style="font-size:14px;font-weight:500">{m.value}</span></div>
+        ))}
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:center;border-radius:24px;background:linear-gradient(160deg,#f3f2fb,#e9e8f6);border:1px solid #ecebf4;aspect-ratio:4/5;padding:32px">
+      <img src={d.heroImage} alt={d.heroAlt} style="max-width:100%;max-height:100%;object-fit:contain;display:block" />
+    </div>
+  </section>
+  ) : (
+  <section style="padding:72px 0;border-bottom:1px solid #f0f0f0;display:flex;flex-direction:column;gap:48px">
+    <div class="g2" style="display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:end">
+      <div style="display:flex;flex-direction:column;gap:28px">
+        <div style="display:flex;align-items:center;gap:12px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#8a8a8a"><span>{num}</span><span style="width:24px;height:1px;background:#d9d9d9"></span><span style="white-space:nowrap">Case study</span></div>
+        <h1 class="h1" style="margin:0;font-size:clamp(56px,7vw,96px);line-height:.95;letter-spacing:-.05em;font-weight:800">{d.title}</h1>
+        <p style="margin:0;max-width:480px;font-size:20px;line-height:1.45;letter-spacing:-.01em;color:#555;text-wrap:pretty">{d.description}</p>
+      </div>
+      <div class="meta" style="display:grid;grid-template-columns:repeat(2,1fr);gap:20px 24px;padding-top:24px;border-top:1px solid #ececec">
+        {d.meta.map((m) => (
+          <div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#8a8a8a">{m.label}</span><span style="font-size:14px;font-weight:500">{m.value}</span></div>
+        ))}
+      </div>
+    </div>
+    <div style="border-radius:24px;overflow:hidden;background:linear-gradient(160deg,#f3f2fb,#e9e8f6);border:1px solid #ecebf4;padding:32px;display:flex;align-items:center;justify-content:center">
+      <img src={d.heroImage} alt={d.heroAlt} style="width:100%;height:auto;display:block" />
+    </div>
+  </section>
+  )}
+
+  <Content />
+
+  <section style="padding:96px 0 80px;border-top:1px solid #ececec;display:flex;flex-direction:column;gap:40px">
+    {d.outroText ? (
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <h2 class="h2" style="margin:0;font-size:56px;letter-spacing:-.04em;font-weight:600;line-height:1.02;max-width:760px;text-wrap:balance">{d.outroTitle}</h2>
+        <p style="margin:0;font-size:17px;color:#555">{d.outroText}</p>
+      </div>
+    ) : (
+      <h2 class="h2" style="margin:0;font-size:56px;letter-spacing:-.04em;font-weight:600;line-height:1.02;max-width:760px;text-wrap:balance">{d.outroTitle}</h2>
+    )}
+    <div class="g3" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+      <a href={`/case-studies/${next.id}/`} class="scp2" style="display:flex;flex-direction:column;gap:20px;padding:24px;border:1px solid #e6e6e6;border-radius:16px">
+        <span style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#8a8a8a">Next case study</span>
+        <span style="font-size:22px;letter-spacing:-.02em;font-weight:500;display:flex;justify-content:space-between;gap:12px"><span>{next.data.title}</span><span aria-hidden="true">→</span></span>
+        <span style="font-size:13px;color:#8a8a8a">{next.data.tagline}</span>
+      </a>
+      <a href="mailto:aprizaltriansyah24@gmail.com?subject=Let%27s%20Work%20Together" class="scp2" style="display:flex;flex-direction:column;gap:20px;padding:24px;border:1px solid #e6e6e6;border-radius:16px">
+        <span style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#8a8a8a">Email</span>
+        <span style="font-size:22px;letter-spacing:-.02em;font-weight:500;display:flex;justify-content:space-between;gap:12px"><span>Send an email</span><span aria-hidden="true">→</span></span>
+        <span style="font-size:13px;color:#8a8a8a">aprizaltriansyah24@gmail.com</span>
+      </a>
+      <a href="/" class="scp2" style="display:flex;flex-direction:column;gap:20px;padding:24px;border:1px solid #e6e6e6;border-radius:16px">
+        <span style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#8a8a8a">Portfolio</span>
+        <span style="font-size:22px;letter-spacing:-.02em;font-weight:500;display:flex;justify-content:space-between;gap:12px"><span>All work</span><span aria-hidden="true">←</span></span>
+        <span style="font-size:13px;color:#8a8a8a">aprizal.me</span>
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<Footer name="Designed by Aprizal Triansyah" />
+
+</div>
+</BaseLayout>

@@ -1,0 +1,12 @@
+.case-row:hover .case-img{transform:scale(1.02)}
+.case-row:hover .case-arrow{transform:translateX(4px)}
+.case-row:hover .case-title{color:#555}
+@media (max-width:1000px){.hero-grid{grid-template-columns:1fr !important}.hero-aside{display:none !important}}
+@media (max-width:820px){.case-row{grid-template-columns:1fr !important}.case-meta{order:2}.case-img-wrap{order:1;aspect-ratio:4/3 !important}.nav-links{display:none !important}.nav-menu{display:flex !important}.hero-grid{grid-template-columns:1fr !important}.hero-aside{display:none !important}.contact-grid{grid-template-columns:1fr !important}.about-grid{grid-template-columns:1fr !important}.h1{font-size:64px !important}.h2{font-size:34px !important}.skills-grid{grid-template-columns:1fr !important}}
+/* Hover rules the original runtime generated from style-hover attributes (one class per unique declaration set). */
+.scp0:hover{background:#f4f4f4 !important}
+.scp1:hover{background:#333 !important;color:#fff !important}
+.scp2:hover{border-color:#111 !important}
+.scp3:hover{color:#555 !important}
+.scp4:hover{color:#111 !important}
+.scp5:hover{border-color:#111 !important;color:#111 !important}

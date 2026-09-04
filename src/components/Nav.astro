@@ -1,0 +1,22 @@
+---
+interface Link {
+  href: string;
+  label: string;
+  target?: string;
+  rel?: string;
+  primary?: boolean;
+}
+interface Props {
+  links: Link[];
+}
+const { links } = Astro.props;
+---
+<nav class="nav-links" style="display:flex;align-items:center;gap:4px;padding:4px;border:1px solid #ececec;border-radius:999px;background:#fff">
+  {links.map((l) =>
+    l.primary ? (
+      <a href={l.href} class="scp1" style="font-size:12px;letter-spacing:.08em;text-transform:uppercase;padding:8px 16px;border-radius:999px;background:#111;color:#fff">{l.label}</a>
+    ) : (
+      <a href={l.href} target={l.target} rel={l.rel} class="scp0" style="font-size:12px;letter-spacing:.08em;text-transform:uppercase;padding:8px 14px;border-radius:999px">{l.label}</a>
+    )
+  )}
+</nav>

@@ -1,0 +1,119 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/home.css';
+
+const projects = (await getCollection('case-studies'))
+  .sort((a, b) => a.data.order - b.data.order)
+  .map((e) => ({ id: e.id, num: String(e.data.order).padStart(2, '0'), url: `/case-studies/${e.id}/`, ...e.data }));
+
+const designSkills = ['UI/UX Design', 'Mobile App Design', 'Web App Design', 'Design Systems', 'Wireframing', 'User Flow', 'Information Architecture'];
+const tools = ['Figma', 'FigJam'];
+---
+<BaseLayout title="Aprizal Triansyah · UI/UX Designer" description="Designing simple, intuitive digital products that solve real user problems.">
+<div style="min-height:100vh;background:#fff;color:#111">
+
+<Header variant="home" />
+
+<main id="top" style="max-width:1120px;margin:0 auto;padding:0 24px">
+
+  <section style="padding:88px 0 72px;border-bottom:1px solid #f0f0f0;display:flex;flex-direction:column;gap:48px">
+    <div style="display:flex;flex-direction:column;gap:24px;max-width:860px">
+      <div style="display:inline-flex;align-items:center;gap:8px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#6b6b6b"><span style="width:8px;height:8px;border-radius:50%;background:#22c55e;display:inline-block"></span>Aprizal Triansyah · UI/UX Designer</div>
+      <h1 class="h1" style="margin:0;font-size:clamp(40px,5.2vw,68px);line-height:1.02;letter-spacing:-.04em;font-weight:700;text-wrap:balance">Designing simple, intuitive digital products <span style="color:#9a9a9a">that solve real user problems.</span></h1>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+        <a href="#work" class="scp1" style="display:inline-flex;align-items:center;gap:10px;padding:14px 22px;border-radius:999px;background:#111;color:#fff;font-size:14px;font-weight:500">View case studies <span aria-hidden="true">→</span></a>
+        <a href="/assets/resume.pdf" target="_blank" rel="noopener" class="scp2" style="display:inline-flex;align-items:center;gap:10px;padding:14px 22px;border-radius:999px;border:1px solid #e3e3e3;font-size:14px;font-weight:500">Resume</a>
+      </div>
+    </div>
+    <div class="contact-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+      {projects.map((p) => (
+        <a href={`#${p.id}`} class="scp3" style="display:flex;flex-direction:column;gap:12px">
+          <div style="border-radius:16px;overflow:hidden;background:linear-gradient(160deg,#f5f4fb,#e9e8f6);aspect-ratio:4/3;border:1px solid #ecebf4;display:flex;align-items:center;justify-content:center;padding:12px"><img src={p.cover} alt={p.coverAlt} style="width:100%;height:100%;object-fit:contain;display:block" /></div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px"><span style="font-size:15px;font-weight:600">{p.title}</span><span style="font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#8a8a8a">{p.type}</span></div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section id="about" class="about-grid" style="display:grid;grid-template-columns:1fr 1.5fr;gap:48px;padding:80px 0;scroll-margin-top:80px">
+    <div style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#8a8a8a">About</div>
+    <div style="display:flex;flex-direction:column;gap:40px">
+      <h2 class="h2" style="margin:0;font-size:40px;letter-spacing:-.03em;font-weight:600;line-height:1.15;text-wrap:balance">Designing digital experiences with simplicity, clarity, and purpose.</h2>
+      <div style="display:flex;flex-direction:column;gap:16px;max-width:600px;font-size:17px;line-height:1.6;color:#555">
+        <p style="margin:0">I'm Aprizal Triansyah, a UI/UX Designer based in Lombok, Indonesia. I enjoy designing simple, intuitive, and thoughtful digital experiences that help solve real user problems.</p>
+        <p style="margin:0">My approach focuses on understanding the problem, creating clear structures, and turning ideas into useful and meaningful interfaces.</p>
+      </div>
+      <div class="skills-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:32px;padding-top:32px;border-top:1px solid #ececec">
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#8a8a8a">Design</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px">
+            {designSkills.map((s) => <span style="font-size:13px;padding:8px 14px;border-radius:999px;background:#f5f5f5;color:#333">{s}</span>)}
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#8a8a8a">Tools</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px">
+            {tools.map((s) => <span style="font-size:13px;padding:8px 14px;border-radius:999px;background:#f5f5f5;color:#333">{s}</span>)}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="work" style="padding:80px 0 40px;border-top:1px solid #ececec;scroll-margin-top:80px">
+    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:24px;margin-bottom:40px;flex-wrap:wrap">
+      <h2 class="h2" style="margin:0;font-size:40px;letter-spacing:-.03em;font-weight:600;line-height:1.1">Selected work</h2>
+      <span style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#8a8a8a">03 case studies · 2026</span>
+    </div>
+    <div style="display:flex;flex-direction:column">
+      {projects.map((p) => (
+        <a class="case-row scp4" id={p.id} href={p.url} style="display:grid;grid-template-columns:1fr 1.5fr;gap:40px;align-items:center;padding:40px 0;border-top:1px solid #ececec;scroll-margin-top:80px">
+          <div class="case-meta" style="display:flex;flex-direction:column;gap:16px">
+            <div style="display:flex;align-items:center;gap:12px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#8a8a8a"><span style="font-variant-numeric:tabular-nums">{p.num}</span><span style="width:24px;height:1px;background:#d9d9d9"></span><span>{p.type}</span></div>
+            <h3 class="case-title" style="margin:0;font-size:36px;letter-spacing:-.03em;font-weight:600;line-height:1.05;transition:color .2s">{p.title}</h3>
+            <p style="margin:0;font-size:16px;line-height:1.55;color:#555;max-width:380px;text-wrap:pretty">{p.summary}</p>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              {p.tags.map((t) => <span style="font-size:12px;padding:6px 12px;border-radius:999px;border:1px solid #e6e6e6;color:#555">{t}</span>)}
+            </div>
+            <span style="display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:500;margin-top:8px">View case study <span class="case-arrow" aria-hidden="true" style="display:inline-block;transition:transform .2s">→</span></span>
+          </div>
+          <div class="case-img-wrap" style="border-radius:20px;overflow:hidden;background:linear-gradient(160deg,#f5f4fb,#e9e8f6);aspect-ratio:16/10;border:1px solid #ecebf4">
+            <img class="case-img" src={p.cover} alt={p.coverAlt} style="width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s ease" />
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section id="contact" style="padding:96px 0 80px;border-top:1px solid #ececec;scroll-margin-top:80px">
+    <div style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#8a8a8a;margin-bottom:24px">Contact</div>
+    <h2 class="h2" style="margin:0 0 20px;font-size:64px;letter-spacing:-.04em;font-weight:600;line-height:1.02;max-width:760px;text-wrap:balance">Let's build something meaningful together.</h2>
+    <p style="margin:0 0 40px;max-width:520px;font-size:17px;line-height:1.6;color:#555;text-wrap:pretty">Whether you're hiring a UI/UX Designer, building a new product, or looking for a creative collaborator, I'd love to hear from you.</p>
+    <div class="contact-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+      <a href="mailto:aprizaltriansyah24@gmail.com?subject=Let%27s%20Work%20Together" class="scp5" style="display:flex;flex-direction:column;gap:20px;padding:24px;border:1px solid #e6e6e6;border-radius:16px">
+        <span style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#8a8a8a">Email</span>
+        <span style="font-size:22px;letter-spacing:-.02em;font-weight:500;display:flex;justify-content:space-between;gap:12px"><span>Send an email</span><span aria-hidden="true">→</span></span>
+        <span style="font-size:13px;color:#8a8a8a">aprizaltriansyah24@gmail.com</span>
+      </a>
+      <a href="https://www.linkedin.com/in/aprizal-triansyah" target="_blank" rel="noopener" class="scp5" style="display:flex;flex-direction:column;gap:20px;padding:24px;border:1px solid #e6e6e6;border-radius:16px">
+        <span style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#8a8a8a">LinkedIn</span>
+        <span style="font-size:22px;letter-spacing:-.02em;font-weight:500;display:flex;justify-content:space-between;gap:12px"><span>Connect</span><span aria-hidden="true">→</span></span>
+        <span style="font-size:13px;color:#8a8a8a">in/aprizal-triansyah</span>
+      </a>
+      <a href="/assets/resume.pdf" target="_blank" rel="noopener" class="scp5" style="display:flex;flex-direction:column;gap:20px;padding:24px;border:1px solid #e6e6e6;border-radius:16px">
+        <span style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#8a8a8a">Resume</span>
+        <span style="font-size:22px;letter-spacing:-.02em;font-weight:500;display:flex;justify-content:space-between;gap:12px"><span>Download</span><span aria-hidden="true">↓</span></span>
+        <span style="font-size:13px;color:#8a8a8a">PDF · opens in new tab</span>
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<Footer name="Aprizal Triansyah" social />
+
+</div>
+</BaseLayout>

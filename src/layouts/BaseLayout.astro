@@ -1,0 +1,30 @@
+---
+import '../styles/fonts.css';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+}
+const { title, description } = Astro.props;
+const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : Astro.url.pathname;
+---
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{title}</title>
+<meta name="description" content={description}>
+<meta property="og:type" content="website">
+<meta property="og:title" content={title}>
+<meta property="og:description" content={description}>
+<meta property="og:url" content={canonical}>
+<link rel="canonical" href={canonical}>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+</head>
+<body>
+<div id="dc-root"><div class="sc-host">
+<slot />
+</div></div>
+</body>
+</html>

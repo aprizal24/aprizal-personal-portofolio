@@ -1,0 +1,5 @@
+html,body{margin:0;padding:0;background:#fff;color:#111;font-family:Inter,-apple-system,system-ui,sans-serif;-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
+*{box-sizing:border-box}
+a{color:#111;text-decoration:none}a:hover{color:#555}
+/* Layout rule the original runtime injected into <head> at load time. */
+html,body{height:100%;margin:0}#dc-root,#dc-root>.sc-host{height:100%}

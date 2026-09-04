@@ -1,0 +1,6 @@
+/* Union of the three case-study pages' media rules: SnapHire and Klyra define .g4/.ui-row/.ui-text/.ui-img, FlowForge defines .g5/.meta. No rule is changed and no class overlaps. */
+@media (max-width:900px){.g2{grid-template-columns:1fr !important}.g3{grid-template-columns:1fr !important}.g4{grid-template-columns:1fr 1fr !important}.g5{grid-template-columns:1fr 1fr !important}.meta{grid-template-columns:1fr 1fr !important}.ui-row{grid-template-columns:1fr !important}.ui-text{order:1}.ui-img{order:2}.h1{font-size:56px !important}.h2{font-size:32px !important}.nav-links{display:none !important}}
+/* Hover rules the original runtime generated from style-hover attributes. */
+.scp0:hover{background:#f4f4f4 !important}
+.scp1:hover{background:#333 !important;color:#fff !important}
+.scp2:hover{border-color:#111 !important;color:#111 !important}

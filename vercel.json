@@ -1,0 +1,12 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "trailingSlash": true,
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": "aprizal.me" }],
+      "destination": "https://www.aprizal.me/$1",
+      "permanent": true
+    }
+  ]
+}
