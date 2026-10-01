@@ -90,7 +90,7 @@ outroTitle: "Thanks for reading."
   </section>
   <section id="flow" style="padding:80px 0;border-bottom:1px solid #f0f0f0;display:flex;flex-direction:column;gap:32px;scroll-margin-top:80px">
     <div class="g2" style="display:grid;grid-template-columns:1fr 1.5fr;gap:48px">
-      <div style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#8a8a8a">UX process</div>
+      <div style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#8a8a8a">Structure</div>
       <div style="display:flex;flex-direction:column;gap:16px">
         <h2 class="h2" style="margin:0;font-size:36px;letter-spacing:-.03em;font-weight:600;line-height:1.1">User flow</h2>
         <p style="margin:0;max-width:600px;font-size:17px;line-height:1.6;color:#555">From onboarding to daily use: record a transaction, see it reflected in budgets and insights, and watch savings goals move.</p>

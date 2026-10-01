@@ -35,7 +35,7 @@ outroTitle: "Thanks for reading."
   </section>
   <section id="research" style="padding:80px 0;border-bottom:1px solid #f0f0f0;scroll-margin-top:80px;display:flex;flex-direction:column;gap:48px">
     <div style="display:flex;align-items:baseline;justify-content:space-between;gap:24px;flex-wrap:wrap">
-      <h2 class="h2" style="margin:0;font-size:36px;letter-spacing:-.03em;font-weight:600;line-height:1.1">User research</h2>
+      <h2 class="h2" style="margin:0;font-size:36px;letter-spacing:-.03em;font-weight:600;line-height:1.1">Research</h2>
       <span style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#8a8a8a">Problem → Solution</span>
     </div>
     <div class="g2" style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
@@ -50,8 +50,7 @@ outroTitle: "Thanks for reading."
     </div>
     <div style="display:flex;flex-direction:column;gap:24px;padding-top:24px">
       <div style="display:flex;align-items:baseline;justify-content:space-between;gap:24px;flex-wrap:wrap">
-        <h3 style="margin:0;font-size:24px;letter-spacing:-.02em;font-weight:600">User personas</h3>
-        <span style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#8a8a8a">Two sides of the marketplace</span>
+        <div style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#8a8a8a">Persona</div>
       </div>
       <div class="g2" style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
           <div style="display:flex;flex-direction:column;gap:24px;padding:28px;border:1px solid #e6e6e6;border-radius:20px">
@@ -81,7 +80,7 @@ outroTitle: "Thanks for reading."
   </section>
   <section id="flow" style="padding:80px 0;border-bottom:1px solid #f0f0f0;display:flex;flex-direction:column;gap:32px;scroll-margin-top:80px">
     <div class="g2" style="display:grid;grid-template-columns:1fr 1.5fr;gap:48px">
-      <div style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#8a8a8a">UX architecture</div>
+      <div style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#8a8a8a">Structure</div>
       <div style="display:flex;flex-direction:column;gap:16px">
         <h2 class="h2" style="margin:0;font-size:36px;letter-spacing:-.03em;font-weight:600;line-height:1.1">User flow</h2>
         <p style="margin:0;max-width:600px;font-size:17px;line-height:1.6;color:#555">Two entry points — client and photographer — converge on a single booking flow: discover, schedule, pay, chat, review.</p>

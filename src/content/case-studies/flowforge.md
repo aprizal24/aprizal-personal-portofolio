@@ -54,7 +54,7 @@ outroText: "Hope you enjoyed the process."
   </section>
   <section id="research" style="padding:80px 0;border-bottom:1px solid #f0f0f0;scroll-margin-top:80px;display:flex;flex-direction:column;gap:48px">
     <div style="display:flex;align-items:baseline;justify-content:space-between;gap:24px;flex-wrap:wrap">
-      <h2 class="h2" style="margin:0;font-size:36px;letter-spacing:-.03em;font-weight:600;line-height:1.1">Research &amp; define</h2>
+      <h2 class="h2" style="margin:0;font-size:36px;letter-spacing:-.03em;font-weight:600;line-height:1.1">Research</h2>
       <span style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#8a8a8a">Problem → Solution</span>
     </div>
     <div class="g2" style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
