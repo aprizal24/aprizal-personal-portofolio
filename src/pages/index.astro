@@ -9,7 +9,7 @@ const projects = (await getCollection('case-studies'))
   .sort((a, b) => a.data.order - b.data.order)
   .map((e) => ({ id: e.id, num: String(e.data.order).padStart(2, '0'), url: `/case-studies/${e.id}/`, ...e.data }));
 
-const designSkills = ['UI/UX Design', 'Mobile App Design', 'Web App Design', 'Design Systems', 'Wireframing', 'User Flow', 'Information Architecture'];
+const designSkills = ['UI/UX Design', 'Mobile App Design', 'Web App Design', 'Design Systems', 'Wireframing', 'User Flow', 'Information Architecture', 'Prototype'];
 const tools = ['Figma', 'FigJam'];
 ---
 <BaseLayout title="Aprizal Triansyah · UI/UX Designer" description="Designing simple, intuitive digital products that solve real user problems.">
