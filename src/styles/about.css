@@ -1,0 +1,194 @@
+/* ==========================================================================
+   About — page composition. Same container, title and rhythm as Work; the
+   label/content split matches the case-study sections (3fr / 9fr from 1024).
+   No cards, pills or borders.
+   ========================================================================== */
+
+/* Page title: same as the Work page */
+.about-head {
+  padding-top: clamp(var(--space-8), 2rem + 8vw, 10.5rem); /* 64 → 168 */
+}
+
+.about-head__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-page); /* 44 → 80 */
+  font-weight: var(--weight-medium);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+}
+
+/* Label column + content column */
+.about-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: var(--space-4);
+}
+
+@media (min-width: 1024px) {
+  .about-row {
+    grid-template-columns: 3fr 9fr;
+    column-gap: var(--gap);
+  }
+}
+
+/* Empty label cells only exist to hold the column on desktop */
+.about-row__aside {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .about-row__aside {
+    display: block;
+  }
+}
+
+/* ---- Intro --------------------------------------------------------------- */
+
+.about-intro {
+  padding-top: clamp(var(--space-8), 2rem + 5vw, var(--space-10));
+}
+
+.about-row__main {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(var(--space-5), 1rem + 1.5vw, var(--space-7));
+}
+
+.about-statement {
+  margin: 0;
+  max-width: 22ch;
+  font-family: var(--font-display);
+  font-size: var(--fs-section); /* 32 → 48 */
+  font-weight: var(--weight-medium);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.about-copy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  max-width: 60ch;
+}
+
+.about-copy p {
+  margin: 0;
+  font-size: var(--fs-lead);
+  line-height: 1.6;
+  color: var(--muted);
+  text-wrap: pretty;
+}
+
+/* ---- Design / Tools ------------------------------------------------------ */
+
+.about-skills {
+  display: grid;
+  row-gap: clamp(var(--space-7), 1rem + 3vw, var(--space-8));
+  padding-top: clamp(var(--space-9), 3rem + 6vw, 10rem); /* 96 → 160 */
+}
+
+.about-label {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--fs-meta);
+  font-weight: var(--weight-medium);
+  letter-spacing: 0;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+@media (min-width: 1024px) {
+  .about-label {
+    padding-top: 0.35em; /* sit on the first line of the list */
+  }
+}
+
+.about-list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-3) var(--gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.about-list li {
+  font-family: var(--font-display);
+  font-size: var(--fs-lead);
+  font-weight: var(--weight-medium);
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+@media (min-width: 640px) {
+  .about-list--cols {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ---- Links --------------------------------------------------------------- */
+
+.about-links {
+  padding-top: clamp(var(--space-7), 1.5rem + 5vw, 7rem); /* the links' own 44px boxes add ~10px above */
+  padding-bottom: clamp(var(--space-9), 3rem + 7vw, 10rem);
+}
+
+.about-links__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--space-7);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* 44px-tall hit area (touch), text and arrow centred in it */
+.about-link {
+  align-items: center;
+  min-height: 44px;
+  font-size: var(--fs-lead);
+  font-weight: var(--weight-medium);
+  color: var(--ink);
+}
+
+/* Underline only under the words, not the arrow */
+.about-link__text {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.3em;
+  text-decoration-color: var(--line);
+  transition: text-decoration-color var(--dur-fast) var(--ease-out);
+}
+
+.about-link:hover,
+.about-link:focus-visible {
+  color: var(--ink);
+}
+
+.about-link:hover .about-link__text,
+.about-link:focus-visible .about-link__text {
+  text-decoration-color: var(--ink);
+}
+
+/* Quiet entrance, matching the Work title */
+@media (prefers-reduced-motion: no-preference) {
+  .about-head__title,
+  .about-intro {
+    animation: about-rise 800ms var(--ease-out) both;
+  }
+
+  .about-intro {
+    animation-delay: 90ms;
+  }
+}
+
+@keyframes about-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
