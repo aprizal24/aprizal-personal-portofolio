@@ -1,0 +1,834 @@
+/* ==========================================================================
+   Case study — editorial template (CaseStudyEditorial.astro + Markdown body).
+   All classes are prefixed `cs-` so nothing collides with the legacy
+   case-study.css still used by the other case studies.
+   Reuses the shared container, tokens and type scale from Home/Work.
+   ========================================================================== */
+
+/* ---- Shared pieces ------------------------------------------------------- */
+
+.cs-label {
+  margin: 0;
+  font-size: var(--fs-meta);
+  font-weight: var(--weight-medium);
+  color: var(--muted);
+}
+
+.cs-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-section); /* 32 → 48 */
+  font-weight: var(--weight-medium);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.cs-subtitle {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.375rem, 1.15rem + 0.9vw, 1.875rem); /* 22 → 30 */
+  font-weight: var(--weight-medium);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.cs-text {
+  margin: 0;
+  max-width: 60ch;
+  font-size: var(--fs-body);
+  line-height: 1.65;
+  color: var(--muted);
+  text-wrap: pretty;
+}
+
+/* ---- Hero ---------------------------------------------------------------- */
+
+.cs-hero {
+  padding-top: clamp(var(--space-8), 2rem + 6vw, 9rem); /* 64 → 144 */
+}
+
+.cs-hero__eyebrow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0 0 clamp(var(--space-5), 2vw, var(--space-6));
+  font-size: var(--fs-meta);
+  color: var(--muted);
+}
+
+.cs-hero__back {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.25em;
+  text-decoration-color: var(--line);
+  transition: text-decoration-color var(--dur-fast) var(--ease-out);
+}
+
+.cs-hero__back:hover,
+.cs-hero__back:focus-visible {
+  color: var(--ink);
+  text-decoration-color: var(--accent);
+}
+
+.cs-hero__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: var(--space-7);
+}
+
+.cs-hero__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(3.25rem, 1.6rem + 6.4vw, 7rem); /* 52 → 112 */
+  font-weight: var(--weight-medium);
+  line-height: 0.98;
+  letter-spacing: -0.045em;
+}
+
+.cs-hero__lead {
+  margin: var(--space-5) 0 0;
+  max-width: 34ch;
+  font-size: var(--fs-statement); /* 22 → 32 */
+  line-height: 1.3;
+  letter-spacing: -0.015em;
+  color: #3d3d3d;
+  text-wrap: pretty;
+}
+
+.cs-hero__meta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-5) var(--space-5);
+  margin: 0;
+  align-content: start;
+}
+
+.cs-hero__meta-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.cs-hero__meta dt {
+  font-size: var(--fs-meta);
+  color: var(--muted);
+}
+
+.cs-hero__meta dd {
+  margin: 0;
+  font-size: var(--fs-body);
+  font-weight: var(--weight-medium);
+  color: var(--ink);
+}
+
+@media (min-width: 768px) {
+  .cs-hero__grid {
+    grid-template-columns: minmax(0, 1fr) clamp(15rem, 24vw, 21rem);
+    column-gap: clamp(var(--space-7), 6vw, var(--space-10));
+    align-items: end;
+  }
+
+  .cs-hero__meta {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-4);
+  }
+
+  .cs-hero__meta-row {
+    flex-direction: row;
+    justify-content: space-between;
+    gap: var(--space-4);
+  }
+
+  .cs-hero__meta dd {
+    text-align: right;
+  }
+}
+
+/* Hero image: the project's tint, card radius, image kept whole */
+.cs-hero__media {
+  --tint: var(--surface);
+  margin: clamp(var(--space-7), 1rem + 5vw, var(--space-9)) 0 0;
+  padding: clamp(var(--space-5), 5%, var(--space-9));
+  border-radius: var(--radius-card);
+  background-color: var(--tint);
+  background-image: linear-gradient(180deg, var(--tint) 0%, color-mix(in srgb, var(--tint) 30%, var(--bg)) 100%);
+}
+
+.cs-hero__media img {
+  display: block;
+  width: 100%;
+  max-width: 1000px;
+  height: auto;
+  margin-inline: auto;
+}
+
+/* Edge to edge (frontmatter heroFill: true): no inner padding, the image keeps
+   its own proportions and is clipped only by the card's rounded corners. */
+.cs-hero__media--fill {
+  padding: 0;
+  overflow: hidden;
+}
+
+.cs-hero__media--fill img {
+  max-width: none;
+}
+
+/* Small portrait device mockup (frontmatter heroDevice: true): centred in the
+   tinted card at its own proportions, never wider than its source pixels,
+   capped at ~600px tall on desktop and less on small screens. */
+.cs-hero__media--device img {
+  width: auto; /* follows the height through the width/height attributes, so the box is sized before the image loads */
+  max-width: 100%;
+  height: clamp(380px, 120px + 55vw, 600px); /* below the 840px source */
+  object-fit: contain;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .cs-hero__title,
+  .cs-hero__lead,
+  .cs-hero__meta {
+    animation: cs-rise 800ms var(--ease-out) both;
+  }
+
+  .cs-hero__lead {
+    animation-delay: 90ms;
+  }
+
+  .cs-hero__meta {
+    animation-delay: 180ms;
+  }
+}
+
+@keyframes cs-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+/* ---- Body sections -------------------------------------------------------- */
+
+/* Sections share the page container; the final-UI band breaks out full width. */
+.cs-body > .cs-section {
+  width: 100%;
+  max-width: var(--max-width);
+  margin-inline: auto;
+  padding-inline: max(var(--gutter), env(safe-area-inset-left, 0px)) max(var(--gutter), env(safe-area-inset-right, 0px));
+  padding-top: clamp(var(--space-9), 3rem + 6vw, 10rem); /* 96 → 160 */
+  scroll-margin-top: var(--space-6);
+}
+
+/* Section heading: small label on the left, heading + text on the right */
+.cs-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: var(--space-4);
+}
+
+.cs-head__main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.cs-head--sub {
+  margin-top: clamp(var(--space-8), 1rem + 5vw, var(--space-9));
+}
+
+@media (min-width: 1024px) {
+  .cs-head {
+    grid-template-columns: 3fr 9fr;
+    column-gap: var(--gap);
+  }
+
+  .cs-head > .cs-label {
+    padding-top: 0.6em; /* sit on the heading's first line */
+  }
+}
+
+/* Figures: a plain white plate (the diagrams are transparent), no border */
+.cs-figure {
+  margin: clamp(var(--space-6), 1rem + 3vw, var(--space-8)) 0 0;
+  padding: clamp(var(--space-4), 4%, var(--space-8));
+  border-radius: var(--radius-card);
+  background: #ffffff;
+}
+
+.cs-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Images that already carry their own panels (e.g. the responsive mockup
+   grid) sit straight on the page — no plate around them. */
+.cs-figure--bare {
+  padding: 0;
+  background: none;
+}
+
+/* Opaque images with their own background (screenshots, persona boards):
+   no plate, just the shared rounded corners. */
+.cs-figure--shot {
+  padding: 0;
+  background: none;
+}
+
+.cs-figure--shot img {
+  border-radius: 12px;
+}
+
+/* A set of small images on one plate, each with a caption (e.g. wireframes) */
+.cs-gallery {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-6) var(--gap);
+}
+
+.cs-gallery__item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin: 0;
+}
+
+.cs-gallery__media {
+  position: relative;
+  aspect-ratio: 4 / 3;
+}
+
+/* Absolutely placed so every image box keeps the same 4:3 size, whatever the
+   image's own proportions — captions stay on one line across the row. */
+.cs-gallery__media img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.cs-gallery__caption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-1) var(--space-3);
+  font-size: var(--fs-body);
+  font-weight: var(--weight-medium);
+}
+
+.cs-gallery__caption .cs-label {
+  font-variant-numeric: tabular-nums;
+}
+
+@media (min-width: 768px) {
+  .cs-gallery {
+    grid-template-columns: repeat(var(--cs-cols, 3), minmax(0, 1fr));
+  }
+}
+
+/* Design process: an ordered row of steps, no boxes */
+.cs-process {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: var(--space-5);
+  margin-top: clamp(var(--space-7), 1rem + 4vw, var(--space-9));
+}
+
+.cs-steps {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-5) var(--gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cs-steps li {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.cs-steps__num {
+  font-size: var(--fs-meta);
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}
+
+.cs-steps__name {
+  font-family: var(--font-display);
+  font-size: var(--fs-lead);
+  font-weight: var(--weight-medium);
+  letter-spacing: -0.01em;
+}
+
+.cs-steps__meta {
+  font-size: var(--fs-meta);
+  color: var(--muted);
+}
+
+/* Label column of the process row when it carries a second line (e.g. total time) */
+.cs-process__aside {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+@media (min-width: 640px) {
+  .cs-steps {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .cs-process {
+    grid-template-columns: 3fr 9fr;
+    column-gap: var(--gap);
+  }
+}
+
+/* Problem → Solution: two columns of type, no cards */
+.cs-ps {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-7) var(--gap);
+  margin-top: clamp(var(--space-6), 1rem + 3vw, var(--space-8));
+}
+
+.cs-ps__item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.cs-ps__text {
+  margin: 0;
+  font-size: var(--fs-lead);
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  color: var(--muted);
+  text-wrap: pretty;
+}
+
+.cs-ps__item--solution .cs-ps__text {
+  color: var(--ink);
+}
+
+@media (min-width: 768px) {
+  .cs-ps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: clamp(var(--space-6), 5vw, var(--space-9));
+  }
+}
+
+@media (min-width: 1024px) {
+  .cs-ps {
+    margin-left: calc((100% + 3 * var(--gap)) / 4); /* align with the heading column (3fr of 3fr/9fr + gap) */
+  }
+}
+
+/* User flow written as steps (no diagram image): a wrapped row of type with
+   quiet arrows — no pills, no borders. */
+.cs-flow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-3) var(--space-4);
+  margin: clamp(var(--space-6), 1rem + 3vw, var(--space-8)) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cs-flow li {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-4);
+}
+
+.cs-flow__step {
+  font-family: var(--font-display);
+  font-size: var(--fs-lead);
+  font-weight: var(--weight-medium);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.cs-flow__arrow {
+  color: #b5b5b5;
+}
+
+@media (min-width: 1024px) {
+  .cs-flow {
+    margin-left: calc((100% + 3 * var(--gap)) / 4); /* heading column */
+  }
+}
+
+/* Label column + content column (same grid as the section heads), used for
+   blocks without a heading of their own (e.g. personas). */
+.cs-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: var(--space-5);
+  margin-top: clamp(var(--space-8), 1rem + 5vw, var(--space-9));
+}
+
+@media (min-width: 1024px) {
+  .cs-row {
+    grid-template-columns: 3fr 9fr;
+    column-gap: var(--gap);
+  }
+}
+
+/* Personas as plain columns of type — no cards, no borders */
+.cs-personas {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-8) var(--gap);
+}
+
+@media (min-width: 768px) {
+  .cs-personas {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: clamp(var(--space-6), 5vw, var(--space-9));
+  }
+}
+
+.cs-persona {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.cs-persona__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.cs-persona__photo {
+  flex: none;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: top;
+  background: var(--cs-tint, var(--surface));
+}
+
+.cs-persona__id {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.cs-persona__name {
+  font-family: var(--font-display);
+  font-size: var(--fs-lead);
+  font-weight: var(--weight-medium);
+  letter-spacing: -0.015em;
+}
+
+.cs-persona__facts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.cs-persona__fact {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* Four process steps: one balanced row of four from 640px (2 × 2 below) */
+@media (min-width: 640px) {
+  .cs-steps--4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* Figure shown at its own pixel width (--w on the figure), centred on the
+   white plate — for exports narrower than the content column. */
+.cs-figure--natural img {
+  width: min(100%, var(--w, 100%));
+  margin-inline: auto;
+}
+
+/* Single persona: portrait on one side, the facts on the other — no frame */
+.cs-profile {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-7) var(--gap);
+  margin-top: clamp(var(--space-6), 1rem + 3vw, var(--space-8));
+}
+
+.cs-profile__photo {
+  margin: 0;
+}
+
+.cs-profile__photo img {
+  display: block;
+  width: min(100%, 360px); /* source is 473px wide — never enlarged */
+  height: auto;
+  border-radius: 12px;
+}
+
+@media (min-width: 768px) {
+  .cs-profile {
+    grid-template-columns: minmax(0, 4fr) minmax(0, 5fr);
+    column-gap: clamp(var(--space-6), 5vw, var(--space-9));
+    align-items: start;
+  }
+}
+
+@media (min-width: 1024px) {
+  .cs-profile {
+    margin-left: calc((100% + 3 * var(--gap)) / 4); /* heading column */
+  }
+}
+
+/* ---- Final UI: the climax -------------------------------------------------- */
+
+.cs-body > .cs-final {
+  max-width: none;
+  padding-inline: 0;
+  margin-top: clamp(var(--space-9), 3rem + 6vw, 10rem);
+  padding-top: clamp(var(--space-9), 3rem + 6vw, 10rem);
+  padding-bottom: clamp(var(--space-9), 3rem + 6vw, 10rem);
+  background: color-mix(in srgb, var(--cs-tint, #ebe7f7) 55%, var(--bg)); /* --cs-tint: project tint, set on .cs-body */
+}
+
+.cs-final__inner {
+  width: 100%;
+  max-width: var(--max-width);
+  margin-inline: auto;
+  padding-inline: max(var(--gutter), env(safe-area-inset-left, 0px)) max(var(--gutter), env(safe-area-inset-right, 0px));
+}
+
+.cs-title--climax {
+  font-size: clamp(2.5rem, 1.5rem + 4vw, 4.5rem); /* 40 → 72 */
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+}
+
+.cs-screens {
+  display: grid;
+  row-gap: clamp(var(--space-8), 2rem + 6vw, 10rem);
+  margin-top: clamp(var(--space-8), 2rem + 5vw, var(--space-10));
+}
+
+.cs-screen {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: var(--space-5);
+}
+
+.cs-screen__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.cs-screen__num {
+  font-size: var(--fs-meta);
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}
+
+.cs-screen__text .cs-text {
+  margin-top: var(--space-2);
+  max-width: 36ch;
+}
+
+.cs-screen__media {
+  margin: 0;
+}
+
+.cs-screen__media img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  box-shadow:
+    0 1px 2px rgb(17 17 17 / 0.05),
+    0 24px 48px -24px rgb(17 17 17 / 0.18);
+}
+
+/* Small device-mockup exports: kept near their source size (never stretched
+   to the column), centred, no corners or shadow — whitespace instead. */
+.cs-screen__media--device img {
+  width: min(100%, var(--w, 100%)); /* --w: the export's own pixel width, set on the figure */
+  margin-inline: auto;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* A closing figure for the final section (e.g. number of screens designed) */
+.cs-stat {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4) var(--space-6);
+  margin-top: clamp(var(--space-8), 2rem + 6vw, 10rem);
+}
+
+.cs-stat__figure {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 1.5rem + 4vw, 4.5rem); /* 40 → 72 */
+  font-weight: var(--weight-medium);
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.cs-stat__unit {
+  font-size: var(--fs-lead);
+  letter-spacing: -0.01em;
+  color: var(--muted);
+}
+
+.cs-stat .cs-text {
+  max-width: 42ch;
+}
+
+/* Understated variant: a short phrase rather than a number */
+.cs-stat--note .cs-stat__figure {
+  font-size: var(--fs-lead);
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+}
+
+@media (min-width: 1024px) {
+  .cs-stat {
+    margin-left: calc((100% + 3 * var(--gap)) / 4); /* heading column */
+  }
+}
+
+/* Transparent device mockups: the device is the frame — no corners, no shadow */
+.cs-screen__media--bare img {
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* Very tall full-page captures (e.g. a landing page): shown whole, never
+   cropped, inside a frame that scrolls on larger screens so the page doesn't
+   become one endless image. Phones show the full image inline. */
+.cs-scroll {
+  border-radius: 12px;
+  overflow: hidden;
+  background: #ffffff;
+  box-shadow:
+    0 1px 2px rgb(17 17 17 / 0.05),
+    0 24px 48px -24px rgb(17 17 17 / 0.18);
+}
+
+.cs-screen__media .cs-scroll img {
+  border-radius: 0;
+  box-shadow: none;
+}
+
+@media (min-width: 768px) {
+  .cs-scroll {
+    max-height: min(80vh, 960px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+  }
+}
+
+.cs-scroll:focus-visible {
+  outline-offset: 4px;
+}
+
+/* Desktop: text pinned beside the (often tall) screen while it scrolls */
+@media (min-width: 1024px) {
+  .cs-screen {
+    grid-template-columns: 3fr 9fr;
+    column-gap: var(--gap);
+    align-items: start;
+  }
+
+  .cs-screen__text {
+    position: sticky;
+    top: var(--space-9);
+  }
+}
+
+/* ---- Ending ---------------------------------------------------------------- */
+
+.cs-end {
+  padding-top: clamp(var(--space-9), 3rem + 6vw, 10rem);
+  padding-bottom: clamp(var(--space-9), 3rem + 7vw, 10rem);
+}
+
+.cs-end__outro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  text-align: center;
+}
+
+.cs-end__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-section);
+  font-weight: var(--weight-medium);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+
+.cs-end__text {
+  margin: 0;
+  font-size: var(--fs-body);
+  color: var(--muted);
+}
+
+.cs-end__next {
+  display: grid;
+  row-gap: var(--space-4);
+  margin-top: clamp(var(--space-8), 2rem + 5vw, var(--space-10));
+}
+
+.cs-end__contact {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4) var(--space-6);
+  margin-top: clamp(var(--space-8), 2rem + 4vw, var(--space-9));
+}
+
+/* Same small dark pill as the Home "Send email" / "Resume" buttons */
+.cs-end__email {
+  display: inline-flex;
+  align-items: center;
+  height: 44px;
+  padding-inline: 22px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: #ffffff;
+  font-size: 0.9375rem;
+  font-weight: var(--weight-medium);
+  text-decoration: none;
+  transition: background-color var(--dur-fast) var(--ease-out);
+}
+
+.cs-end__email:hover,
+.cs-end__email:focus-visible {
+  background: #333333;
+  color: #ffffff;
+}
+
+.cs-end__all {
+  font-size: var(--fs-body);
+  font-weight: var(--weight-medium);
+  color: var(--ink);
+}
+
+.cs-end__all:hover {
+  color: var(--ink);
+}

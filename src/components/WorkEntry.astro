@@ -1,0 +1,187 @@
+---
+/**
+ * One project in the /work/ archive, presented as a quiet white card:
+ * cover on the left (full-bleed to the card edges, clipped by the card's
+ * radius), text on the right, top-aligned. Every entry uses the same layout
+ * so widths, gaps and alignment stay predictable down the page.
+ * Stacked (image first) below 1024px. The whole card is a single link.
+ */
+import { publicImageSize } from '../lib/imageSize';
+
+interface Props {
+  id: string;
+  href: string;
+  num: string;
+  title: string;
+  type: string;
+  year: number;
+  summary: string;
+  cover: string;
+  coverAlt: string;
+  tint?: string;
+  priority?: boolean;
+}
+
+const { id, href, num, title, type, year, summary, cover, coverAlt, tint, priority = false } = Astro.props;
+const size = publicImageSize(cover);
+const titleId = `${id}-title`;
+const metaId = `${id}-meta`;
+---
+<article class="entry" id={id}>
+  <a class="entry__link" href={href} aria-labelledby={`${titleId} ${metaId}`} style={tint ? `--tint: ${tint}` : undefined}>
+    <div class="entry__field">
+      <img
+        class="entry__img"
+        src={cover}
+        alt={coverAlt}
+        width={size?.width}
+        height={size?.height}
+        loading={priority ? 'eager' : 'lazy'}
+        decoding={priority ? 'auto' : 'async'}
+        fetchpriority={priority ? 'high' : undefined}
+      />
+    </div>
+
+    <div class="entry__info">
+      <span class="entry__num" aria-hidden="true">{num}</span>
+      <h2 class="entry__title" id={titleId}>{title}</h2>
+      <p class="entry__meta" id={metaId}>{type} · {year}</p>
+      <p class="entry__summary">{summary}</p>
+      <span class="entry__cta">View case study <span class="entry__arrow" aria-hidden="true">→</span></span>
+    </div>
+  </a>
+</article>
+
+<style>
+  .entry {
+    scroll-margin-top: var(--space-7);
+  }
+
+  /* ---- Card --------------------------------------------------------------- */
+  .entry__link {
+    --tint: var(--surface);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    overflow: hidden; /* clips the image to the card's corners */
+    border-radius: var(--radius-card);
+    isolation: isolate; /* keeps the zooming image clipped to the radius in Safari */
+    background: #ffffff;
+    box-shadow:
+      0 1px 2px rgb(17 17 17 / 0.04),
+      0 12px 32px -12px rgb(17 17 17 / 0.1);
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .entry__link:focus-visible {
+    outline-offset: 4px;
+  }
+
+  /* ---- Image: full-bleed on its side, no inner padding --------------------- */
+  .entry__field {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background-color: var(--tint);
+    background-image: linear-gradient(180deg, var(--tint) 0%, color-mix(in srgb, var(--tint) 30%, #ffffff) 100%);
+  }
+
+  .entry__img {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 500ms var(--ease-out);
+  }
+
+  /* ---- Text: the only padded area, top-aligned ---------------------------- */
+  .entry__info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: var(--space-5);
+  }
+
+  .entry__num {
+    font-size: var(--fs-meta);
+    font-variant-numeric: tabular-nums;
+    color: var(--muted);
+  }
+
+  .entry__title {
+    margin: var(--space-3) 0 0;
+    font-family: var(--font-display);
+    font-size: var(--fs-project);
+    font-weight: var(--weight-medium);
+    line-height: var(--lh-heading);
+    letter-spacing: -0.025em;
+  }
+
+  .entry__meta {
+    margin: var(--space-2) 0 0;
+    font-size: var(--fs-meta);
+    color: var(--muted);
+  }
+
+  .entry__summary {
+    margin: var(--space-5) 0 0;
+    max-width: 42ch;
+    font-size: var(--fs-body);
+    line-height: 1.6;
+    color: var(--muted);
+    text-wrap: pretty;
+  }
+
+  .entry__cta {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.4em;
+    margin-top: var(--space-6);
+    font-size: var(--fs-body);
+    font-weight: var(--weight-medium);
+    color: var(--ink);
+  }
+
+  .entry__arrow {
+    display: inline-block;
+    transition: transform var(--dur-base) var(--ease-out);
+  }
+
+  /* ---- Side by side from 1024px: image 7 / text 5 -------------------------
+     (Below that the text column gets too narrow and card heights drift, so
+     cards stack: image first, then text.) */
+  @media (min-width: 1024px) {
+    .entry__link {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+      align-items: stretch;
+    }
+
+    /* The image keeps its 4:3 box but fills the card height if the text runs longer */
+    .entry__field {
+      align-self: stretch;
+      min-height: 100%;
+    }
+
+    .entry__info {
+      padding: clamp(var(--space-5), 3vw, var(--space-7));
+    }
+  }
+
+  /* ---- Interaction (subtle) ------------------------------------------------ */
+  @media (hover: hover) and (pointer: fine) {
+    .entry__link:hover .entry__img {
+      transform: scale(1.02);
+    }
+
+    .entry__link:hover .entry__arrow {
+      transform: translateX(4px);
+    }
+  }
+
+  .entry__link:focus-visible .entry__arrow {
+    transform: translateX(4px);
+  }
+</style>

@@ -1,0 +1,119 @@
+/* ==========================================================================
+   Design tokens — the only place raw values should live.
+   Components and pages reference these custom properties.
+   ========================================================================== */
+
+:root {
+  /* ---- Colour ---------------------------------------------------------- */
+  --bg: #f7f7f5;          /* page background, warm off-white */
+  --surface: #eeeeeb;     /* image grounds, quiet bands */
+  --ink: #111111;         /* primary text */
+  --muted: #6b6b6b;       /* secondary text — 4.97:1 on --bg (AA) */
+  --line: #dcdcdc;        /* hairlines and dividers */
+  --accent: #2b5ce6;      /* blue — active nav, focus, link details. 5.2:1 on --bg, white text on it 5.6:1 (AA). Use sparingly. */
+  --on-accent: #ffffff;
+  --hover-tint: #ebebe8;  /* hovered (not active) controls */
+  --on-ink: #f7f7f5;      /* text on dark grounds */
+
+  /* ---- Typography ------------------------------------------------------ */
+  /* Satoshi (display) and Manrope (body) are approved but their files are
+     not in the project yet. Until they are added, both roles resolve to the
+     self-hosted Inter that is already loaded. See src/styles/fonts.css. */
+  --font-display: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-body: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* Fluid type scale (min at ~375px, max at ~1440px) */
+  --fs-hero: clamp(3rem, 0.9rem + 8.2vw, 8rem);            /* 48 → 128 — tuned for the stacked two-line name */
+  --fs-page: clamp(2.75rem, 1.7rem + 4.4vw, 5rem);         /* 44 → 80 */
+  --fs-section: clamp(2rem, 1.6rem + 1.6vw, 3rem);         /* 32 → 48 */
+  --fs-project: clamp(1.5rem, 1.1rem + 1.6vw, 2.5rem);     /* 24 → 40 */
+  --fs-statement: clamp(1.375rem, 1.1rem + 1.2vw, 2rem);   /* 22 → 32 — large editorial paragraphs */
+  --fs-lead: clamp(1.125rem, 1rem + 0.5vw, 1.375rem);      /* 18 → 22 */
+  --fs-body: clamp(1rem, 0.95rem + 0.2vw, 1.125rem);       /* 16 → 18 */
+  --fs-meta: clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem);  /* 13 → 14 */
+
+  --lh-tight: 0.95;
+  --lh-heading: 1.05;
+  --lh-snug: 1.3;
+  --lh-body: 1.6;
+
+  --tracking-display: -0.035em;
+  --tracking-heading: -0.025em;
+  --tracking-meta: 0.06em;
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  --measure: 62ch;        /* comfortable line length for body copy */
+
+  /* ---- Spacing (4-based) ------------------------------------------------ */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+  --space-10: 128px;
+  --space-11: 160px;
+
+  /* Rhythm between major page sections */
+  --section-space: clamp(var(--space-9), 12vw, var(--space-11));
+
+  /* ---- Layout ----------------------------------------------------------- */
+  /* Horizontal system: one fluid gutter + a capped content width.
+     gutter ≈ 20 (375) · 38 (768) · 51 (1024) · 64 (1280) · 72 (1440) · 96 (1920+)
+     content never exceeds --content-max, so wide screens gain whitespace,
+     not wider content (1440 → 120px each side). */
+  --content-max: 1200px;
+  --gutter: clamp(20px, 5vw, 96px);
+  --max-width: calc(var(--content-max) + 2 * var(--gutter));
+  --columns: 12;
+  --gap: 16px;            /* column gap: mobile */
+
+  /* ---- Borders & radius ------------------------------------------------- */
+  --hairline: 1px solid var(--line);
+  --radius-0: 0;
+  --radius-media: 4px;    /* only for image grounds that need it */
+  --radius-card: 18px;    /* project cards on Home and Work — soft enough to sit with the full-round nav */
+
+  /* ---- Motion ----------------------------------------------------------- */
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --dur-fast: 150ms;      /* colour, underline */
+  --dur-base: 250ms;      /* interface transitions */
+  --dur-slow: 400ms;      /* project hover */
+
+  /* ---- Navigation (floating dock) --------------------------------------- */
+  --nav-height: 58px;     /* dock: 48px items + 5px padding (mobile); 64px from 768 */
+  --nav-gap: 16px;        /* distance from the viewport bottom (24px from 768) */
+  /* Dock's distance from the viewport bottom. Scales with viewport height
+     (min 12px) so it looks the same at any browser zoom; plus the iOS
+     home-indicator inset. Shared by the dock and the footer row that sits
+     beside it (SiteFooter). */
+  --nav-bottom: calc(max(12px, 2.5vh) + env(safe-area-inset-bottom, 0px));
+  /* Space content must keep free at the end of the page: dock + its gap + breathing room + home indicator */
+  --nav-offset: calc(var(--nav-height) + var(--nav-gap) * 2 + env(safe-area-inset-bottom, 0px));
+
+  /* ---- Layers ----------------------------------------------------------- */
+  --z-nav: 50;
+  --z-skip: 100;
+}
+
+/* Responsive layout tokens — breakpoints: 640 / 768 / 1024 / 1280 */
+@media (min-width: 768px) {
+  :root {
+    --gap: 24px;
+    --nav-height: 64px;
+    --nav-gap: 24px;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --gap: 32px;
+  }
+}

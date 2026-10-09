@@ -1,12 +1,229 @@
-.case-row:hover .case-img{transform:scale(1.02)}
-.case-row:hover .case-arrow{transform:translateX(4px)}
-.case-row:hover .case-title{color:#555}
-@media (max-width:1000px){.hero-grid{grid-template-columns:1fr !important}.hero-aside{display:none !important}}
-@media (max-width:820px){.case-row{grid-template-columns:1fr !important}.case-meta{order:2}.case-img-wrap{order:1;aspect-ratio:4/3 !important}.nav-links{display:none !important}.nav-menu{display:flex !important}.hero-grid{grid-template-columns:1fr !important}.hero-aside{display:none !important}.contact-grid{grid-template-columns:1fr !important}.about-grid{grid-template-columns:1fr !important}.h1{font-size:64px !important}.h2{font-size:34px !important}.skills-grid{grid-template-columns:1fr !important}}
-/* Hover rules the original runtime generated from style-hover attributes (one class per unique declaration set). */
-.scp0:hover{background:#f4f4f4 !important}
-.scp1:hover{background:#333 !important;color:#fff !important}
-.scp2:hover{border-color:#111 !important}
-.scp3:hover{color:#555 !important}
-.scp4:hover{color:#111 !important}
-.scp5:hover{border-color:#111 !important;color:#111 !important}
+/* ==========================================================================
+   Home — page composition.
+   One vertical rhythm (--rhythm) separates every major block (hero → work → contact); whitespace,
+   not dividers, does the structural work. Components style themselves.
+   ========================================================================== */
+
+main {
+  --rhythm: clamp(7rem, 4rem + 9vw, 12rem); /* 112 → 192 between sections */
+}
+
+/* ---- Hero ----------------------------------------------------------------
+   Two anchored blocks: the name fills the left track, the intro sits in a
+   width-capped right track that always ends at the container's right edge.
+   Everything between them is free space, so the relationship holds at any
+   viewport width or browser zoom (no column-number breakpoints to cross).
+   Lighter weight + a grey second line keep the name present, not heavy. */
+
+.home-hero {
+  --name-size: clamp(3.25rem, 1.2rem + 7.6vw, 8.25rem); /* 52 → 132 */
+  --intro-width: clamp(16rem, 26vw, 24rem);             /* 256 → 384 */
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: var(--space-7);
+  padding-top: clamp(var(--space-8), 2rem + 8vw, 10.5rem); /* 64 → 168 */
+}
+
+.home-hero > * {
+  grid-column: 1 / -1;
+}
+
+.home-hero__name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--name-size);
+  font-weight: var(--weight-medium);
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+}
+
+.home-hero__name span {
+  display: block;
+}
+
+.home-hero__last {
+  color: #7d7d7a; /* large display text: 3.9:1 on --bg */
+}
+
+.home-hero__intro {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  max-width: 26rem;
+}
+
+.home-hero__role {
+  margin: 0 0 var(--space-4);
+  font-size: var(--fs-lead);
+  font-weight: var(--weight-medium);
+  color: #3d3d3d;
+}
+
+.home-hero__statement {
+  margin: 0;
+  font-size: var(--fs-body);
+  line-height: 1.55;
+  color: var(--muted);
+  text-wrap: pretty;
+}
+
+.home-hero__location {
+  margin: var(--space-5) 0 0;
+  font-size: var(--fs-meta);
+  color: var(--muted);
+}
+
+.home-hero__resume {
+  display: inline-flex;
+  align-items: center;
+  height: 38px;
+  margin-top: var(--space-6);
+  padding-inline: 18px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: #ffffff;
+  font-size: 0.9375rem;
+  font-weight: var(--weight-medium);
+  text-decoration: none;
+  transition: background-color var(--dur-fast) var(--ease-out);
+}
+
+.home-hero__resume:hover {
+  background: #333333;
+  color: #ffffff;
+}
+
+/* Two-sided composition wherever both blocks fit (tablet and up) */
+@media (min-width: 768px) {
+  .home-hero {
+    grid-template-columns: minmax(0, 1fr) var(--intro-width);
+    column-gap: clamp(3rem, 6vw, 10rem); /* minimum breathing room between the blocks */
+  }
+
+  .home-hero > .home-hero__name {
+    grid-column: 1;
+  }
+
+  .home-hero > .home-hero__intro {
+    grid-column: 2;
+    max-width: none;
+    padding-top: calc(var(--name-size) * 0.16); /* meet the cap height of "Aprizal" */
+  }
+}
+
+/* One orchestrated entrance; nothing else animates on load */
+@media (prefers-reduced-motion: no-preference) {
+  .home-hero__name span,
+  .home-hero__intro {
+    animation: home-rise 800ms var(--ease-out) both;
+  }
+
+  .home-hero__name span:nth-child(2) {
+    animation-delay: 90ms;
+  }
+
+  .home-hero__intro {
+    animation-delay: 240ms;
+  }
+}
+
+@keyframes home-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+/* ---- Selected work ------------------------------------------------------- */
+
+.home-work {
+  padding-top: var(--rhythm);
+}
+
+.home-work__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: clamp(var(--space-6), 1rem + 3vw, var(--space-8));
+}
+
+.home-work__title {
+  margin: 0;
+  font-size: var(--fs-lead);
+  font-weight: var(--weight-regular);
+  color: #3d3d3d;
+}
+
+.home-work__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(var(--space-7), 1rem + 5vw, 7.5rem) var(--gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 768px) {
+  .home-work__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ---- Contact: the closing note, centred ---------------------------------- */
+
+.home-contact {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: var(--rhythm);
+  text-align: center;
+}
+
+.home-contact__title {
+  margin: 0;
+  max-width: 32ch;
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 1.2rem + 2vw, 2.75rem); /* 28 → 44 */
+  font-weight: var(--weight-semibold);
+  line-height: 1.12;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+.home-contact__body {
+  margin: var(--space-5) 0 0;
+  max-width: 48ch;
+  font-size: var(--fs-body);
+  line-height: 1.6;
+  color: var(--muted);
+  text-wrap: pretty;
+}
+
+/* Primary action: same small dark pill as the hero's Resume button */
+.home-contact__email {
+  display: inline-flex;
+  align-items: center;
+  height: 44px;
+  margin-top: var(--space-7);
+  padding-inline: 22px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: #ffffff;
+  font-size: 0.9375rem;
+  font-weight: var(--weight-medium);
+  text-decoration: none;
+  transition: background-color var(--dur-fast) var(--ease-out);
+}
+
+.home-contact__email:hover,
+.home-contact__email:focus-visible {
+  background: #333333;
+  color: #ffffff;
+}
+
+/* Room before the colophon */
+.home-contact {
+  padding-bottom: clamp(var(--space-9), 3rem + 7vw, 10rem);
+}

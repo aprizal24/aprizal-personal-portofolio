@@ -1,0 +1,220 @@
+---
+/**
+ * Global navigation — a small floating dock, centred at the bottom.
+ *
+ * States
+ * - Active page: round accent-blue item, always (idle, hovered, or while
+ *   another item is hovered).
+ * - Idle: icon only, quiet.
+ * - Hover / keyboard focus: the item expands to reveal its label; inactive
+ *   items also take a light grey tint and a very slight zoom.
+ * - Touch screens (no hover): the active item shows its label so the current
+ *   page is always named; the others stay icon-only.
+ * Labels are real text inside each link (visually collapsed, never hidden from
+ * assistive tech), so every link has an accessible name.
+ *
+ * On mobile the wordmark sits in a top bar that scrolls with the page.
+ */
+import { site } from '../data/site';
+import { primaryNav, isActive, routes, type NavIcon } from '../lib/routes';
+
+const pathname = Astro.url.pathname;
+
+const icons: Record<NavIcon, string> = {
+  home: '<path d="M4 10.2 12 4l8 6.2V19a1 1 0 0 1-1 1h-4.5v-5.5h-5V20H5a1 1 0 0 1-1-1z"/>',
+  work: '<path d="m12 3.8 8.5 4.4L12 12.6 3.5 8.2z"/><path d="m3.5 12 8.5 4.4 8.5-4.4"/><path d="m3.5 15.8 8.5 4.4 8.5-4.4"/>',
+  experiments: '<path d="M9.5 4h5M10.5 4v5.2L5.3 18a1.3 1.3 0 0 0 1.1 2h11.2a1.3 1.3 0 0 0 1.1-2l-5.2-8.8V4"/>',
+  about: '<circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c1-3.4 3.7-5.2 7-5.2s6 1.8 7 5.2"/>',
+  contact: '<path d="M4.5 5.5h15a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H10l-4.5 3v-3h-1a1 1 0 0 1-1-1v-10a1 1 0 0 1 1-1z"/><path d="M8 10h8M8 13h5"/>',
+};
+---
+<header class="topbar container">
+  <a class="wordmark" href={routes.home}>{site.shortName}</a>
+</header>
+
+<nav class="dock" aria-label="Primary">
+  <ul class="dock__list" role="list">
+    {primaryNav.map((item) => {
+      const active = isActive(item.href, pathname);
+      return (
+        <li>
+          <a class="dock__link" href={item.href} aria-current={active ? 'page' : undefined}>
+            <svg class="dock__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" set:html={icons[item.icon]} />
+            <span class="dock__label"><span class="dock__clip"><span class="dock__text">{item.label}</span></span></span>
+          </a>
+        </li>
+      );
+    })}
+  </ul>
+</nav>
+
+<style>
+  /* ---- Mobile top bar (wordmark) --------------------------------------- */
+  .topbar {
+    display: flex;
+    align-items: center;
+    height: 56px;
+  }
+
+  .wordmark {
+    font-family: var(--font-display);
+    font-size: 0.875rem;
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-meta);
+    text-transform: uppercase;
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  @media (min-width: 768px) {
+    .topbar {
+      display: none;
+    }
+  }
+
+  /* ---- Dock ------------------------------------------------------------- */
+  .dock {
+    --item: 48px;
+    --pad: 5px;
+    position: fixed;
+    inset-inline: 0;
+    /* --nav-bottom (tokens.css): scales with viewport height (min 12px) so the
+       gap looks the same at any zoom, plus the iOS home-indicator inset. */
+    bottom: var(--nav-bottom);
+    z-index: var(--z-nav);
+    /* Centred via auto margins (not left:50%), so the dock gets the full
+       viewport width to size into and labels never get squeezed. */
+    width: fit-content;
+    max-width: calc(100vw - 2 * var(--gutter));
+    margin-inline: auto;
+    padding: var(--pad);
+    background: #ffffff;
+    border-radius: 999px;
+    box-shadow:
+      0 1px 2px rgb(17 17 17 / 0.04),
+      0 10px 32px rgb(17 17 17 / 0.08);
+  }
+
+  @media (min-width: 768px) {
+    .dock {
+      --item: 54px;
+    }
+  }
+
+  .dock__list {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .dock__link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: var(--item);
+    min-width: var(--item);
+    padding-inline: calc((var(--item) - 20px) / 2);
+    border-radius: 999px;
+    color: #3d3d3d;
+    font-size: 0.9375rem;
+    font-weight: var(--weight-medium);
+    line-height: 1;
+    text-decoration: none;
+    transition:
+      background-color var(--dur-base) var(--ease-out),
+      color var(--dur-base) var(--ease-out),
+      transform var(--dur-base) var(--ease-out);
+  }
+
+  .dock__icon {
+    flex: none;
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* Label collapses to zero width; grid 0fr → 1fr animates to the text's width. */
+  .dock__label {
+    flex: none;
+    display: grid;
+    grid-template-columns: 0fr;
+    transition: grid-template-columns var(--dur-base) var(--ease-out);
+  }
+
+  .dock__clip {
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .dock__text {
+    display: block;
+    padding-left: 8px;
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateX(-4px);
+    transition:
+      opacity var(--dur-fast) var(--ease-out),
+      transform var(--dur-base) var(--ease-out);
+  }
+
+  /* Active page: blue in every state */
+  .dock__link[aria-current='page'] {
+    background-color: var(--accent);
+    color: var(--on-accent);
+  }
+
+  /* Reveal (shared by hover and keyboard focus) */
+  .dock__link:focus-visible .dock__label {
+    grid-template-columns: 1fr;
+  }
+
+  .dock__link:focus-visible .dock__text {
+    opacity: 1;
+    transform: none;
+  }
+
+  .dock__link:not([aria-current='page']):focus-visible {
+    background-color: var(--hover-tint);
+    color: var(--ink);
+  }
+
+  .dock__link:focus-visible {
+    outline-offset: 2px;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .dock__link:hover .dock__label {
+      grid-template-columns: 1fr;
+    }
+
+    .dock__link:hover .dock__text {
+      opacity: 1;
+      transform: none;
+    }
+
+    .dock__link:not([aria-current='page']):hover {
+      background-color: var(--hover-tint);
+      color: var(--ink);
+      transform: scale(1.04);
+    }
+  }
+
+  /* Touch: always name the current page */
+  @media (hover: none) {
+    .dock__link[aria-current='page'] .dock__label {
+      grid-template-columns: 1fr;
+    }
+
+    .dock__link[aria-current='page'] .dock__text {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>

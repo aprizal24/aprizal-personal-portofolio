@@ -1,5 +1,6 @@
 ---
 import Nav from './Nav.astro';
+import { site, mailto } from '../data/site';
 
 interface Props {
   variant: 'home' | 'case';
@@ -9,7 +10,7 @@ const { variant } = Astro.props;
 const homeLinks = [
   { href: '#about', label: 'About' },
   { href: '#work', label: 'Work' },
-  { href: '/assets/resume.pdf', label: 'Resume', target: '_blank', rel: 'noopener' },
+  { href: site.resume, label: 'Resume', target: '_blank', rel: 'noopener' },
   { href: '#contact', label: 'Contact', primary: true },
 ];
 const caseLinks = [
@@ -23,8 +24,8 @@ const caseLinks = [
   <div style="max-width:1120px;margin:0 auto;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px">
     {variant === 'home' ? (
       <a href="#top" style="display:flex;align-items:center;gap:10px">
-        <img src="/images/logo.svg" alt="Aprizal" style="width:22px;height:22px;display:block" />
-        <span style="font-size:14px;font-weight:600;letter-spacing:-.01em">Aprizal Triansyah</span>
+        <img src="/images/logo.svg" alt="" width="22" height="22" style="width:22px;height:22px;display:block" />
+        <span style="font-size:14px;font-weight:600;letter-spacing:-.01em">{site.name}</span>
       </a>
     ) : (
       <a href="/" style="display:flex;align-items:center;gap:10px;font-size:14px;font-weight:500"><span aria-hidden="true">←</span> Back to portfolio</a>
@@ -33,7 +34,7 @@ const caseLinks = [
     {variant === 'home' ? (
       <a class="nav-menu" href="#contact" style="display:none;font-size:12px;letter-spacing:.08em;text-transform:uppercase;padding:10px 16px;border-radius:999px;background:#111;color:#fff">Contact</a>
     ) : (
-      <a href="mailto:aprizaltriansyah24@gmail.com?subject=Let%27s%20Work%20Together" class="scp1" style="font-size:12px;letter-spacing:.08em;text-transform:uppercase;padding:10px 16px;border-radius:999px;background:#111;color:#fff">Contact</a>
+      <a href={mailto} class="scp1" style="font-size:12px;letter-spacing:.08em;text-transform:uppercase;padding:10px 16px;border-radius:999px;background:#111;color:#fff">Contact</a>
     )}
   </div>
 </header>
