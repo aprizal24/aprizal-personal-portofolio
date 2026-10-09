@@ -13,13 +13,6 @@ const projects = (await getCollection('case-studies'))
   .sort((a, b) => a.data.order - b.data.order)
   .map((e) => ({ id: e.id, href: caseStudyPath(e.id), tint: projectTint(e.id), ...e.data }));
 
-// Lombok local time (WITA, UTC+8). Rendered at build time as a fallback;
-// the script below keeps it live in the browser.
-const lombokClock = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Makassar', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' });
-const localTime = lombokClock.format(new Date());
-
-const [firstName, ...rest] = site.name.split(' ');
-const lastName = rest.join(' ');
 ---
 <BaseLayout
   title="Aprizal Triansyah · UI/UX Designer"
@@ -30,18 +23,9 @@ const lastName = rest.join(' ');
 <main id="main-content" tabindex="-1">
 
   <!-- Hero -->
-  <section class="home-hero container" aria-labelledby="hero-name">
-    <h1 class="home-hero__name" id="hero-name">
-      <span>{firstName}</span> <span class="home-hero__last">{lastName}</span>
-    </h1>
-    <div class="home-hero__intro">
-      <p class="home-hero__role">{site.role}</p>
-      <p class="home-hero__statement">Designing simple, intuitive digital products that solve real user problems.</p>
-      <p class="home-hero__location">{site.location.label} · <time class="home-hero__clock" datetime={localTime}>{localTime}</time> GMT+8</p>
-      <a class="home-hero__resume" href={site.resume} target="_blank" rel="noopener">
-        Resume <span class="visually-hidden">(PDF, opens in a new tab)</span>
-      </a>
-    </div>
+  <section class="home-hero container" aria-labelledby="hero-title">
+    <h1 class="home-hero__eyebrow" id="hero-title">{site.name} · {site.role}</h1>
+    <p class="home-hero__statement">Designing simple, intuitive digital products <span class="home-hero__soft">that solve real user problems.</span></p>
   </section>
 
   <!-- Selected work -->
@@ -72,8 +56,7 @@ const lastName = rest.join(' ');
   <!-- Contact -->
   <section id="contact" class="home-contact container" aria-labelledby="contact-title">
     <h2 class="home-contact__title" id="contact-title">Let's build something meaningful together.</h2>
-    <p class="home-contact__body">Whether you're hiring a UI/UX Designer, building a new product, or looking for a creative collaborator, I'd love to hear from you.</p>
-    <a class="home-contact__email" href={mailto}>Send email <span class="visually-hidden">to {site.email}</span></a>
+    <a class="home-contact__email" href={mailto}><span class="roll"><span class="roll__text">Let's talk</span></span> <span class="visually-hidden">to {site.email}</span></a>
   </section>
 
 </main>
@@ -81,28 +64,6 @@ const lastName = rest.join(' ');
 <SiteFooter />
 
 <script>
-  // Live Lombok clock (Asia/Makassar, 24h HH:MM). Ticks on each minute boundary
-  // and resyncs when the tab becomes visible again.
-  const clock = document.querySelector<HTMLTimeElement>('.home-hero__clock');
-  if (clock) {
-    const fmt = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Makassar', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' });
-    let timer: number | undefined;
-    const tick = () => {
-      const now = new Date();
-      const text = fmt.format(now);
-      if (clock.textContent !== text) {
-        clock.textContent = text;
-        clock.dateTime = text;
-      }
-      window.clearTimeout(timer);
-      timer = window.setTimeout(tick, 60_000 - (now.getTime() % 60_000) + 50);
-    };
-    tick();
-    document.addEventListener('visibilitychange', () => {
-      if (!document.hidden) tick();
-    });
-  }
-
   // Touch screens have no hover: reveal each project's label while the tile
   // sits in the middle band of the viewport, instead of showing every label at once.
   if (window.matchMedia('(hover: none)').matches && 'IntersectionObserver' in window) {

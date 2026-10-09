@@ -133,3 +133,43 @@
 .link-arrow:focus-visible > [aria-hidden='true'] {
   transform: translateX(4px);
 }
+
+/* ---- Vertical text roll (hover reveal) ------------------------------------
+   Markup: <span class="roll"><span class="roll__text">Label</span></span>
+   inside a link or button. On mouse/trackpad devices the label slides up out
+   of a clipped window while an identical copy (a text-shadow, so screen
+   readers still read it once) slides up from below to take its place; it
+   rolls back when the pointer leaves. Keyboard focus rolls too.
+   The window's padding and matching negative margin keep descenders and
+   underlines visible without changing size, spacing or baseline. Underlines
+   set on an ancestor carry over through `text-decoration: inherit`.
+   Touch devices: no copy, no motion, text wraps exactly as before.
+   Off under prefers-reduced-motion. */
+.roll {
+  --roll-d: 2em;          /* distance between the label and its copy */
+  display: inline-flex;   /* keeps the text baseline (an overflow inline-block would not) */
+  overflow: hidden;
+  padding-block: 0.2em 0.45em;
+  margin-block: -0.2em -0.45em;
+  text-decoration: inherit;
+}
+
+.roll__text {
+  display: block;
+  text-decoration: inherit;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .roll__text {
+    white-space: nowrap;  /* one line, so the copy below can never show in the window */
+    text-shadow: 0 var(--roll-d) currentColor;
+    transition: transform 420ms cubic-bezier(0.65, 0.05, 0.25, 1);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    :is(a, button):hover .roll__text,
+    :is(a, button):focus-visible .roll__text {
+      transform: translateY(calc(-1 * var(--roll-d)));
+    }
+  }
+}

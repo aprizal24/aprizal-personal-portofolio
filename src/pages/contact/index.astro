@@ -1,0 +1,73 @@
+---
+/**
+ * /contact/ — how to reach Aprizal. No form.
+ * Copy is the existing Home contact copy and the Home hero's location line;
+ * every address, handle and link comes from src/data/site.ts. Layout follows
+ * the approved editorial system (same title as Work/About, a label column on
+ * the left and content on the right from 1024px), no cards or borders.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import '../../styles/contact.css';
+import { site, mailto } from '../../data/site';
+import { personSchema } from '../../lib/seo';
+
+const statement = "Let's build something meaningful together.";
+const body =
+  "Whether you're hiring a UI/UX Designer, building a new product, or looking for a creative collaborator, I'd love to hear from you.";
+
+const details = [
+  { label: site.social.linkedin.label, value: site.social.linkedin.handle, href: site.social.linkedin.url, note: 'opens in a new tab' },
+  { label: site.social.instagram.label, value: site.social.instagram.handle, href: site.social.instagram.url, note: 'opens in a new tab' },
+  { label: 'Resume', value: 'Download', href: site.resume, note: 'PDF, opens in a new tab' },
+];
+---
+<BaseLayout
+  title={`Contact · ${site.name}`}
+  description={body}
+  schema={personSchema()}
+  nav
+>
+<main id="main-content" class="contact-main" tabindex="-1">
+
+  <header class="contact-head container">
+    <h1 class="contact-head__title">Contact</h1>
+  </header>
+
+  <section class="contact-intro container" aria-labelledby="contact-statement">
+    <div class="contact-row">
+      <div class="contact-row__aside" aria-hidden="true"></div>
+      <div class="contact-row__main">
+        <h2 class="contact-statement" id="contact-statement">{statement}</h2>
+        <p class="contact-body">{body}</p>
+        <p class="contact-location">Based in {site.location.label}</p>
+
+        <div class="contact-email">
+          <a class="contact-email__address" href={mailto}><span class="roll"><span class="roll__text">{site.email}</span></span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact-details container" aria-label="Profiles and resume">
+    <div class="contact-row">
+      <div class="contact-row__aside" aria-hidden="true"></div>
+      <dl class="contact-list">
+        {details.map((d) => (
+          <div class="contact-list__row">
+            <dt>{d.label}</dt>
+            <dd>
+              <a class="contact-link link-arrow" href={d.href} target="_blank" rel="noopener">
+                <span class="contact-link__text"><span class="roll"><span class="roll__text">{d.value}</span></span></span><span class="visually-hidden"> ({d.label}, {d.note})</span> <span aria-hidden="true">↗</span>
+              </a>
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+</main>
+
+<SiteFooter />
+</BaseLayout>

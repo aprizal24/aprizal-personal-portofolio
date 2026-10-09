@@ -2,46 +2,33 @@
 /**
  * Global navigation — a small floating dock, centred at the bottom.
  *
- * States
- * - Active page: round accent-blue item, always (idle, hovered, or while
- *   another item is hovered).
- * - Idle: icon only, quiet.
- * - Hover / keyboard focus: the item expands to reveal its label; inactive
- *   items also take a light grey tint and a very slight zoom.
- * - Touch screens (no hover): the active item shows its label so the current
- *   page is always named; the others stay icon-only.
- * Labels are real text inside each link (visually collapsed, never hidden from
- * assistive tech), so every link has an accessible name.
+ * Content: the name "Aprizal" on the left (the link to Home — there is no
+ * Home menu item) and text labels on the right (Work, About, Contact). The
+ * name stays inside the dock at every width; the gap between it and the menu
+ * is generous from 1024px and tighter below, where the dock must stay narrow.
  *
- * On mobile the wordmark sits in a top bar that scrolls with the page.
+ * States (unchanged)
+ * - Active page: accent-blue item, always (idle, hovered, or while another
+ *   item is hovered).
+ * - Idle: quiet text on the white dock.
+ * - Hover / keyboard focus: inactive items take the light grey tint and a
+ *   very slight zoom. The tint/blue pill hugs the label (shorter than the
+ *   tap area). The name "Aprizal" has no hover effect.
+ * - Home: no menu item is active; the name is the way back.
  */
 import { site } from '../data/site';
-import { primaryNav, isActive, routes, type NavIcon } from '../lib/routes';
+import { primaryNav, isActive, routes } from '../lib/routes';
 
 const pathname = Astro.url.pathname;
-
-const icons: Record<NavIcon, string> = {
-  home: '<path d="M4 10.2 12 4l8 6.2V19a1 1 0 0 1-1 1h-4.5v-5.5h-5V20H5a1 1 0 0 1-1-1z"/>',
-  work: '<path d="m12 3.8 8.5 4.4L12 12.6 3.5 8.2z"/><path d="m3.5 12 8.5 4.4 8.5-4.4"/><path d="m3.5 15.8 8.5 4.4 8.5-4.4"/>',
-  experiments: '<path d="M9.5 4h5M10.5 4v5.2L5.3 18a1.3 1.3 0 0 0 1.1 2h11.2a1.3 1.3 0 0 0 1.1-2l-5.2-8.8V4"/>',
-  about: '<circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c1-3.4 3.7-5.2 7-5.2s6 1.8 7 5.2"/>',
-  contact: '<path d="M4.5 5.5h15a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H10l-4.5 3v-3h-1a1 1 0 0 1-1-1v-10a1 1 0 0 1 1-1z"/><path d="M8 10h8M8 13h5"/>',
-};
 ---
-<header class="topbar container">
-  <a class="wordmark" href={routes.home}>{site.shortName}</a>
-</header>
-
 <nav class="dock" aria-label="Primary">
+  <a class="dock__name" href={routes.home}>{site.shortName}</a>
   <ul class="dock__list" role="list">
     {primaryNav.map((item) => {
       const active = isActive(item.href, pathname);
       return (
         <li>
-          <a class="dock__link" href={item.href} aria-current={active ? 'page' : undefined}>
-            <svg class="dock__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" set:html={icons[item.icon]} />
-            <span class="dock__label"><span class="dock__clip"><span class="dock__text">{item.label}</span></span></span>
-          </a>
+          <a class="dock__link" href={item.href} aria-current={active ? 'page' : undefined}><span class="roll"><span class="roll__text">{item.label}</span></span></a>
         </li>
       );
     })}
@@ -49,29 +36,6 @@ const icons: Record<NavIcon, string> = {
 </nav>
 
 <style>
-  /* ---- Mobile top bar (wordmark) --------------------------------------- */
-  .topbar {
-    display: flex;
-    align-items: center;
-    height: 56px;
-  }
-
-  .wordmark {
-    font-family: var(--font-display);
-    font-size: 0.875rem;
-    font-weight: var(--weight-semibold);
-    letter-spacing: var(--tracking-meta);
-    text-transform: uppercase;
-    color: var(--ink);
-    text-decoration: none;
-  }
-
-  @media (min-width: 768px) {
-    .topbar {
-      display: none;
-    }
-  }
-
   /* ---- Dock ------------------------------------------------------------- */
   .dock {
     --item: 48px;
@@ -101,120 +65,183 @@ const icons: Record<NavIcon, string> = {
     }
   }
 
+  /* With the name on the left, give the last item's pill the same breathing
+     room on the right as it has above and below: (dock height − pill) / 2,
+     i.e. (58 − 32) / 2 = 13px on mobile and (64 − 36) / 2 = 14px from 768px.
+     Top, bottom and left padding stay at --pad. */
+  .dock {
+    padding-right: 13px;
+  }
+
+  @media (min-width: 768px) {
+    .dock {
+      padding-right: 14px;
+    }
+  }
+
+  .dock {
+    display: flex;
+    align-items: center;
+  }
+
   .dock__list {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 4px; /* 6px from 1024px */
     margin: 0;
     padding: 0;
     list-style: none;
   }
 
-  .dock__link {
+  @media (min-width: 1024px) {
+    .dock__list {
+      gap: 6px;
+    }
+  }
+
+  /* Menu items and the name: text centred in a box as tall as the dock's
+     item row (the tap area, which also sets the dock's height). */
+  .dock__link,
+  .dock__name {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     height: var(--item);
-    min-width: var(--item);
-    padding-inline: calc((var(--item) - 20px) / 2);
-    border-radius: 999px;
+    padding-inline: 14px;
     color: #3d3d3d;
     font-size: 0.9375rem;
     font-weight: var(--weight-medium);
     line-height: 1;
+    white-space: nowrap;
     text-decoration: none;
+  }
+
+  /* Menu items below 1024px: 12px each side (the pill hugs the label with
+     equal space left and right, as on desktop). This keeps the dock, now with
+     the name inside, within 375px phones and clear of the footer text that
+     shares its line at 768–1023px. */
+  .dock__link {
+    padding-inline: 12px;
+  }
+
+  /* Very narrow phones (< 360px): tighter still, so nothing overflows */
+  @media (max-width: 359px) {
+    .dock__link {
+      padding-inline: 8px;
+    }
+
+    .dock .dock__name {
+      padding-inline: 10px 4px;
+      margin-right: 0;
+    }
+  }
+
+  /* Roomier items only where the dock has space */
+  @media (min-width: 1024px) {
+    .dock__link,
+    .dock__name {
+      padding-inline: 18px;
+    }
+  }
+
+  /* ---- Menu items ---------------------------------------------------------
+     The visible pill (hover tint / active blue) is a layer behind the text,
+     shorter than the tap area so it hugs the label; the link box keeps the
+     full item height, so the dock's size doesn't change. */
+  .dock__link {
+    --pill: 32px;
+    position: relative;
+    isolation: isolate;
     transition:
-      background-color var(--dur-base) var(--ease-out),
       color var(--dur-base) var(--ease-out),
       transform var(--dur-base) var(--ease-out);
   }
 
-  .dock__icon {
-    flex: none;
-    width: 20px;
-    height: 20px;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 1.6;
-    stroke-linecap: round;
-    stroke-linejoin: round;
+  @media (min-width: 768px) {
+    .dock__link {
+      --pill: 36px;
+    }
   }
 
-  /* Label collapses to zero width; grid 0fr → 1fr animates to the text's width. */
-  .dock__label {
-    flex: none;
-    display: grid;
-    grid-template-columns: 0fr;
-    transition: grid-template-columns var(--dur-base) var(--ease-out);
-  }
-
-  .dock__clip {
-    min-width: 0;
-    overflow: hidden;
-  }
-
-  .dock__text {
-    display: block;
-    padding-left: 8px;
-    white-space: nowrap;
-    opacity: 0;
-    transform: translateX(-4px);
-    transition:
-      opacity var(--dur-fast) var(--ease-out),
-      transform var(--dur-base) var(--ease-out);
+  .dock__link::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    inset-inline: 0;
+    top: 50%;
+    height: var(--pill);
+    transform: translateY(-50%);
+    border-radius: 999px;
+    background-color: transparent;
+    transition: background-color var(--dur-base) var(--ease-out);
   }
 
   /* Active page: blue in every state */
   .dock__link[aria-current='page'] {
-    background-color: var(--accent);
-    color: var(--on-accent);
+    color: var(--ink); /* #111 on the accent pill: 5.72:1 (AA); white was 3.30:1 */
   }
 
-  /* Reveal (shared by hover and keyboard focus) */
-  .dock__link:focus-visible .dock__label {
-    grid-template-columns: 1fr;
-  }
-
-  .dock__link:focus-visible .dock__text {
-    opacity: 1;
+  /* The active item keeps its still label (text roll is for other items) */
+  .dock__link[aria-current='page'] .roll__text {
     transform: none;
   }
 
+  .dock__link[aria-current='page']::before {
+    background-color: var(--accent);
+  }
+
+  /* Keyboard focus: same tint as hover for inactive items; the outline
+     follows the pill rather than the taller tap area. */
   .dock__link:not([aria-current='page']):focus-visible {
-    background-color: var(--hover-tint);
     color: var(--ink);
   }
 
+  .dock__link:not([aria-current='page']):focus-visible::before {
+    background-color: var(--hover-tint);
+  }
+
   .dock__link:focus-visible {
+    outline: none;
+  }
+
+  .dock__link:focus-visible::before {
+    outline: 2px solid var(--accent);
     outline-offset: 2px;
   }
 
   @media (hover: hover) and (pointer: fine) {
-    .dock__link:hover .dock__label {
-      grid-template-columns: 1fr;
-    }
-
-    .dock__link:hover .dock__text {
-      opacity: 1;
-      transform: none;
-    }
-
     .dock__link:not([aria-current='page']):hover {
-      background-color: var(--hover-tint);
       color: var(--ink);
       transform: scale(1.04);
     }
+
+    .dock__link:not([aria-current='page']):hover::before {
+      background-color: var(--hover-tint);
+    }
   }
 
-  /* Touch: always name the current page */
-  @media (hover: none) {
-    .dock__link[aria-current='page'] .dock__label {
-      grid-template-columns: 1fr;
-    }
+  /* ---- Name ---------------------------------------------------------------
+     Static: no hover tint, zoom or colour change. Shown at every width.
+     Keyboard focus keeps the standard outline only. */
+  .dock__name {
+    color: var(--ink);
+    font-weight: var(--weight-semibold);
+    letter-spacing: -0.01em;
+    margin-right: 4px; /* tighter gap where the dock must stay narrow */
+  }
 
-    .dock__link[aria-current='page'] .dock__text {
-      opacity: 1;
-      transform: none;
+  @media (min-width: 1024px) {
+    .dock__name {
+      margin-right: clamp(40px, 4vw, 64px); /* generous gap before the menu */
     }
+  }
+
+  .dock__name:hover {
+    color: var(--ink);
+  }
+
+  .dock__name:focus-visible {
+    border-radius: 999px;
+    outline-offset: -4px;
   }
 </style>

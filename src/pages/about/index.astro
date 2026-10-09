@@ -65,7 +65,7 @@ const links = [
         {links.map((l) => (
           <li>
             <a class="about-link link-arrow" href={l.href} target="_blank" rel="noopener">
-              <span class="about-link__text">{l.label}</span><span class="visually-hidden"> ({l.note})</span> <span aria-hidden="true">↗</span>
+              <span class="about-link__text"><span class="roll"><span class="roll__text">{l.label}</span></span></span><span class="visually-hidden"> ({l.note})</span> <span aria-hidden="true">↗</span>
             </a>
           </li>
         ))}

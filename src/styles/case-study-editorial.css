@@ -456,7 +456,7 @@
 }
 
 .cs-flow__arrow {
-  color: #b5b5b5;
+  color: #6b6b6b; /* 5.22:1 on --bg */
 }
 
 @media (min-width: 1024px) {

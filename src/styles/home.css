@@ -9,122 +9,55 @@ main {
 }
 
 /* ---- Hero ----------------------------------------------------------------
-   Two anchored blocks: the name fills the left track, the intro sits in a
-   width-capped right track that always ends at the container's right edge.
-   Everything between them is free space, so the relationship holds at any
-   viewport width or browser zoom (no column-number breakpoints to cross).
-   Lighter weight + a grey second line keep the name present, not heavy. */
+   One centred column: a quiet line with name and role (the page's h1), then
+   the statement set large in two tones. The statement's measure is in em, so
+   it always breaks "Designing simple, intuitive / digital products that solve
+   / real user problems." wherever the container is wide enough (tablet and
+   desktop, any zoom); phones wrap it naturally. */
 
 .home-hero {
-  --name-size: clamp(3.25rem, 1.2rem + 7.6vw, 8.25rem); /* 52 → 132 */
-  --intro-width: clamp(16rem, 26vw, 24rem);             /* 256 → 384 */
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  row-gap: var(--space-7);
-  padding-top: clamp(var(--space-8), 2rem + 8vw, 10.5rem); /* 64 → 168 */
-}
-
-.home-hero > * {
-  grid-column: 1 / -1;
-}
-
-.home-hero__name {
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: var(--name-size);
-  font-weight: var(--weight-medium);
-  line-height: 0.98;
-  letter-spacing: -0.04em;
-  color: var(--ink);
-}
-
-.home-hero__name span {
-  display: block;
-}
-
-.home-hero__last {
-  color: #7d7d7a; /* large display text: 3.9:1 on --bg */
-}
-
-.home-hero__intro {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  max-width: 26rem;
+  align-items: center;
+  text-align: center;
+  padding-top: clamp(4.5rem, 14.5vw, 14rem);           /* 72 → ~210 (text starts ~224) */
+  padding-bottom: clamp(0rem, 10vw - 2rem, 7rem);       /* with --rhythm: ~290px to Selected work on desktop */
 }
 
-.home-hero__role {
-  margin: 0 0 var(--space-4);
-  font-size: var(--fs-lead);
-  font-weight: var(--weight-medium);
-  color: #3d3d3d;
+.home-hero__eyebrow {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: clamp(1.0625rem, 0.8rem + 0.9vw, 1.625rem); /* 17 → 26 */
+  font-weight: var(--weight-regular);
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  color: var(--muted);
 }
 
 .home-hero__statement {
-  margin: 0;
-  font-size: var(--fs-body);
-  line-height: 1.55;
-  color: var(--muted);
-  text-wrap: pretty;
+  margin: clamp(1rem, 0.5rem + 1.4vw, 1.75rem) 0 0;
+  max-width: 12.2em; /* the three-line break shown in the design */
+  font-family: var(--font-display);
+  font-size: clamp(2.25rem, 1.05rem + 3.4vw, 3.875rem); /* 36 → 62 */
+  font-weight: var(--weight-regular);
+  line-height: 1.32;
+  letter-spacing: -0.03em;
+  color: var(--ink);
 }
 
-.home-hero__location {
-  margin: var(--space-5) 0 0;
-  font-size: var(--fs-meta);
-  color: var(--muted);
-}
-
-.home-hero__resume {
-  display: inline-flex;
-  align-items: center;
-  height: 38px;
-  margin-top: var(--space-6);
-  padding-inline: 18px;
-  border-radius: 999px;
-  background: var(--ink);
-  color: #ffffff;
-  font-size: 0.9375rem;
-  font-weight: var(--weight-medium);
-  text-decoration: none;
-  transition: background-color var(--dur-fast) var(--ease-out);
-}
-
-.home-hero__resume:hover {
-  background: #333333;
-  color: #ffffff;
-}
-
-/* Two-sided composition wherever both blocks fit (tablet and up) */
-@media (min-width: 768px) {
-  .home-hero {
-    grid-template-columns: minmax(0, 1fr) var(--intro-width);
-    column-gap: clamp(3rem, 6vw, 10rem); /* minimum breathing room between the blocks */
-  }
-
-  .home-hero > .home-hero__name {
-    grid-column: 1;
-  }
-
-  .home-hero > .home-hero__intro {
-    grid-column: 2;
-    max-width: none;
-    padding-top: calc(var(--name-size) * 0.16); /* meet the cap height of "Aprizal" */
-  }
+.home-hero__soft {
+  color: #7d7d7a; /* same grey as before; large text, 4.04:1 on --bg */
 }
 
 /* One orchestrated entrance; nothing else animates on load */
 @media (prefers-reduced-motion: no-preference) {
-  .home-hero__name span,
-  .home-hero__intro {
+  .home-hero__eyebrow,
+  .home-hero__statement {
     animation: home-rise 800ms var(--ease-out) both;
   }
 
-  .home-hero__name span:nth-child(2) {
-    animation-delay: 90ms;
-  }
-
-  .home-hero__intro {
-    animation-delay: 240ms;
+  .home-hero__statement {
+    animation-delay: 120ms;
   }
 }
 

@@ -13,7 +13,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import SiteFooter from './SiteFooter.astro';
 import WorkEntry from './WorkEntry.astro';
 import '../styles/case-study-editorial.css';
-import { site, mailto } from '../data/site';
+import { site } from '../data/site';
 import { projectTint } from '../data/projectArt';
 import { caseStudyPath, routes } from '../lib/routes';
 import { publicImageSize } from '../lib/imageSize';
@@ -55,7 +55,7 @@ const heroSize = publicImageSize(heroImage);
   <!-- Hero -->
   <header class="cs-hero container">
     <p class="cs-hero__eyebrow">
-      <a class="cs-hero__back" href={routes.work}>Work</a>
+      <a class="cs-hero__back" href={routes.work}><span class="roll"><span class="roll__text">Work</span></span></a>
       <span aria-hidden="true">/</span>
       <span>Case study {num}</span>
     </p>
@@ -116,8 +116,7 @@ const heroSize = publicImageSize(heroImage);
     </div>
 
     <div class="cs-end__contact">
-      <a class="cs-end__email" href={mailto}>Send email <span class="visually-hidden">to {site.email}</span></a>
-      <a class="cs-end__all link-arrow" href={routes.work}>All work <span aria-hidden="true">→</span></a>
+      <a class="cs-end__all link-arrow" href={routes.work}><span class="roll"><span class="roll__text">All work</span></span> <span aria-hidden="true">→</span></a>
     </div>
   </section>
 
