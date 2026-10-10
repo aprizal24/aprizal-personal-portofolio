@@ -1,0 +1,61 @@
+---
+/**
+ * /work/ — the complete project archive.
+ * Data: the case-studies content collection (same source as Home), ordered by
+ * `order`. Links go through caseStudyPath() (/work/{slug}/).
+ */
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import WorkEntry from '../../components/WorkEntry.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import '../../styles/work.css';
+import { site } from '../../data/site';
+import { projectTint } from '../../data/projectArt';
+import { caseStudyPath } from '../../lib/routes';
+
+const projects = (await getCollection('case-studies'))
+  .sort((a, b) => a.data.order - b.data.order)
+  .map((e) => ({
+    id: e.id,
+    href: caseStudyPath(e.id),
+    num: String(e.data.order).padStart(2, '0'),
+    tint: projectTint(e.id),
+    ...e.data,
+  }));
+
+const names = projects.map((p) => p.title);
+const description = `Case studies by ${site.name}, ${site.role}: ${names.slice(0, -1).join(', ')} and ${names.at(-1)}.`;
+---
+<BaseLayout title={`Work · ${site.name}`} description={description} nav>
+<main id="main-content" tabindex="-1">
+
+  <header class="work-head container">
+    <h1 class="work-head__title">Work</h1>
+  </header>
+
+  <section class="work-list container" aria-label="Case studies">
+    <ol class="work-list__items" role="list">
+      {projects.map((p, i) => (
+        <li>
+          <WorkEntry
+            id={p.id}
+            href={p.href}
+            num={p.num}
+            title={p.title}
+            type={p.type}
+            year={p.year}
+            summary={p.summary}
+            cover={p.cover}
+            coverAlt={p.coverAlt}
+            tint={p.tint}
+            priority={i === 0}
+          />
+        </li>
+      ))}
+    </ol>
+  </section>
+
+</main>
+
+<SiteFooter />
+</BaseLayout>

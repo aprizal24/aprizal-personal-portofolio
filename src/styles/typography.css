@@ -1,0 +1,175 @@
+/* ==========================================================================
+   Typography — role-based classes built on the fluid scale in tokens.css.
+   Use these instead of per-element font sizes.
+   ========================================================================== */
+
+.t-hero,
+.t-page,
+.t-section,
+.t-project {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: var(--weight-semibold);
+  text-wrap: balance;
+}
+
+/* Home name */
+.t-hero {
+  font-size: var(--fs-hero);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-display);
+}
+
+/* Page and case-study titles */
+.t-page {
+  font-size: var(--fs-page);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-display);
+}
+
+/* Section headings (h2) */
+.t-section {
+  font-size: var(--fs-section);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--tracking-heading);
+}
+
+/* Project titles, UI-row headings */
+.t-project {
+  font-size: var(--fs-project);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--tracking-heading);
+}
+
+/* Large editorial paragraph (About intro, contact statement) */
+.t-statement {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-statement);
+  font-weight: var(--weight-medium);
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+  max-width: 34ch;
+  text-wrap: pretty;
+}
+
+/* Intro paragraphs */
+.t-lead {
+  margin: 0;
+  font-size: var(--fs-lead);
+  line-height: var(--lh-snug);
+  letter-spacing: -0.01em;
+  max-width: var(--measure);
+  text-wrap: pretty;
+}
+
+/* Running text */
+.t-body {
+  margin: 0;
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  max-width: var(--measure);
+  text-wrap: pretty;
+}
+
+/* Metadata: years, categories, captions */
+.t-meta {
+  font-size: var(--fs-meta);
+  line-height: 1.4;
+}
+
+/* Section labels: small caps-style eyebrow */
+.t-label {
+  font-size: var(--fs-meta);
+  line-height: 1.4;
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-meta);
+  text-transform: uppercase;
+}
+
+.t-muted {
+  color: var(--muted);
+}
+
+.t-num {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Inline text link with accent underline on hover/focus */
+.link {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  text-decoration-color: var(--line);
+  transition: text-decoration-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+}
+
+.link:hover,
+.link:focus-visible {
+  text-decoration-color: var(--accent);
+}
+
+/* Arrow link: "View all work →" */
+.link-arrow {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4em;
+  color: inherit;
+  text-decoration: none;
+}
+
+.link-arrow > [aria-hidden='true'] {
+  display: inline-block;
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .link-arrow:hover > [aria-hidden='true'] {
+    transform: translateX(4px);
+  }
+}
+
+.link-arrow:focus-visible > [aria-hidden='true'] {
+  transform: translateX(4px);
+}
+
+/* ---- Vertical text roll (hover reveal) ------------------------------------
+   Markup: <span class="roll"><span class="roll__text">Label</span></span>
+   inside a link or button. On mouse/trackpad devices the label slides up out
+   of a clipped window while an identical copy (a text-shadow, so screen
+   readers still read it once) slides up from below to take its place; it
+   rolls back when the pointer leaves. Keyboard focus rolls too.
+   The window's padding and matching negative margin keep descenders and
+   underlines visible without changing size, spacing or baseline. Underlines
+   set on an ancestor carry over through `text-decoration: inherit`.
+   Touch devices: no copy, no motion, text wraps exactly as before.
+   Off under prefers-reduced-motion. */
+.roll {
+  --roll-d: 2em;          /* distance between the label and its copy */
+  display: inline-flex;   /* keeps the text baseline (an overflow inline-block would not) */
+  overflow: hidden;
+  padding-block: 0.2em 0.45em;
+  margin-block: -0.2em -0.45em;
+  text-decoration: inherit;
+}
+
+.roll__text {
+  display: block;
+  text-decoration: inherit;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .roll__text {
+    white-space: nowrap;  /* one line, so the copy below can never show in the window */
+    text-shadow: 0 var(--roll-d) currentColor;
+    transition: transform 420ms cubic-bezier(0.65, 0.05, 0.25, 1);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    :is(a, button):hover .roll__text,
+    :is(a, button):focus-visible .roll__text {
+      transform: translateY(calc(-1 * var(--roll-d)));
+    }
+  }
+}

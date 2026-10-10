@@ -1,0 +1,79 @@
+---
+/**
+ * /about/ — who Aprizal is, what he works on, where to find him.
+ * Content comes from src/data/about.ts (the pre-redesign About copy, verbatim)
+ * and src/data/site.ts (resume and social links). Layout follows the approved
+ * editorial system: page title like Work, a label column on the left and the
+ * content column on the right from 1024px, no cards, pills or borders.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import '../../styles/about.css';
+import { site } from '../../data/site';
+import { about } from '../../data/about';
+import { personSchema } from '../../lib/seo';
+
+const links = [
+  { label: 'Resume', href: site.resume, note: 'PDF, opens in a new tab' },
+  { label: site.social.linkedin.label, href: site.social.linkedin.url, note: 'opens in a new tab' },
+  { label: site.social.instagram.label, href: site.social.instagram.url, note: 'opens in a new tab' },
+];
+---
+<BaseLayout
+  title={`About · ${site.name}`}
+  description={about.paragraphs[0]}
+  schema={personSchema()}
+  nav
+>
+<main id="main-content" tabindex="-1">
+
+  <header class="about-head container">
+    <h1 class="about-head__title">About</h1>
+  </header>
+
+  <section class="about-intro container" aria-labelledby="about-statement">
+    <div class="about-row">
+      <div class="about-row__aside" aria-hidden="true"></div>
+      <div class="about-row__main">
+        <h2 class="about-statement" id="about-statement">{about.statement}</h2>
+        <div class="about-copy">
+          {about.paragraphs.map((p) => <p>{p}</p>)}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="about-skills container" aria-label="Skills and tools">
+    <div class="about-row">
+      <h2 class="about-label" id="about-design">Design</h2>
+      <ul class="about-list about-list--cols" role="list" aria-labelledby="about-design">
+        {about.designSkills.map((s) => <li>{s}</li>)}
+      </ul>
+    </div>
+    <div class="about-row">
+      <h2 class="about-label" id="about-tools">Tools</h2>
+      <ul class="about-list" role="list" aria-labelledby="about-tools">
+        {about.tools.map((t) => <li>{t}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <nav class="about-links container" aria-label="Resume and profiles">
+    <div class="about-row">
+      <div class="about-row__aside" aria-hidden="true"></div>
+      <ul class="about-links__list" role="list">
+        {links.map((l) => (
+          <li>
+            <a class="about-link link-arrow" href={l.href} target="_blank" rel="noopener">
+              <span class="about-link__text"><span class="roll"><span class="roll__text">{l.label}</span></span></span><span class="visually-hidden"> ({l.note})</span> <span aria-hidden="true">↗</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </nav>
+
+</main>
+
+<SiteFooter />
+</BaseLayout>

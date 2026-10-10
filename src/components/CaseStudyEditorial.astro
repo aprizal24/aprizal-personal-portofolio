@@ -1,0 +1,126 @@
+---
+/**
+ * Editorial case-study layout (Phase 3). Used by case studies whose
+ * frontmatter sets `template: "editorial"`; the others keep the legacy
+ * template in [slug].astro until they are migrated.
+ *
+ * Structure: hero (eyebrow, title, description, meta, hero image) → case-study
+ * body from Markdown (styled by case-study-editorial.css, `cs-*` classes) →
+ * ending (outro, next case study, contact). Uses the same floating nav and
+ * footer as Home and Work.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SiteFooter from './SiteFooter.astro';
+import WorkEntry from './WorkEntry.astro';
+import '../styles/case-study-editorial.css';
+import { site } from '../data/site';
+import { projectTint } from '../data/projectArt';
+import { caseStudyPath, routes } from '../lib/routes';
+import { publicImageSize } from '../lib/imageSize';
+
+interface Meta { label: string; value: string }
+interface Props {
+  slug: string;
+  title: string;
+  description: string;
+  heroImage: string;
+  heroAlt: string;
+  heroFill?: boolean;
+  heroDevice?: boolean;
+  meta: Meta[];
+  order: number;
+  outroTitle: string;
+  outroText?: string;
+  next: {
+    id: string;
+    data: {
+      title: string;
+      type: string;
+      year: number;
+      summary: string;
+      cover: string;
+      coverAlt: string;
+      order: number;
+    };
+  };
+}
+
+const { slug, title, description, heroImage, heroAlt, heroFill = false, heroDevice = false, meta, order, outroTitle, outroText, next } = Astro.props;
+const num = String(order).padStart(2, '0');
+const heroSize = publicImageSize(heroImage);
+---
+<BaseLayout title={`${title} · Case Study · ${site.name}`} description={description} ogType="article" nav>
+<main id="main-content" tabindex="-1">
+
+  <!-- Hero -->
+  <header class="cs-hero container">
+    <p class="cs-hero__eyebrow">
+      <a class="cs-hero__back" href={routes.work}><span class="roll"><span class="roll__text">Work</span></span></a>
+      <span aria-hidden="true">/</span>
+      <span>Case study {num}</span>
+    </p>
+
+    <div class="cs-hero__grid">
+      <div class="cs-hero__intro">
+        <h1 class="cs-hero__title">{title}</h1>
+        <p class="cs-hero__lead">{description}</p>
+      </div>
+      <dl class="cs-hero__meta">
+        {meta.map((m) => (
+          <div class="cs-hero__meta-row">
+            <dt>{m.label}</dt>
+            <dd>{m.value}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+
+    <figure class:list={['cs-hero__media', { 'cs-hero__media--fill': heroFill, 'cs-hero__media--device': heroDevice }]} style={`--tint: ${projectTint(slug)}`}>
+      <img
+        src={heroImage}
+        alt={heroAlt}
+        width={heroSize?.width}
+        height={heroSize?.height}
+        loading="eager"
+        fetchpriority="high"
+      />
+    </figure>
+  </header>
+
+  <!-- Case study body (Markdown) -->
+  <div class="cs-body" style={`--cs-tint: ${projectTint(slug)}`}>
+    <slot />
+  </div>
+
+  <!-- Ending -->
+  <section class="cs-end container" aria-labelledby="cs-end-title">
+    <div class="cs-end__outro">
+      <h2 class="cs-end__title" id="cs-end-title">{outroTitle}</h2>
+      {outroText && <p class="cs-end__text">{outroText}</p>}
+    </div>
+
+    <div class="cs-end__next">
+      <p class="cs-label">Next case study</p>
+      <WorkEntry
+        id={`next-${next.id}`}
+        href={caseStudyPath(next.id)}
+        num={String(next.data.order).padStart(2, '0')}
+        title={next.data.title}
+        type={next.data.type}
+        year={next.data.year}
+        summary={next.data.summary}
+        cover={next.data.cover}
+        coverAlt={next.data.coverAlt}
+        tint={projectTint(next.id)}
+      />
+    </div>
+
+    <div class="cs-end__contact">
+      <a class="cs-end__all link-arrow" href={routes.work}><span class="roll"><span class="roll__text">All work</span></span> <span aria-hidden="true">→</span></a>
+    </div>
+  </section>
+
+</main>
+
+<SiteFooter />
+</BaseLayout>

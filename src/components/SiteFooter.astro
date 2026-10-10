@@ -1,0 +1,121 @@
+---
+/**
+ * Quiet colophon for redesigned pages. (The legacy Footer.astro stays on the
+ * case-study pages until they are rebuilt.)
+ * Layout: copyright at the left edge of the content area, social icons at the
+ * right edge, one row. From 768px the row shares the floating dock's band at
+ * the end of the page: same height (--nav-height) and the same distance from
+ * the viewport bottom (--nav-bottom, applied as the page's bottom padding in
+ * layout.css), so copyright, dock and icons line up on one line.
+ * Icons are Tabler outline brand icons (@tabler/icons).
+ */
+import { site } from '../data/site';
+import { tablerIcon } from '../lib/icons';
+
+const year = new Date().getFullYear();
+
+const socials = [
+  { ...site.social.instagram, icon: tablerIcon('brand-instagram') },
+  { ...site.social.linkedin, icon: tablerIcon('brand-linkedin') },
+];
+---
+<footer class="colophon container">
+  <p class="colophon__copy">© {year} {site.name}</p>
+  <ul class="colophon__social" role="list">
+    {socials.map((s) => (
+      <li>
+        <a class="colophon__icon" href={s.url} target="_blank" rel="noopener" aria-label={`${s.label} (opens in a new tab)`}>
+          {s.icon ? <span aria-hidden="true" set:html={s.icon} /> : s.label}
+        </a>
+      </li>
+    ))}
+  </ul>
+</footer>
+
+<style>
+  .colophon {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-5);
+    padding-block: var(--space-5);
+    font-size: var(--fs-meta);
+    color: var(--muted);
+  }
+
+  .colophon__copy {
+    margin: 0;
+    min-width: 0;
+  }
+
+  .colophon__social {
+    display: flex;
+    flex: none;
+    gap: var(--space-1);
+    margin: 0 calc(-1 * var(--space-2)) 0 0; /* optically align the icon glyph with the content edge */
+    padding: 0;
+    list-style: none;
+  }
+
+  /* Share the dock's band: same height, vertically centred on it. The page's
+     bottom padding (layout.css) supplies the dock's distance from the bottom. */
+  @media (min-width: 768px) {
+    .colophon {
+      min-height: var(--nav-height);
+      padding-block: 0;
+      margin-top: var(--space-5);
+    }
+  }
+
+  .colophon__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 36px;
+    border-radius: 999px;
+    color: var(--muted);
+    text-decoration: none;
+    transition:
+      color var(--dur-fast) var(--ease-out),
+      background-color var(--dur-fast) var(--ease-out);
+  }
+
+  /* Icon roll (same motion as the text roll in typography.css): the icon
+     slides up out of a 20px window while a copy (drop-shadow) rises in. */
+  .colophon__icon > span {
+    display: block;
+    overflow: hidden;
+  }
+
+  .colophon__icon :global(svg) {
+    display: block;
+    width: 20px;
+    height: 20px;
+    filter: drop-shadow(0 24px currentColor);
+    transition: transform 420ms cubic-bezier(0.65, 0.05, 0.25, 1);
+    stroke-width: 1.6;
+  }
+
+  .colophon__icon:hover,
+  .colophon__icon:focus-visible {
+    color: var(--ink);
+    background-color: var(--hover-tint);
+  }
+
+  .colophon__icon:focus-visible {
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    @media (hover: hover) and (pointer: fine) {
+      .colophon__icon:hover :global(svg) {
+        transform: translateY(-24px);
+      }
+    }
+
+    .colophon__icon:focus-visible :global(svg) {
+      transform: translateY(-24px);
+    }
+  }
+</style>

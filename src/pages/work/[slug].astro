@@ -3,7 +3,10 @@ import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
+import CaseStudyEditorial from '../../components/CaseStudyEditorial.astro';
 import '../../styles/case-study.css';
+import { site, mailto } from '../../data/site';
+import { caseStudyPath } from '../../lib/routes';
 
 export async function getStaticPaths() {
   const entries = (await getCollection('case-studies')).sort((a, b) => a.data.order - b.data.order);
@@ -18,12 +21,30 @@ const { Content } = await render(entry);
 const d = entry.data;
 const num = String(d.order).padStart(2, '0');
 ---
-<BaseLayout title={`${d.title} · Case Study · Aprizal Triansyah`} description={d.description}>
+{d.template === 'editorial' ? (
+<CaseStudyEditorial
+  slug={entry.id}
+  title={d.title}
+  description={d.description}
+  heroImage={d.heroImage}
+  heroAlt={d.heroAlt}
+  heroFill={d.heroFill}
+  heroDevice={d.heroDevice}
+  meta={d.meta}
+  order={d.order}
+  outroTitle={d.outroTitle}
+  outroText={d.outroText}
+  next={next}
+>
+  <Content />
+</CaseStudyEditorial>
+) : (
+<BaseLayout title={`${d.title} · Case Study · Aprizal Triansyah`} description={d.description} ogType="article">
 <div style="min-height:100vh;background:#fff;color:#111">
 
 <Header variant="case" />
 
-<main style="max-width:1120px;margin:0 auto;padding:0 24px">
+<main id="main-content" tabindex="-1" style="max-width:1120px;margin:0 auto;padding:0 24px">
 
   {d.heroLayout === 'split' ? (
   <section class="g2" style="display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center;padding:72px 0;border-bottom:1px solid #f0f0f0">
@@ -73,15 +94,15 @@ const num = String(d.order).padStart(2, '0');
       <h2 class="h2" style="margin:0;font-size:56px;letter-spacing:-.04em;font-weight:600;line-height:1.02;max-width:760px;text-wrap:balance">{d.outroTitle}</h2>
     )}
     <div class="g3" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
-      <a href={`/case-studies/${next.id}/`} class="scp2" style="display:flex;flex-direction:column;gap:20px;padding:24px;border:1px solid #e6e6e6;border-radius:16px">
+      <a href={caseStudyPath(next.id)} class="scp2" style="display:flex;flex-direction:column;gap:20px;padding:24px;border:1px solid #e6e6e6;border-radius:16px">
         <span style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#8a8a8a">Next case study</span>
         <span style="font-size:22px;letter-spacing:-.02em;font-weight:500;display:flex;justify-content:space-between;gap:12px"><span>{next.data.title}</span><span aria-hidden="true">→</span></span>
         <span style="font-size:13px;color:#8a8a8a">{next.data.tagline}</span>
       </a>
-      <a href="mailto:aprizaltriansyah24@gmail.com?subject=Let%27s%20Work%20Together" class="scp2" style="display:flex;flex-direction:column;gap:20px;padding:24px;border:1px solid #e6e6e6;border-radius:16px">
+      <a href={mailto} class="scp2" style="display:flex;flex-direction:column;gap:20px;padding:24px;border:1px solid #e6e6e6;border-radius:16px">
         <span style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#8a8a8a">Email</span>
         <span style="font-size:22px;letter-spacing:-.02em;font-weight:500;display:flex;justify-content:space-between;gap:12px"><span>Send an email</span><span aria-hidden="true">→</span></span>
-        <span style="font-size:13px;color:#8a8a8a">aprizaltriansyah24@gmail.com</span>
+        <span style="font-size:13px;color:#8a8a8a">{site.email}</span>
       </a>
       <a href="/" class="scp2" style="display:flex;flex-direction:column;gap:20px;padding:24px;border:1px solid #e6e6e6;border-radius:16px">
         <span style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#8a8a8a">Portfolio</span>
@@ -93,7 +114,8 @@ const num = String(d.order).padStart(2, '0');
 
 </main>
 
-<Footer name="Designed by Aprizal Triansyah" />
+<Footer name={`Designed by ${site.name}`} />
 
 </div>
 </BaseLayout>
+)}

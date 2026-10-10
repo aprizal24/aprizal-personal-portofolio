@@ -47,7 +47,7 @@ The Resume links point to `/assets/resume.pdf`, served from `public/assets/resum
 ## Project layout
 
 - `src/pages/index.astro` – home page
-- `src/pages/case-studies/[slug].astro` – renders one page per case study
+- `src/pages/work/[slug].astro` – renders one page per case study at `/work/{slug}/` (old `/case-studies/{slug}/` URLs redirect with 308, see `vercel.json`)
 - `src/content/case-studies/*.md` – the three case studies (frontmatter + page sections)
 - `src/layouts/BaseLayout.astro` – shared `<head>`, fonts, global CSS
 - `src/components/` – header, nav, footer

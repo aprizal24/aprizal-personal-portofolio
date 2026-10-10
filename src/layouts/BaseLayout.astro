@@ -1,44 +1,74 @@
 ---
+/**
+ * Base document: <head> (SEO, social, icons), global styles and the skip link.
+ * Pages render their own <main id="main-content" tabindex="-1">.
+ */
 import '../styles/fonts.css';
-import '../styles/global.css';
+import '../styles/tokens.css';
+import '../styles/base.css';
+import '../styles/typography.css';
+import '../styles/layout.css';
+import '../styles/legacy.css';
+import { site } from '../data/site';
+import { absoluteUrl } from '../lib/seo';
+import SiteNav from '../components/SiteNav.astro';
 
 interface Props {
   title: string;
   description: string;
+  /** Open Graph type: 'website' (default) or 'article' for case studies. */
+  ogType?: 'website' | 'article';
+  /** Keep the page out of search engines (noindex, nofollow). */
+  noindex?: boolean;
+  /** JSON-LD object(s) to embed, e.g. personSchema(). */
+  schema?: object | object[];
+  /** Render the global navigation (top wordmark + fixed bottom bar).
+   *  Off for pages that still use the legacy Header. */
+  nav?: boolean;
 }
-const { title, description } = Astro.props;
-const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : Astro.url.pathname;
+
+const { title, description, ogType = 'website', noindex = false, schema, nav = false } = Astro.props;
+
+const siteBase = Astro.site ?? site.url;
+const canonical = absoluteUrl(Astro.url.pathname, siteBase);
+const ogImage = absoluteUrl(site.ogImage.path, siteBase);
+const schemas = schema ? (Array.isArray(schema) ? schema : [schema]) : [];
 ---
-<html>
+<html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content={nav ? 'width=device-width, initial-scale=1, viewport-fit=cover' : 'width=device-width, initial-scale=1'}>
 <title>{title}</title>
-<!-- Favicon -->
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-<!-- Apple Touch Icon -->
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<!-- Open Graph -->
 <meta name="description" content={description}>
-<meta property="og:type" content="website">
+<link rel="canonical" href={canonical}>
+{noindex && <meta name="robots" content="noindex, nofollow">}
+
+<!-- Favicon -->
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+<!-- Open Graph -->
+<meta property="og:site_name" content={site.name}>
+<meta property="og:type" content={ogType}>
 <meta property="og:title" content={title}>
 <meta property="og:description" content={description}>
 <meta property="og:url" content={canonical}>
-<meta property="og:image" content={`${Astro.site}/opengraph-image.png`}>
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:type" content="image/png">
+<meta property="og:image" content={ogImage}>
+<meta property="og:image:width" content={String(site.ogImage.width)}>
+<meta property="og:image:height" content={String(site.ogImage.height)}>
+<meta property="og:image:type" content={site.ogImage.type}>
+
 <!-- Twitter / X -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content={title}>
-  <meta name="twitter:description" content={description}>
-  <meta name="twitter:image" content={`${Astro.site}/opengraph-image.png`}>
-<link rel="canonical" href={canonical}>
-<link rel="preconnect" href="https://fonts.googleapis.com">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content={title}>
+<meta name="twitter:description" content={description}>
+<meta name="twitter:image" content={ogImage}>
+
+{schemas.map((s) => <script is:inline type="application/ld+json" set:html={JSON.stringify(s)} />)}
 </head>
-<body>
-<div id="dc-root"><div class="sc-host">
+<body class={nav ? 'has-bottom-nav' : undefined}>
+<a class="skip-link" href="#main-content">Skip to content</a>
+{nav && <SiteNav />}
 <slot />
-</div></div>
 </body>
 </html>

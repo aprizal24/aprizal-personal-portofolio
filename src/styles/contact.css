@@ -1,0 +1,229 @@
+/* ==========================================================================
+   Contact — page composition. Same title, rhythm and label/content split as
+   the About page (3fr / 9fr from 1024px). No cards, pills or borders; the
+   only filled element is the approved "Send email" button from Home.
+   ========================================================================== */
+
+/* Short page: from 768px (where the footer shares the dock's band) keep the
+   content at least one screen tall minus that band, so the footer lands on
+   the dock's line even when the page doesn't scroll. */
+@media (min-width: 768px) {
+  .contact-main {
+    min-height: calc(100vh - var(--nav-height) - var(--space-5) - var(--nav-bottom));
+  }
+}
+
+/* Page title: same as Work and About */
+.contact-head {
+  padding-top: clamp(var(--space-8), 2rem + 8vw, 10.5rem); /* 64 → 168 */
+}
+
+.contact-head__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-page); /* 44 → 80 */
+  font-weight: var(--weight-medium);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+}
+
+/* Label column + content column */
+.contact-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: var(--space-4);
+}
+
+.contact-row__aside {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .contact-row {
+    grid-template-columns: 3fr 9fr;
+    column-gap: var(--gap);
+  }
+
+  .contact-row__aside {
+    display: block;
+  }
+}
+
+/* ---- Statement ----------------------------------------------------------- */
+
+.contact-intro {
+  padding-top: clamp(var(--space-8), 2rem + 5vw, var(--space-10));
+}
+
+.contact-row__main {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.contact-statement {
+  margin: 0;
+  max-width: 20ch;
+  font-family: var(--font-display);
+  font-size: var(--fs-section); /* 32 → 48 */
+  font-weight: var(--weight-medium);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.contact-body {
+  margin: clamp(var(--space-5), 1rem + 1.5vw, var(--space-7)) 0 0;
+  max-width: 54ch;
+  font-size: var(--fs-lead);
+  line-height: 1.6;
+  color: var(--muted);
+  text-wrap: pretty;
+}
+
+/* Subtle supporting line */
+.contact-location {
+  margin: var(--space-4) 0 0;
+  font-size: var(--fs-meta);
+  color: var(--muted);
+}
+
+/* ---- Email: button + selectable address ---------------------------------- */
+
+.contact-email {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+  margin-top: clamp(var(--space-7), 1.5rem + 3vw, var(--space-8));
+}
+
+@media (min-width: 640px) {
+  .contact-email {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-6);
+  }
+}
+
+/* Same dark button as the approved Home contact */
+.contact-email__button {
+  display: inline-flex;
+  align-items: center;
+  height: 44px;
+  padding-inline: 22px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: #ffffff;
+  font-size: 0.9375rem;
+  font-weight: var(--weight-medium);
+  text-decoration: none;
+  transition: background-color var(--dur-fast) var(--ease-out);
+}
+
+.contact-email__button:hover,
+.contact-email__button:focus-visible {
+  background: #333333;
+  color: #ffffff;
+}
+
+/* Plain, selectable address — also a mailto link */
+.contact-email__address {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: var(--fs-body);
+  color: var(--ink);
+  overflow-wrap: anywhere;
+  user-select: text;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.3em;
+  text-decoration-color: var(--line);
+  transition: text-decoration-color var(--dur-fast) var(--ease-out);
+}
+
+.contact-email__address:hover,
+.contact-email__address:focus-visible {
+  color: var(--ink);
+  text-decoration-color: var(--ink);
+}
+
+/* ---- Details: label / value, whitespace only ----------------------------- */
+
+.contact-details {
+  padding-top: clamp(var(--space-9), 3rem + 6vw, 10rem); /* 96 → 160 */
+  padding-bottom: clamp(var(--space-9), 3rem + 7vw, 10rem);
+}
+
+.contact-list {
+  display: grid;
+  row-gap: var(--space-2);
+  margin: 0;
+}
+
+.contact-list__row {
+  display: grid;
+  grid-template-columns: minmax(6.5rem, 9rem) minmax(0, 1fr);
+  align-items: center;
+  column-gap: var(--gap);
+}
+
+.contact-list dt {
+  font-size: var(--fs-meta);
+  font-weight: var(--weight-medium);
+  color: var(--muted);
+}
+
+.contact-list dd {
+  margin: 0;
+  min-width: 0;
+}
+
+/* 44px-tall hit area, underline only under the words (as on About) */
+.contact-link {
+  align-items: center;
+  min-height: 44px;
+  font-size: var(--fs-lead);
+  font-weight: var(--weight-medium);
+  color: var(--ink);
+}
+
+.contact-link__text {
+  overflow-wrap: anywhere;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.3em;
+  text-decoration-color: var(--line);
+  transition: text-decoration-color var(--dur-fast) var(--ease-out);
+}
+
+.contact-link:hover,
+.contact-link:focus-visible {
+  color: var(--ink);
+}
+
+.contact-link:hover .contact-link__text,
+.contact-link:focus-visible .contact-link__text {
+  text-decoration-color: var(--ink);
+}
+
+/* Quiet entrance, matching Work and About */
+@media (prefers-reduced-motion: no-preference) {
+  .contact-head__title,
+  .contact-intro {
+    animation: contact-rise 800ms var(--ease-out) both;
+  }
+
+  .contact-intro {
+    animation-delay: 90ms;
+  }
+}
+
+@keyframes contact-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}

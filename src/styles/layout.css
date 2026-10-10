@@ -1,0 +1,109 @@
+/* ==========================================================================
+   Layout — container, editorial grid and a few spacing utilities.
+   Breakpoints: 640 / 768 / 1024 / 1280 (gutter and gap tokens adapt in
+   tokens.css; most layouts here are fluid and need no media query).
+   ========================================================================== */
+
+/* Page container: shared by every section. Fluid gutter (20 → 96) and a
+   1200px content cap — see --gutter / --content-max in tokens.css. */
+.container {
+  width: 100%;
+  max-width: var(--max-width);
+  margin-inline: auto;
+  /* Respect notches/rounded corners when the page uses viewport-fit=cover. */
+  padding-inline: max(var(--gutter), env(safe-area-inset-left, 0px)) max(var(--gutter), env(safe-area-inset-right, 0px));
+}
+
+/* 12-column editorial grid.
+   Children span the full width by default; use span utilities from 768/1024 up. */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(var(--columns), minmax(0, 1fr));
+  column-gap: var(--gap);
+}
+
+.grid > * {
+  grid-column: 1 / -1;
+}
+
+@media (min-width: 768px) {
+  .md\:span-4 { grid-column: span 4; }
+  .md\:span-6 { grid-column: span 6; }
+  .md\:span-8 { grid-column: span 8; }
+}
+
+@media (min-width: 1024px) {
+  .lg\:span-3 { grid-column: span 3; }
+  .lg\:span-4 { grid-column: span 4; }
+  .lg\:span-5 { grid-column: span 5; }
+  .lg\:span-6 { grid-column: span 6; }
+  .lg\:span-7 { grid-column: span 7; }
+  .lg\:span-8 { grid-column: span 8; }
+  .lg\:span-9 { grid-column: span 9; }
+  .lg\:start-4 { grid-column-start: 4; }
+  .lg\:start-5 { grid-column-start: 5; }
+}
+
+/* Auto-fitting grid for tiles: as many columns as fit at --min (default 320px). */
+.auto-grid {
+  --min: 320px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(var(--min), 100%), 1fr));
+  gap: var(--gap);
+}
+
+/* Vertical rhythm */
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--stack-gap, var(--space-4));
+}
+
+.section {
+  padding-block: var(--section-space);
+}
+
+.divider {
+  border: 0;
+  border-top: var(--hairline);
+  margin: 0;
+}
+
+/* ---- Media foundation ----------------------------------------------------
+   Use on <img> (or a wrapper) together with explicit width/height attributes.
+   --ratio reserves space before the image loads; --fit sets object-fit.     */
+.media {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: var(--ratio, auto);
+  object-fit: var(--fit, cover);
+  background: var(--surface);
+}
+
+.media--contain {
+  --fit: contain;
+}
+
+/* ---- Floating nav reservation -------------------------------------------
+   BaseLayout adds class="has-bottom-nav" to <body> when the floating dock is
+   rendered, so the end of the page always clears it and the iOS home indicator. */
+.has-bottom-nav {
+  padding-bottom: var(--nav-offset);
+}
+
+/* From 768px the footer row (SiteFooter) sits in the dock's own band at the
+   end of the page — same height, same distance from the viewport bottom —
+   so the page only needs to keep that distance free below it. Below 768px
+   the dock is too wide to share the row, so the full reservation stays and
+   the footer sits above the dock. */
+@media (min-width: 768px) {
+  .has-bottom-nav:has(> .colophon) {
+    padding-bottom: var(--nav-bottom);
+  }
+}
+
+/* Keyboard focus and anchor jumps never land behind the fixed bar. */
+html:has(> body.has-bottom-nav) {
+  scroll-padding-bottom: calc(var(--nav-offset) + var(--space-4));
+}

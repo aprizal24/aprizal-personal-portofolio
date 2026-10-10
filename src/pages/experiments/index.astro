@@ -1,0 +1,54 @@
+---
+/**
+ * /experiments/ — infrastructure only. Not linked from the navigation and not
+ * in the sitemap until `features.experiments` is true. While it is off, or
+ * while no entry is published, the page is served with noindex, nofollow and
+ * renders no placeholder content.
+ * Visual design happens in the Experiments checkpoint.
+ */
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { site, features } from '../../data/site';
+import { routes } from '../../lib/routes';
+
+const items = (await getCollection('experiments', ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+const isPublic = features.experiments && items.length > 0;
+---
+<BaseLayout
+  title={`Experiments · ${site.name}`}
+  description={`UI concepts, visual experiments and interface studies by ${site.name}, ${site.role}.`}
+  noindex={!isPublic}
+>
+  <header class="container" style="padding-block: var(--space-5);">
+    <a class="link-arrow t-meta" href={routes.home}><span aria-hidden="true">←</span> {site.name}</a>
+  </header>
+
+  <main id="main-content" tabindex="-1" class="container section">
+    <h1 class="t-page">Experiments</h1>
+
+    {items.length > 0 && (
+      <ul class="auto-grid" role="list" style="list-style: none; padding: 0; margin: var(--space-8) 0 0;">
+        {items.map(({ data }) => (
+          <li>
+            <figure class="stack" style="margin: 0; --stack-gap: var(--space-3);">
+              <img
+                class="media"
+                src={data.image}
+                alt={data.imageAlt}
+                width={data.imageWidth}
+                height={data.imageHeight}
+                loading="lazy"
+                decoding="async"
+              />
+              <figcaption class="t-meta">
+                {data.title} <span class="t-muted">· {data.kind} · {data.year}</span>
+              </figcaption>
+            </figure>
+          </li>
+        ))}
+      </ul>
+    )}
+  </main>
+</BaseLayout>
