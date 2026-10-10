@@ -2,9 +2,7 @@
 /**
  * /work/ — the complete project archive.
  * Data: the case-studies content collection (same source as Home), ordered by
- * `order`. Links go through caseStudyPath(), so they follow the live
- * /case-studies/{slug}/ routes today and switch automatically if the planned
- * /work/{slug}/ migration is approved.
+ * `order`. Links go through caseStudyPath() (/work/{slug}/).
  */
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';

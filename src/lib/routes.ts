@@ -7,14 +7,11 @@ import { features } from '../data/site';
  */
 
 /**
- * Base path for case studies.
- * Live today: /case-studies/{slug}/
- * Approved target: /work/{slug}/ — switched together with the Work archive
- * checkpoint (move src/pages/case-studies/[slug].astro to src/pages/work/[slug].astro
- * and enable the 308 redirects documented in vercel.json notes), so /work/
- * never exists without its index page.
+ * Base path for case studies: /work/{slug}/ (pages in src/pages/work/[slug].astro,
+ * next to the /work/ archive). The old /case-studies/{slug}/ URLs redirect here
+ * with HTTP 308 (vercel.json).
  */
-export const CASE_STUDY_BASE = '/case-studies';
+export const CASE_STUDY_BASE = '/work';
 
 export const routes = {
   home: '/',
