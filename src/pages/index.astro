@@ -2,16 +2,22 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ProjectTile from '../components/ProjectTile.astro';
+import PlaygroundGallery from '../components/PlaygroundGallery.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import '../styles/home.css';
-import { site, mailto } from '../data/site';
-import { projectTint } from '../data/projectArt';
+import { site, mailto, features } from '../data/site';
+import { projectArtFor } from '../data/projectArt';
 import { caseStudyPath } from '../lib/routes';
 import { personSchema } from '../lib/seo';
 
 const projects = (await getCollection('case-studies'))
   .sort((a, b) => a.data.order - b.data.order)
-  .map((e) => ({ id: e.id, href: caseStudyPath(e.id), tint: projectTint(e.id), ...e.data }));
+  .map((e) => ({ id: e.id, href: caseStudyPath(e.id), ...projectArtFor(e.id), ...e.data }));
+
+// Playground under Selected work (same cards and preview modal as /playground/)
+const playground = features.playground
+  ? (await getCollection('playground', ({ data }) => !data.draft)).sort((a, b) => a.data.order - b.data.order)
+  : [];
 
 ---
 <BaseLayout
@@ -22,13 +28,14 @@ const projects = (await getCollection('case-studies'))
 >
 <main id="main-content" tabindex="-1">
 
-  <!-- Hero -->
+  <!-- Hero: name and role, then the statement as one tight block: three
+       fixed lines from 768px, natural wrapping on phones. -->
   <section class="home-hero container" aria-labelledby="hero-title">
-    <h1 class="home-hero__eyebrow" id="hero-title">{site.name} · {site.role}</h1>
-    <p class="home-hero__statement">Designing simple, intuitive digital products <span class="home-hero__soft">that solve real user problems.</span></p>
+    <h1 class="home-hero__name rise" id="hero-title" style="--i: 0">{site.name} {site.role}</h1>
+    <p class="home-hero__statement rise" style="--i: 1"><span>Designing simple, intuitive digital</span><br class="home-hero__br" /> <span>products</span> <span class="home-hero__soft">that solve real user</span><br class="home-hero__br" /> <span class="home-hero__soft">problems.</span></p>
   </section>
 
-  <!-- Selected work -->
+  <!-- Selected work: image tiles (Stan Reimg(en) reference) -->
   <section id="work" class="home-work container" aria-labelledby="work-title">
     <header class="home-work__head">
       <h2 class="home-work__title" id="work-title">Selected work</h2>
@@ -42,37 +49,40 @@ const projects = (await getCollection('case-studies'))
             href={p.href}
             title={p.title}
             tagline={p.tagline}
+            type={p.type}
+            year={p.year}
             cover={p.cover}
             coverAlt={p.coverAlt}
             tint={p.tint}
+            fit={p.fit}
+            position={p.position}
             priority={i < 2}
           />
         </li>
       ))}
     </ul>
-
   </section>
 
-  <!-- Contact -->
+  <!-- Playground: the same 3-column gallery as /playground/ -->
+  {playground.length > 0 && (
+    <section id="playground" class="home-xp container" aria-labelledby="playground-title">
+      <header class="home-work__head">
+        <h2 class="home-work__title" id="playground-title">Playground</h2>
+      </header>
+      <PlaygroundGallery items={playground} maxColumns={3} />
+    </section>
+  )}
+
+  <!-- Contact: the closing note -->
   <section id="contact" class="home-contact container" aria-labelledby="contact-title">
     <h2 class="home-contact__title" id="contact-title">Let's build something meaningful together.</h2>
-    <a class="home-contact__email" href={mailto}><span class="roll"><span class="roll__text">Let's talk</span></span> <span class="visually-hidden">to {site.email}</span></a>
+    <div class="home-contact__actions">
+      <a class="btn btn--ink" href={mailto}><span class="roll"><span class="roll__text">Let's talk</span></span> <span class="visually-hidden">to {site.email}</span></a>
+    </div>
   </section>
 
 </main>
 
 <SiteFooter />
 
-<script>
-  // Touch screens have no hover: reveal each project's label while the tile
-  // sits in the middle band of the viewport, instead of showing every label at once.
-  if (window.matchMedia('(hover: none)').matches && 'IntersectionObserver' in window) {
-    document.documentElement.classList.add('tiles-inview');
-    const observer = new IntersectionObserver(
-      (entries) => entries.forEach((e) => e.target.classList.toggle('is-inview', e.isIntersecting)),
-      { rootMargin: '-35% 0px -35% 0px' },
-    );
-    document.querySelectorAll('[data-tile]').forEach((tile) => observer.observe(tile));
-  }
-</script>
 </BaseLayout>

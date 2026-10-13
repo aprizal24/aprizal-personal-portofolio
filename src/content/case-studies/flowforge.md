@@ -60,7 +60,7 @@ outroText: "Hope you enjoyed the process."
     </div>
   </div>
   <figure class="cs-figure cs-figure--bare">
-    <img src="/images/flowforge/dashboard-laptop.webp" alt="FlowForge dashboard on a laptop" width="2400" height="1937" loading="lazy" decoding="async" />
+    <img src="/images/flowforge/dashboard-laptop.webp" srcset="/images/flowforge/dashboard-laptop-800w.webp 800w, /images/flowforge/dashboard-laptop-1200w.webp 1200w, /images/flowforge/dashboard-laptop-1600w.webp 1600w, /images/flowforge/dashboard-laptop.webp 2400w" sizes="(min-width: 1280px) 1200px, 100vw" alt="FlowForge dashboard on a laptop" width="2400" height="1937" loading="lazy" decoding="async" />
   </figure>
   <div class="cs-head cs-head--sub">
     <p class="cs-label">Persona</p>
@@ -70,7 +70,7 @@ outroText: "Hope you enjoyed the process."
     </div>
   </div>
   <figure class="cs-figure cs-figure--shot">
-    <img src="/images/flowforge/persona.webp" alt="Andrea Rodrigo persona — goals, needs, frustrations" width="1440" height="465" loading="lazy" decoding="async" />
+    <img src="/images/flowforge/persona.webp" srcset="/images/flowforge/persona-800w.webp 800w, /images/flowforge/persona.webp 1440w" sizes="(min-width: 1280px) 1200px, 100vw" alt="Andrea Rodrigo persona — goals, needs, frustrations" width="1440" height="465" loading="lazy" decoding="async" />
   </figure>
 </section>
 
@@ -136,7 +136,7 @@ outroText: "Hope you enjoyed the process."
         </div>
         <figure class="cs-screen__media">
           <div class="cs-scroll" tabindex="0">
-            <img src="/images/flowforge/landing-page.webp" alt="FlowForge landing page" width="2400" height="11993" loading="lazy" decoding="async" />
+            <img src="/images/flowforge/landing-page.webp" srcset="/images/flowforge/landing-page-800w.webp 800w, /images/flowforge/landing-page-1200w.webp 1200w, /images/flowforge/landing-page-1600w.webp 1600w, /images/flowforge/landing-page.webp 2400w" sizes="(min-width: 1280px) 1200px, 100vw" alt="FlowForge landing page" width="2400" height="11993" loading="lazy" decoding="async" />
           </div>
         </figure>
       </div>
@@ -147,7 +147,7 @@ outroText: "Hope you enjoyed the process."
           <p class="cs-text">A centralized overview of projects, tasks, team activity, and progress — a clear snapshot of the workspace at a glance.</p>
         </div>
         <figure class="cs-screen__media">
-          <img src="/images/flowforge/ui-dashboard.webp" alt="FlowForge dashboard" width="2400" height="2630" loading="lazy" decoding="async" />
+          <img src="/images/flowforge/ui-dashboard.webp" srcset="/images/flowforge/ui-dashboard-800w.webp 800w, /images/flowforge/ui-dashboard-1200w.webp 1200w, /images/flowforge/ui-dashboard-1600w.webp 1600w, /images/flowforge/ui-dashboard.webp 2400w" sizes="(min-width: 1280px) 1200px, 100vw" alt="FlowForge dashboard" width="2400" height="2630" loading="lazy" decoding="async" />
         </figure>
       </div>
       <div class="cs-screen">
@@ -157,7 +157,7 @@ outroText: "Hope you enjoyed the process."
           <p class="cs-text">A structured project workspace to organize active projects, monitor status, and quickly reach important project information.</p>
         </div>
         <figure class="cs-screen__media">
-          <img src="/images/flowforge/ui-projects.webp" alt="FlowForge projects" width="2400" height="1750" loading="lazy" decoding="async" />
+          <img src="/images/flowforge/ui-projects.webp" srcset="/images/flowforge/ui-projects-800w.webp 800w, /images/flowforge/ui-projects-1200w.webp 1200w, /images/flowforge/ui-projects-1600w.webp 1600w, /images/flowforge/ui-projects.webp 2400w" sizes="(min-width: 1280px) 1200px, 100vw" alt="FlowForge projects" width="2400" height="1750" loading="lazy" decoding="async" />
         </figure>
       </div>
       <div class="cs-screen">
@@ -167,7 +167,7 @@ outroText: "Hope you enjoyed the process."
           <p class="cs-text">A focused task interface for organizing work, assigning responsibilities, tracking priorities, and monitoring progress.</p>
         </div>
         <figure class="cs-screen__media">
-          <img src="/images/flowforge/ui-tasks.webp" alt="FlowForge tasks" width="2400" height="1918" loading="lazy" decoding="async" />
+          <img src="/images/flowforge/ui-tasks.webp" srcset="/images/flowforge/ui-tasks-800w.webp 800w, /images/flowforge/ui-tasks-1200w.webp 1200w, /images/flowforge/ui-tasks-1600w.webp 1600w, /images/flowforge/ui-tasks.webp 2400w" sizes="(min-width: 1280px) 1200px, 100vw" alt="FlowForge tasks" width="2400" height="1918" loading="lazy" decoding="async" />
         </figure>
       </div>
       <div class="cs-screen">
@@ -177,7 +177,7 @@ outroText: "Hope you enjoyed the process."
           <p class="cs-text">A visual overview of performance, productivity, task distribution, and team activity to support better decisions.</p>
         </div>
         <figure class="cs-screen__media">
-          <img src="/images/flowforge/ui-analytics.webp" alt="FlowForge analytics" width="2400" height="3202" loading="lazy" decoding="async" />
+          <img src="/images/flowforge/ui-analytics.webp" srcset="/images/flowforge/ui-analytics-800w.webp 800w, /images/flowforge/ui-analytics-1200w.webp 1200w, /images/flowforge/ui-analytics-1600w.webp 1600w, /images/flowforge/ui-analytics.webp 2400w" sizes="(min-width: 1280px) 1200px, 100vw" alt="FlowForge analytics" width="2400" height="3202" loading="lazy" decoding="async" />
         </figure>
       </div>
       <div class="cs-screen">
@@ -187,7 +187,7 @@ outroText: "Hope you enjoyed the process."
           <p class="cs-text">Helps teams understand project activity, spot what needs attention, and get useful insights without digging through multiple screens.</p>
         </div>
         <figure class="cs-screen__media cs-screen__media--bare">
-          <img src="/images/flowforge/ai-assistant.webp" alt="FlowForge AI assistant" width="2400" height="1414" loading="lazy" decoding="async" />
+          <img src="/images/flowforge/ai-assistant.webp" srcset="/images/flowforge/ai-assistant-800w.webp 800w, /images/flowforge/ai-assistant-1200w.webp 1200w, /images/flowforge/ai-assistant-1600w.webp 1600w, /images/flowforge/ai-assistant.webp 2400w" sizes="(min-width: 1280px) 1200px, 100vw" alt="FlowForge AI assistant" width="2400" height="1414" loading="lazy" decoding="async" />
         </figure>
       </div>
     </div>

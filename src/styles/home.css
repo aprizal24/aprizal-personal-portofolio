@@ -1,98 +1,102 @@
 /* ==========================================================================
-   Home — page composition.
-   One vertical rhythm (--rhythm) separates every major block (hero → work → contact); whitespace,
-   not dividers, does the structural work. Components style themselves.
+   Home — page composition (Koziol reference for the hero, Stan Reimg(en)
+   for the project tiles). One rhythm separates hero → work → contact;
+   whitespace, not dividers, does the structural work.
    ========================================================================== */
 
 main {
-  --rhythm: clamp(7rem, 4rem + 9vw, 12rem); /* 112 → 192 between sections */
+  --rhythm: clamp(6rem, 3rem + 8vw, 11rem); /* 96 → 176 between sections */
 }
 
 /* ---- Hero ----------------------------------------------------------------
-   One centred column: a quiet line with name and role (the page's h1), then
-   the statement set large in two tones. The statement's measure is in em, so
-   it always breaks "Designing simple, intuitive / digital products that solve
-   / real user problems." wherever the container is wide enough (tablet and
-   desktop, any zoom); phones wrap it naturally. */
-
+   Left-aligned on the main container, typography only: a quiet intro line
+   with a small status dot (name and role, the page's h1), then the
+   statement in Jost capitals, set as a tight block of three lines in two
+   tones. */
 .home-hero {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding-top: clamp(4.5rem, 14.5vw, 14rem);           /* 72 → ~210 (text starts ~224) */
-  padding-bottom: clamp(0rem, 10vw - 2rem, 7rem);       /* with --rhythm: ~290px to Selected work on desktop */
+  padding-top: clamp(5rem, 1rem + 15vw, 15rem);     /* 80 → 232 */
+  padding-bottom: 0;
 }
 
-.home-hero__eyebrow {
+.home-hero__name {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   margin: 0;
-  font-family: var(--font-body);
-  font-size: clamp(1.0625rem, 0.8rem + 0.9vw, 1.625rem); /* 17 → 26 */
+  font-family: var(--font-display);
+  font-size: clamp(0.9rem, 0.8rem + 0.4vw, 1.1rem); /* 14 → 18: 20% under --fs-lead */
   font-weight: var(--weight-regular);
   line-height: 1.35;
-  letter-spacing: -0.01em;
+  letter-spacing: 0.02em;
   color: var(--muted);
+  text-transform: var(--case-heading);
+}
+
+.home-hero__name::before {
+  content: '';
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22c55e; /* "available" green */
 }
 
 .home-hero__statement {
-  margin: clamp(1rem, 0.5rem + 1.4vw, 1.75rem) 0 0;
-  max-width: 12.2em; /* the three-line break shown in the design */
+  margin: clamp(1.25rem, 0.75rem + 1.6vw, 2.5rem) 0 0;
   font-family: var(--font-display);
-  font-size: clamp(2.25rem, 1.05rem + 3.4vw, 3.875rem); /* 36 → 62 */
-  font-weight: var(--weight-regular);
-  line-height: 1.32;
-  letter-spacing: -0.03em;
+  /* Sized so the longest line, "DESIGNING SIMPLE, INTUITIVE DIGITAL"
+     (~19.1em in capitals), fits the container from 768px up. */
+  font-size: clamp(1.75rem, 4.5vw, 3.75rem); /* 28 → 60 */
+  font-weight: var(--weight-bold);
+  line-height: 0.95; /* tight, solid block of type */
+  letter-spacing: var(--tracking-display);
   color: var(--ink);
+  text-transform: var(--case-heading);
 }
 
 .home-hero__soft {
-  color: #7d7d7a; /* same grey as before; large text, 4.04:1 on --bg */
+  color: var(--muted);
 }
 
-/* One orchestrated entrance; nothing else animates on load */
-@media (prefers-reduced-motion: no-preference) {
-  .home-hero__eyebrow,
-  .home-hero__statement {
-    animation: home-rise 800ms var(--ease-out) both;
-  }
-
-  .home-hero__statement {
-    animation-delay: 120ms;
-  }
+/* Fixed line breaks from 768px:
+   DESIGNING SIMPLE, INTUITIVE DIGITAL / PRODUCTS THAT SOLVE REAL USER /
+   PROBLEMS. Phones wrap naturally. */
+.home-hero__br {
+  display: none;
 }
 
-@keyframes home-rise {
-  from {
-    opacity: 0;
-    transform: translateY(14px);
+@media (min-width: 768px) {
+  .home-hero__br {
+    display: inline;
   }
 }
 
 /* ---- Selected work ------------------------------------------------------- */
 
 .home-work {
-  padding-top: var(--rhythm);
+  padding-top: clamp(6rem, 1rem + 20vw, 20rem);    /* 96 → 304: a long pause after the hero */
 }
 
 .home-work__head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--space-4);
-  margin-bottom: clamp(var(--space-6), 1rem + 3vw, var(--space-8));
+  margin-bottom: clamp(var(--space-7), 1rem + 5vw, 7rem); /* 48 → 112 */
 }
 
 .home-work__title {
   margin: 0;
-  font-size: var(--fs-lead);
-  font-weight: var(--weight-regular);
-  color: #3d3d3d;
+  font-family: var(--font-display);
+  font-size: clamp(1rem, 0.9rem + 0.45vw, 1.25rem); /* 16 → 20: a small label-like heading */
+  font-weight: var(--weight-bold);
+  line-height: var(--lh-heading);
+  letter-spacing: 0;
+  color: var(--muted);
+  text-transform: var(--case-heading);
 }
 
+/* Stan's grid: two columns, the same gap between columns and rows */
 .home-work__grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: clamp(var(--space-7), 1rem + 5vw, 7.5rem) var(--gap);
+  gap: clamp(var(--space-6), 1rem + 2vw, var(--space-7)) var(--gap);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -104,59 +108,36 @@ main {
   }
 }
 
+/* ---- Playground (below Selected work) ------------------------------------ */
+
+.home-xp {
+  padding-top: clamp(6rem, 2rem + 10vw, 12rem);   /* 96 → 192: a shorter pause than after the hero */
+}
+
 /* ---- Contact: the closing note, centred ---------------------------------- */
 
 .home-contact {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: var(--rhythm);
   text-align: center;
+  padding-top: clamp(7rem, 2rem + 28vw, 28rem);   /* 112 → 435 */
+  padding-bottom: clamp(var(--space-8), 2rem + 5vw, 7.5rem); /* 64 → 120 */
 }
 
 .home-contact__title {
   margin: 0;
-  max-width: 32ch;
   font-family: var(--font-display);
-  font-size: clamp(1.75rem, 1.2rem + 2vw, 2.75rem); /* 28 → 44 */
-  font-weight: var(--weight-semibold);
-  line-height: 1.12;
-  letter-spacing: -0.025em;
+  font-size: clamp(1.25rem, 1rem + 1vw, 1.65rem); /* 20 → 26: one line on desktop */
+  font-weight: var(--weight-bold);
+  line-height: 1.15;
+  letter-spacing: 0;
   text-wrap: balance;
+  text-transform: var(--case-heading);
 }
 
-.home-contact__body {
-  margin: var(--space-5) 0 0;
-  max-width: 48ch;
-  font-size: var(--fs-body);
-  line-height: 1.6;
-  color: var(--muted);
-  text-wrap: pretty;
-}
-
-/* Primary action: same small dark pill as the hero's Resume button */
-.home-contact__email {
-  display: inline-flex;
-  align-items: center;
-  height: 44px;
-  margin-top: var(--space-7);
-  padding-inline: 22px;
-  border-radius: 999px;
-  background: var(--ink);
-  color: #ffffff;
-  font-size: 0.9375rem;
-  font-weight: var(--weight-medium);
-  text-decoration: none;
-  transition: background-color var(--dur-fast) var(--ease-out);
-}
-
-.home-contact__email:hover,
-.home-contact__email:focus-visible {
-  background: #333333;
-  color: #ffffff;
-}
-
-/* Room before the colophon */
-.home-contact {
-  padding-bottom: clamp(var(--space-9), 3rem + 7vw, 10rem);
+.home-contact__actions {
+  display: flex;
+  justify-content: center;
+  margin-top: clamp(var(--space-5), 1rem + 1.5vw, var(--space-7));
 }

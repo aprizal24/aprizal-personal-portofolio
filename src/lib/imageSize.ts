@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 export type Size = { width: number; height: number };
@@ -22,6 +22,27 @@ export function publicImageSize(src: string): Size | undefined {
   }
   cache.set(src, size);
   return size;
+}
+
+/** Widths of the smaller copies that may sit next to an image as `name-<w>w.webp`. */
+const VARIANT_WIDTHS = [640, 800, 1024, 1200, 1600];
+
+/**
+ * `srcset` for an image in /public: every `name-<w>w.webp` copy that exists
+ * next to it, plus the original at its own width. Lets small or 1x screens
+ * fetch a lighter file while high-density screens still get enough pixels.
+ * Returns undefined when there are no smaller copies (plain `src` is used).
+ */
+export function publicImageSrcset(src: string): string | undefined {
+  const full = publicImageSize(src);
+  const m = src.match(/^(.*)\.webp$/);
+  if (!full || !m) return undefined;
+  const entries = VARIANT_WIDTHS.filter((w) => w < full.width)
+    .map((w) => `${m[1]}-${w}w.webp`)
+    .filter((v) => existsSync(join(process.cwd(), 'public', v.replace(/^\//, ''))))
+    .map((v) => `${v} ${v.match(/-(\d+)w\.webp$/)![1]}w`);
+  if (!entries.length) return undefined;
+  return [...entries, `${src} ${full.width}w`].join(', ');
 }
 
 function parse(buf: Buffer): Size | undefined {

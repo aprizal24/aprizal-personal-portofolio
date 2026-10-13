@@ -43,9 +43,17 @@ const schemas = schema ? (Array.isArray(schema) ? schema : [schema]) : [];
 <link rel="canonical" href={canonical}>
 {noindex && <meta name="robots" content="noindex, nofollow">}
 
-<!-- Favicon -->
-<link rel="icon" type="image/svg+xml" href="/favicon.svg">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<!-- Heading font: preloaded so titles don't swap late (Inter is the fallback) -->
+<link rel="preload" href="/fonts/jost-latin.woff2" as="font" type="font/woff2" crossorigin>
+
+<!-- Icons: all made from the About portrait (/images/about/profile.webp).
+     favicon.ico (16/32/48) for browsers that ask for it by default; the
+     apple-touch-icon (180×180) is what iPhone/iPad show on the Home Screen. -->
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="apple-mobile-web-app-title" content={site.shortName}>
 
 <!-- Open Graph -->
 <meta property="og:site_name" content={site.name}>
@@ -57,14 +65,24 @@ const schemas = schema ? (Array.isArray(schema) ? schema : [schema]) : [];
 <meta property="og:image:width" content={String(site.ogImage.width)}>
 <meta property="og:image:height" content={String(site.ogImage.height)}>
 <meta property="og:image:type" content={site.ogImage.type}>
+<meta property="og:image:alt" content={site.ogImage.alt}>
 
 <!-- Twitter / X -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content={title}>
 <meta name="twitter:description" content={description}>
 <meta name="twitter:image" content={ogImage}>
+<meta name="twitter:image:alt" content={site.ogImage.alt}>
 
 {schemas.map((s) => <script is:inline type="application/ld+json" set:html={JSON.stringify(s)} />)}
+
+<!-- The dock's entrance plays once per visit, not on every page change. -->
+<script is:inline>
+  try {
+    if (sessionStorage.getItem('dock-seen')) document.documentElement.classList.add('dock-seen');
+    else sessionStorage.setItem('dock-seen', '1');
+  } catch (e) {}
+</script>
 </head>
 <body class={nav ? 'has-bottom-nav' : undefined}>
 <a class="skip-link" href="#main-content">Skip to content</a>

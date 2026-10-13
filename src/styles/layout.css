@@ -85,25 +85,23 @@
   --fit: contain;
 }
 
-/* ---- Floating nav reservation -------------------------------------------
-   BaseLayout adds class="has-bottom-nav" to <body> when the floating dock is
-   rendered, so the end of the page always clears it and the iOS home indicator. */
+/* ---- Floating nav ---------------------------------------------------------
+   BaseLayout adds class="has-bottom-nav" to <body> when the navigation
+   (SiteNav, an icon pill fixed at the top right) is rendered. */
 .has-bottom-nav {
-  padding-bottom: var(--nav-offset);
+  /* the navigation now floats at the top right, so the end of the page only
+     needs to clear the iOS home indicator */
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
-/* From 768px the footer row (SiteFooter) sits in the dock's own band at the
-   end of the page — same height, same distance from the viewport bottom —
-   so the page only needs to keep that distance free below it. Below 768px
-   the dock is too wide to share the row, so the full reservation stays and
-   the footer sits above the dock. */
-@media (min-width: 768px) {
-  .has-bottom-nav:has(> .colophon) {
-    padding-bottom: var(--nav-bottom);
-  }
-}
-
-/* Keyboard focus and anchor jumps never land behind the fixed bar. */
+/* Anchor jumps keep a little room above their target. */
 html:has(> body.has-bottom-nav) {
-  scroll-padding-bottom: calc(var(--nav-offset) + var(--space-4));
+  scroll-padding-top: var(--space-4);
+}
+
+/* Reading-width container (Rizki Agus reference): same gutter as .container,
+   narrower cap. Used by the Work list, About, Contact and case-study text, so
+   every text-led page shares one left edge. */
+.container--narrow {
+  max-width: calc(var(--content-narrow) + 2 * var(--gutter));
 }

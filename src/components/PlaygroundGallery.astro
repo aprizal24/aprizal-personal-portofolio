@@ -1,0 +1,114 @@
+---
+/**
+ * Playground gallery: the image grid plus one preview modal per item.
+ * Used on /playground/ and on the homepage. Selecting a card opens its
+ * modal on the same page; nothing navigates.
+ *
+ * Grid: 1 column on phones, 2 from 640px, 3 from 1024px; on /playground/
+ * a 4th column is added from 1440px (`maxColumns={4}`), the homepage keeps 3.
+ */
+import PlaygroundModal from './PlaygroundModal.astro';
+import { publicImageSize } from '../lib/imageSize';
+import '../styles/playground.css';
+
+interface Item {
+  id: string;
+  data: {
+    title: string;
+    category: string;
+    description?: string;
+    year?: number;
+    thumbnail: { src: string; alt: string };
+    images: { src: string; alt: string }[];
+  };
+}
+
+interface Props {
+  items: Item[];
+  maxColumns?: 3 | 4;
+  /** Thumbnails loaded eagerly (the first rows above the fold). */
+  eager?: number;
+}
+
+const { items, maxColumns = 4, eager = 0 } = Astro.props;
+---
+<ul class:list={['xp-grid', { 'xp-grid--max3': maxColumns === 3 }]} role="list">
+  {items.map(({ id, data }, i) => {
+    const size = publicImageSize(data.thumbnail.src);
+    return (
+      <li>
+        <button class="xp-card" type="button" data-open={`xp-${id}`} aria-haspopup="dialog" aria-label={`Open preview: ${data.title}`}>
+          <span class="xp-card__media">
+            <img
+              src={data.thumbnail.src}
+              alt={data.thumbnail.alt}
+              width={size?.width}
+              height={size?.height}
+              loading={i < eager ? 'eager' : 'lazy'}
+              decoding="async"
+            />
+          </span>
+        </button>
+      </li>
+    );
+  })}
+</ul>
+
+{items.map(({ id, data }) => (
+  <PlaygroundModal
+    id={`xp-${id}`}
+    title={data.title}
+    category={data.category}
+    year={data.year}
+    description={data.description}
+    images={data.images}
+  />
+))}
+
+<script>
+  // Open/close the Playground previews. Native <dialog> + showModal()
+  // handles focus, Escape and making the page inert; this adds scroll
+  // locking, backdrop clicks and returning focus to the card.
+  const root = document.documentElement;
+  let opener: HTMLElement | null = null;
+
+  const lockScroll = () => {
+    const gap = window.innerWidth - root.clientWidth; // scrollbar width, so the page doesn't shift
+    root.style.setProperty('overflow', 'hidden');
+    if (gap > 0) document.body.style.setProperty('padding-right', `${gap}px`);
+  };
+
+  const unlockScroll = () => {
+    root.style.removeProperty('overflow');
+    document.body.style.removeProperty('padding-right');
+  };
+
+  document.querySelectorAll<HTMLButtonElement>('.xp-card[data-open]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const dialog = document.getElementById(btn.dataset.open!) as HTMLDialogElement | null;
+      if (!dialog) return;
+      opener = btn;
+      lockScroll();
+      dialog.showModal();
+      dialog.querySelector<HTMLElement>('.xp-modal__panel')!.scrollTop = 0;
+      dialog.querySelector<HTMLElement>('[data-close]')?.focus();
+    });
+  });
+
+  document.querySelectorAll<HTMLDialogElement>('dialog.xp-modal').forEach((dialog) => {
+    dialog.querySelector('[data-close]')?.addEventListener('click', () => dialog.close());
+
+    // A click whose target is the <dialog> itself landed on the ::backdrop
+    // (the panel covers the whole dialog box). Clicks on images or the
+    // header have other targets and are ignored.
+    dialog.addEventListener('click', (e) => {
+      if (e.target === dialog) dialog.close();
+    });
+
+    dialog.addEventListener('close', () => {
+      unlockScroll();
+      opener?.focus();
+      opener = null;
+    });
+  });
+</script>

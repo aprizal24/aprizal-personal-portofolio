@@ -1,24 +1,26 @@
 /* ==========================================================================
    Fonts — self-hosted only. No external font requests.
 
-   ACTIVE: Inter (variable, weights 100–900), split into unicode subsets.
-   The same variable file previously appeared once per weight (35 rules);
-   one rule per subset with a weight range renders identically.
+   Jost (headings): variable, weights 400–700, latin subset only (the
+   site's text is English). Source: Google Fonts, SIL Open Font Licence 1.1.
+   File: public/fonts/jost-latin.woff2 (26 KB), preloaded in BaseLayout.astro.
 
-   PENDING: Satoshi (display) + Manrope (body). Their files are not in the
-   project yet. To activate:
-     1. Add the official woff2 files:
-          public/fonts/satoshi/Satoshi-Variable.woff2   (Fontshare, ITF Free Font Licence)
-          public/fonts/manrope/Manrope-Variable.woff2   (Google Fonts / OFL)
-     2. Uncomment the two @font-face rules at the bottom of this file.
-     3. In tokens.css, put 'Satoshi' first in --font-display and 'Manrope'
-        first in --font-body (keep Inter as the fallback).
-     4. Add <link rel="preload" as="font" type="font/woff2" crossorigin> for
-        both files in BaseLayout.astro.
-   The family names are deliberately not referenced anywhere yet, so a copy
-   installed on your own computer can't make local previews look different
-   from production.
+   Inter (body and interface): variable, weights 100–900, split into
+   unicode subsets.
+
+   Roles are assigned in tokens.css (--font-display / --font-body); nothing
+   else should name a font family directly.
    ========================================================================== */
+
+/* Jost — latin */
+@font-face {
+  font-family: 'Jost';
+  font-style: normal;
+  font-weight: 400 1000;
+  font-display: swap;
+  src: url("/fonts/jost-latin.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
 
 /* Inter — cyrillic-ext */
 @font-face {
@@ -89,23 +91,3 @@
   src: url("/fonts/inter-latin.woff2") format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
-
-/* Satoshi — display (pending files)
-@font-face {
-  font-family: 'Satoshi';
-  font-style: normal;
-  font-weight: 300 900;
-  font-display: swap;
-  src: url("/fonts/satoshi/Satoshi-Variable.woff2") format('woff2');
-}
-*/
-
-/* Manrope — body (pending files)
-@font-face {
-  font-family: 'Manrope';
-  font-style: normal;
-  font-weight: 200 800;
-  font-display: swap;
-  src: url("/fonts/manrope/Manrope-Variable.woff2") format('woff2');
-}
-*/

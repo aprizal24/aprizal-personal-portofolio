@@ -1,0 +1,42 @@
+---
+/**
+ * /playground/ — explorations as an image-first gallery.
+ * Data: the playground content collection (src/content/playground/*.md),
+ * ordered by `order`; drafts are left out. The grid and the preview
+ * modals come from PlaygroundGallery.astro (shared with the homepage).
+ * Grid: 1 column on phones, 2 from 640px, 3 from 1024px, 4 from 1440px.
+ */
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import PlaygroundGallery from '../../components/PlaygroundGallery.astro';
+import '../../styles/playground.css';
+import { site, features } from '../../data/site';
+
+const items = (await getCollection('playground', ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+const isPublic = features.playground && items.length > 0;
+---
+<BaseLayout
+  title={`Playground · ${site.name}`}
+  description="A space for exploring ideas, interactions, and digital experiences."
+  noindex={!isPublic}
+  nav
+>
+<main id="main-content" tabindex="-1">
+
+  <header class="xp-head container">
+    <h1 class="xp-head__title"><span class="drop" style="--i: 0">Playground</span></h1>
+  </header>
+
+  <section class="xp-gallery container" aria-label="Playground">
+    <PlaygroundGallery items={items} maxColumns={4} eager={4} />
+  </section>
+
+</main>
+
+
+<SiteFooter />
+
+</BaseLayout>

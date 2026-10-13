@@ -19,7 +19,10 @@ html {
 
 body {
   margin: 0;
-  background: var(--bg);
+  /* the existing cool off-white, with a whiter glow at the top of the page */
+  background:
+    radial-gradient(120% 70vh at 50% 0%, rgb(255 255 255 / 0.75), transparent 70%) no-repeat,
+    var(--bg);
   color: var(--ink);
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
@@ -108,5 +111,56 @@ svg {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* ---- Page transitions ----------------------------------------------------
+   Cross-document view transitions: a short cross-fade between pages in
+   browsers that support it. No JavaScript; other browsers navigate normally. */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 320ms;
+    animation-timing-function: var(--ease-expo);
+  }
+
+  /* The dock stays put while the page underneath changes. */
+  .dock {
+    view-transition-name: dock;
+  }
+}
+
+/* ---- Shared entrance -----------------------------------------------------
+   One orchestrated moment per page: the title block drops in line by line.
+   Markup: <span class="drop" style="--i: 0">…</span>. Without the animation
+   (reduced motion) the text is simply there. */
+@media (prefers-reduced-motion: no-preference) {
+  .drop {
+    display: inline-block;
+    animation: drop-in 720ms var(--ease-spring) both;
+    animation-delay: calc(var(--i, 0) * 90ms + 60ms);
+  }
+
+  .rise {
+    animation: rise-in 900ms var(--ease-expo) both;
+    animation-delay: calc(var(--i, 0) * 90ms + 120ms);
+  }
+}
+
+@keyframes drop-in {
+  from {
+    opacity: 0;
+    transform: translateY(-0.18em);
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
   }
 }

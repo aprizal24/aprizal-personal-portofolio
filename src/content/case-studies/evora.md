@@ -115,7 +115,7 @@ outroText: "Hope you enjoyed the process."
     </div>
   </div>
   <figure class="cs-figure cs-figure--bare">
-    <img src="/images/evora/responsive-design.webp" alt="Evora responsive design across desktop, tablet, and mobile" width="1302" height="1184" loading="lazy" decoding="async" />
+    <img src="/images/evora/responsive-design.webp" srcset="/images/evora/responsive-design-800w.webp 800w, /images/evora/responsive-design.webp 1302w" sizes="(min-width: 1280px) 1200px, 100vw" alt="Evora responsive design across desktop, tablet, and mobile" width="1302" height="1184" loading="lazy" decoding="async" />
   </figure>
 </section>
 
@@ -136,7 +136,7 @@ outroText: "Hope you enjoyed the process."
           <p class="cs-text">A clear starting point for discovering upcoming events, with categories, featured events, and exploration tools that help users quickly find relevant events.</p>
         </div>
         <figure class="cs-screen__media">
-          <img src="/images/evora/ui-home-explore.webp" alt="Evora Home and Explore interface" width="1440" height="2180" loading="lazy" decoding="async" />
+          <img src="/images/evora/ui-home-explore.webp" srcset="/images/evora/ui-home-explore-800w.webp 800w, /images/evora/ui-home-explore.webp 1440w" sizes="(min-width: 1280px) 1200px, 100vw" alt="Evora Home and Explore interface" width="1440" height="2180" loading="lazy" decoding="async" />
         </figure>
       </div>
       <div class="cs-screen">
@@ -146,7 +146,7 @@ outroText: "Hope you enjoyed the process."
           <p class="cs-text">Important event information is brought together in one place, including performers, date, time, exact location, ticket pricing, and terms.</p>
         </div>
         <figure class="cs-screen__media">
-          <img src="/images/evora/ui-event-detail.webp" alt="Evora Event Detail interface" width="1440" height="1820" loading="lazy" decoding="async" />
+          <img src="/images/evora/ui-event-detail.webp" srcset="/images/evora/ui-event-detail-800w.webp 800w, /images/evora/ui-event-detail.webp 1440w" sizes="(min-width: 1280px) 1200px, 100vw" alt="Evora Event Detail interface" width="1440" height="1820" loading="lazy" decoding="async" />
         </figure>
       </div>
       <div class="cs-screen">
@@ -156,7 +156,7 @@ outroText: "Hope you enjoyed the process."
           <p class="cs-text">Users can review available ticket types and select the option that best fits their needs before continuing to checkout.</p>
         </div>
         <figure class="cs-screen__media">
-          <img src="/images/evora/ui-buy-ticket.webp" alt="Evora Buy Ticket interface" width="1440" height="1554" loading="lazy" decoding="async" />
+          <img src="/images/evora/ui-buy-ticket.webp" srcset="/images/evora/ui-buy-ticket-800w.webp 800w, /images/evora/ui-buy-ticket.webp 1440w" sizes="(min-width: 1280px) 1200px, 100vw" alt="Evora Buy Ticket interface" width="1440" height="1554" loading="lazy" decoding="async" />
         </figure>
       </div>
       <div class="cs-screen">
@@ -176,7 +176,7 @@ outroText: "Hope you enjoyed the process."
           <p class="cs-text">After completing the purchase, users receive a digital ticket containing the essential event information and QR code for entry.</p>
         </div>
         <figure class="cs-screen__media">
-          <img src="/images/evora/ui-digital-ticket.webp" alt="Evora Digital Ticket interface" width="1440" height="1024" loading="lazy" decoding="async" />
+          <img src="/images/evora/ui-digital-ticket.webp" srcset="/images/evora/ui-digital-ticket-800w.webp 800w, /images/evora/ui-digital-ticket.webp 1440w" sizes="(min-width: 1280px) 1200px, 100vw" alt="Evora Digital Ticket interface" width="1440" height="1024" loading="lazy" decoding="async" />
         </figure>
       </div>
     </div>

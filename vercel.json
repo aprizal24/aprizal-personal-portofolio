@@ -11,6 +11,10 @@
     { "source": "/case-studies/evora/", "destination": "/work/evora/", "permanent": true },
     { "source": "/case-studies/flowforge/", "destination": "/work/flowforge/", "permanent": true },
     { "source": "/case-studies/snaphire/", "destination": "/work/snaphire/", "permanent": true },
-    { "source": "/case-studies/klyra/", "destination": "/work/klyra/", "permanent": true }
+    { "source": "/case-studies/klyra/", "destination": "/work/klyra/", "permanent": true },
+    { "source": "/experiments/", "destination": "/playground/", "permanent": true },
+    { "source": "/experiments", "destination": "/playground/", "permanent": true },
+    { "source": "/contact/", "destination": "/", "permanent": true },
+    { "source": "/contact", "destination": "/", "permanent": true }
   ]
 }

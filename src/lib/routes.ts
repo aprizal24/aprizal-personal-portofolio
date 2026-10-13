@@ -17,26 +17,25 @@ export const routes = {
   home: '/',
   work: '/work/',
   about: '/about/',
-  contact: '/contact/',
-  experiments: '/experiments/',
+  playground: '/playground/',
 } as const;
 
 export const caseStudyPath = (slug: string) => `${CASE_STUDY_BASE}/${slug}/`;
 
-export type NavIcon = 'home' | 'work' | 'experiments' | 'about' | 'contact';
+export type NavIcon = 'home' | 'work' | 'playground' | 'about';
 export type NavItem = { label: string; href: string; icon: NavIcon };
 
 /**
- * Public navigation (floating dock, SiteNav.astro).
- * No Home item: the name "Aprizal" on the left of the dock links to Home.
- * Experiments is appended automatically once `features.experiments` is true.
- * Pages still on the legacy Header.astro don't render it yet.
+ * Public navigation (icon pill, top right — SiteNav.astro).
+ * Home, Work, Playground, About; Playground is included once
+ * `features.playground` is true. Pages still on the legacy Header.astro
+ * don't render it.
  */
 export const primaryNav: NavItem[] = [
+  { label: 'Home', href: routes.home, icon: 'home' },
   { label: 'Work', href: routes.work, icon: 'work' },
-  ...(features.experiments ? [{ label: 'Experiments', href: routes.experiments, icon: 'experiments' as const }] : []),
+  ...(features.playground ? [{ label: 'Playground', href: routes.playground, icon: 'playground' as const }] : []),
   { label: 'About', href: routes.about, icon: 'about' },
-  { label: 'Contact', href: routes.contact, icon: 'contact' },
 ];
 
 /** True when `href` is the current page or a parent section of it (e.g. Work on a case study). */

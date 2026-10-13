@@ -6,11 +6,10 @@
  */
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import WorkEntry from '../../components/WorkEntry.astro';
+import WorkCard from '../../components/WorkCard.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
 import '../../styles/work.css';
 import { site } from '../../data/site';
-import { projectTint } from '../../data/projectArt';
 import { caseStudyPath } from '../../lib/routes';
 
 const projects = (await getCollection('case-studies'))
@@ -18,8 +17,6 @@ const projects = (await getCollection('case-studies'))
   .map((e) => ({
     id: e.id,
     href: caseStudyPath(e.id),
-    num: String(e.data.order).padStart(2, '0'),
-    tint: projectTint(e.id),
     ...e.data,
   }));
 
@@ -29,25 +26,22 @@ const description = `Case studies by ${site.name}, ${site.role}: ${names.slice(0
 <BaseLayout title={`Work · ${site.name}`} description={description} nav>
 <main id="main-content" tabindex="-1">
 
-  <header class="work-head container">
-    <h1 class="work-head__title">Work</h1>
+  <header class="work-head container container--narrow">
+    <h1 class="work-head__title"><span class="drop" style="--i: 0">Work</span></h1>
   </header>
 
-  <section class="work-list container" aria-label="Case studies">
+  <section class="work-list container container--narrow" aria-label="Case studies">
     <ol class="work-list__items" role="list">
       {projects.map((p, i) => (
         <li>
-          <WorkEntry
+          <WorkCard
             id={p.id}
+            slug={p.id}
             href={p.href}
-            num={p.num}
             title={p.title}
-            type={p.type}
-            year={p.year}
             summary={p.summary}
             cover={p.cover}
             coverAlt={p.coverAlt}
-            tint={p.tint}
             priority={i === 0}
           />
         </li>

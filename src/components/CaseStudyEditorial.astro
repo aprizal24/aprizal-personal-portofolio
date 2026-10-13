@@ -11,12 +11,12 @@
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SiteFooter from './SiteFooter.astro';
-import WorkEntry from './WorkEntry.astro';
+import WorkCard from './WorkCard.astro';
 import '../styles/case-study-editorial.css';
 import { site } from '../data/site';
 import { projectTint } from '../data/projectArt';
 import { caseStudyPath, routes } from '../lib/routes';
-import { publicImageSize } from '../lib/imageSize';
+import { publicImageSize, publicImageSrcset } from '../lib/imageSize';
 
 interface Meta { label: string; value: string }
 interface Props {
@@ -48,24 +48,27 @@ interface Props {
 const { slug, title, description, heroImage, heroAlt, heroFill = false, heroDevice = false, meta, order, outroTitle, outroText, next } = Astro.props;
 const num = String(order).padStart(2, '0');
 const heroSize = publicImageSize(heroImage);
+const heroSrcset = publicImageSrcset(heroImage);
 ---
 <BaseLayout title={`${title} · Case Study · ${site.name}`} description={description} ogType="article" nav>
 <main id="main-content" tabindex="-1">
 
-  <!-- Hero -->
-  <header class="cs-hero container">
-    <p class="cs-hero__eyebrow">
-      <a class="cs-hero__back" href={routes.work}><span class="roll"><span class="roll__text">Work</span></span></a>
-      <span aria-hidden="true">/</span>
-      <span>Case study {num}</span>
-    </p>
+  <!-- Reading progress (CSS scroll-driven; hidden where unsupported) -->
+  <div class="cs-progress" aria-hidden="true"></div>
 
-    <div class="cs-hero__grid">
-      <div class="cs-hero__intro">
-        <h1 class="cs-hero__title">{title}</h1>
-        <p class="cs-hero__lead">{description}</p>
-      </div>
-      <dl class="cs-hero__meta">
+  <!-- Hero (Koziol reference): breadcrumb, title, lead, facts, then the image -->
+  <header class="cs-hero">
+    <div class="container container--narrow">
+      <p class="cs-hero__eyebrow rise" style="--i: 0">
+        <a class="cs-hero__back" href={routes.work}><span class="roll"><span class="roll__text">Work</span></span></a>
+        <span aria-hidden="true">/</span>
+        <span>Case study {num}</span>
+      </p>
+
+      <h1 class="cs-hero__title"><span class="drop" style="--i: 1">{title}</span></h1>
+      <p class="cs-hero__lead rise" style="--i: 2">{description}</p>
+
+      <dl class="cs-hero__meta rise" style="--i: 3">
         {meta.map((m) => (
           <div class="cs-hero__meta-row">
             <dt>{m.label}</dt>
@@ -75,16 +78,20 @@ const heroSize = publicImageSize(heroImage);
       </dl>
     </div>
 
-    <figure class:list={['cs-hero__media', { 'cs-hero__media--fill': heroFill, 'cs-hero__media--device': heroDevice }]} style={`--tint: ${projectTint(slug)}`}>
-      <img
-        src={heroImage}
-        alt={heroAlt}
-        width={heroSize?.width}
-        height={heroSize?.height}
-        loading="eager"
-        fetchpriority="high"
-      />
-    </figure>
+    <div class="container">
+      <figure class:list={['cs-hero__media', 'rise', { 'cs-hero__media--fill': heroFill, 'cs-hero__media--device': heroDevice }]} style={`--tint: ${projectTint(slug)}; --i: 4`}>
+        <img
+          src={heroImage}
+          srcset={heroSrcset}
+          sizes={heroSrcset ? '(min-width: 1280px) 1200px, 100vw' : undefined}
+          alt={heroAlt}
+          width={heroSize?.width}
+          height={heroSize?.height}
+          loading="eager"
+          fetchpriority="high"
+        />
+      </figure>
+    </div>
   </header>
 
   <!-- Case study body (Markdown) -->
@@ -93,7 +100,7 @@ const heroSize = publicImageSize(heroImage);
   </div>
 
   <!-- Ending -->
-  <section class="cs-end container" aria-labelledby="cs-end-title">
+  <section class="cs-end container container--narrow" aria-labelledby="cs-end-title">
     <div class="cs-end__outro">
       <h2 class="cs-end__title" id="cs-end-title">{outroTitle}</h2>
       {outroText && <p class="cs-end__text">{outroText}</p>}
@@ -101,22 +108,17 @@ const heroSize = publicImageSize(heroImage);
 
     <div class="cs-end__next">
       <p class="cs-label">Next case study</p>
-      <WorkEntry
+      <WorkCard
         id={`next-${next.id}`}
+        slug={next.id}
         href={caseStudyPath(next.id)}
-        num={String(next.data.order).padStart(2, '0')}
         title={next.data.title}
-        type={next.data.type}
-        year={next.data.year}
         summary={next.data.summary}
         cover={next.data.cover}
         coverAlt={next.data.coverAlt}
-        tint={projectTint(next.id)}
+        headingLevel="h3"
+        compact
       />
-    </div>
-
-    <div class="cs-end__contact">
-      <a class="cs-end__all link-arrow" href={routes.work}><span class="roll"><span class="roll__text">All work</span></span> <span aria-hidden="true">→</span></a>
     </div>
   </section>
 

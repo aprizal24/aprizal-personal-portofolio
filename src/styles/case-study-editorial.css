@@ -18,19 +18,21 @@
   margin: 0;
   font-family: var(--font-display);
   font-size: var(--fs-section); /* 32 → 48 */
-  font-weight: var(--weight-medium);
-  line-height: 1.1;
-  letter-spacing: -0.03em;
+  font-weight: var(--weight-heading);
+  line-height: 1.05;
+  letter-spacing: var(--tracking-heading);
   text-wrap: balance;
+  text-transform: var(--case-heading);
 }
 
 .cs-subtitle {
   margin: 0;
   font-family: var(--font-display);
-  font-size: clamp(1.375rem, 1.15rem + 0.9vw, 1.875rem); /* 22 → 30 */
-  font-weight: var(--weight-medium);
+  font-size: var(--fs-subsection); /* 22 → 30 */
+  font-weight: var(--weight-subheading);
   line-height: 1.15;
-  letter-spacing: -0.02em;
+  letter-spacing: var(--tracking-subheading);
+  text-transform: var(--case-heading);
 }
 
 .cs-text {
@@ -42,10 +44,44 @@
   text-wrap: pretty;
 }
 
-/* ---- Hero ---------------------------------------------------------------- */
+/* ---- Reading progress ----------------------------------------------------
+   A 2px ink line along the top edge that fills as the page scrolls. Pure CSS
+   (scroll-driven animation); browsers without support simply don't show it. */
+.cs-progress {
+  display: none;
+}
+
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .cs-progress {
+      display: block;
+      position: fixed;
+      inset: 0 0 auto;
+      z-index: var(--z-nav);
+      height: 2px;
+      background: var(--ink);
+      transform-origin: 0 50%;
+      animation: cs-progress linear both;
+      animation-timeline: scroll(root);
+    }
+  }
+}
+
+@keyframes cs-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* ---- Hero (Koziol reference) --------------------------------------------
+   Reading-width column for the words, the image breaks out to the wide
+   container below. */
 
 .cs-hero {
-  padding-top: clamp(var(--space-8), 2rem + 6vw, 9rem); /* 64 → 144 */
+  padding-top: clamp(5rem, 2rem + 8vw, 9.5rem);
 }
 
 .cs-hero__eyebrow {
@@ -69,46 +105,42 @@
 .cs-hero__back:hover,
 .cs-hero__back:focus-visible {
   color: var(--ink);
-  text-decoration-color: var(--accent);
-}
-
-.cs-hero__grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  row-gap: var(--space-7);
+  text-decoration-color: var(--ink);
 }
 
 .cs-hero__title {
   margin: 0;
   font-family: var(--font-display);
-  font-size: clamp(3.25rem, 1.6rem + 6.4vw, 7rem); /* 52 → 112 */
-  font-weight: var(--weight-medium);
-  line-height: 0.98;
-  letter-spacing: -0.045em;
+  font-size: clamp(3.25rem, 1.4rem + 7.4vw, 8rem); /* 52 → 128 */
+  font-weight: var(--weight-display);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-display);
+  text-transform: var(--case-heading);
 }
 
 .cs-hero__lead {
-  margin: var(--space-5) 0 0;
-  max-width: 34ch;
+  margin: clamp(var(--space-5), 1rem + 1vw, var(--space-6)) 0 0;
+  max-width: 30ch;
   font-size: var(--fs-statement); /* 22 → 32 */
   line-height: 1.3;
-  letter-spacing: -0.015em;
-  color: #3d3d3d;
+  letter-spacing: -0.02em;
+  color: var(--muted);
   text-wrap: pretty;
 }
 
+/* The facts: one row of label/value pairs, set apart by space (no rule) */
 .cs-hero__meta {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-5) var(--space-5);
-  margin: 0;
-  align-content: start;
+  gap: var(--space-5);
+  margin: clamp(var(--space-7), 1.5rem + 3.5vw, 5rem) 0 0; /* 48 → 80 */
 }
 
 .cs-hero__meta-row {
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
+  min-width: 0;
 }
 
 .cs-hero__meta dt {
@@ -124,36 +156,18 @@
 }
 
 @media (min-width: 768px) {
-  .cs-hero__grid {
-    grid-template-columns: minmax(0, 1fr) clamp(15rem, 24vw, 21rem);
-    column-gap: clamp(var(--space-7), 6vw, var(--space-10));
-    align-items: end;
-  }
-
   .cs-hero__meta {
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--space-4);
-  }
-
-  .cs-hero__meta-row {
-    flex-direction: row;
-    justify-content: space-between;
-    gap: var(--space-4);
-  }
-
-  .cs-hero__meta dd {
-    text-align: right;
+    grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr));
   }
 }
 
 /* Hero image: the project's tint, card radius, image kept whole */
 .cs-hero__media {
   --tint: var(--surface);
-  margin: clamp(var(--space-7), 1rem + 5vw, var(--space-9)) 0 0;
+  margin: clamp(var(--space-7), 1rem + 6vw, var(--space-10)) 0 0; /* 48 → 128 */
   padding: clamp(var(--space-5), 5%, var(--space-9));
   border-radius: var(--radius-card);
-  background-color: var(--tint);
-  background-image: linear-gradient(180deg, var(--tint) 0%, color-mix(in srgb, var(--tint) 30%, var(--bg)) 100%);
+  background: var(--tint);
 }
 
 .cs-hero__media img {
@@ -164,8 +178,7 @@
   margin-inline: auto;
 }
 
-/* Edge to edge (frontmatter heroFill: true): no inner padding, the image keeps
-   its own proportions and is clipped only by the card's rounded corners. */
+/* Edge to edge (frontmatter heroFill: true) */
 .cs-hero__media--fill {
   padding: 0;
   overflow: hidden;
@@ -175,84 +188,83 @@
   max-width: none;
 }
 
-/* Small portrait device mockup (frontmatter heroDevice: true): centred in the
-   tinted card at its own proportions, never wider than its source pixels,
-   capped at ~600px tall on desktop and less on small screens. */
+/* Small portrait device mockup (frontmatter heroDevice: true): centred, never
+   wider than its source pixels, ~600px tall at most. */
 .cs-hero__media--device img {
-  width: auto; /* follows the height through the width/height attributes, so the box is sized before the image loads */
+  width: auto;
   max-width: 100%;
-  height: clamp(380px, 120px + 55vw, 600px); /* below the 840px source */
+  height: clamp(380px, 120px + 55vw, 600px);
   object-fit: contain;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .cs-hero__title,
-  .cs-hero__lead,
-  .cs-hero__meta {
-    animation: cs-rise 800ms var(--ease-out) both;
-  }
-
-  .cs-hero__lead {
-    animation-delay: 90ms;
-  }
-
-  .cs-hero__meta {
-    animation-delay: 180ms;
-  }
-}
-
-@keyframes cs-rise {
-  from {
-    opacity: 0;
-    transform: translateY(14px);
-  }
 }
 
 /* ---- Body sections -------------------------------------------------------- */
 
-/* Sections share the page container; the final-UI band breaks out full width. */
+/* Sections use the wide container; text blocks keep to the reading width,
+   centred on the same axis as the hero, while figures use the full width.
+   Sections are numbered in reading order (Koziol: "01. Intro"). */
+.cs-body {
+  counter-reset: cs-section;
+}
+
 .cs-body > .cs-section {
   width: 100%;
   max-width: var(--max-width);
   margin-inline: auto;
   padding-inline: max(var(--gutter), env(safe-area-inset-left, 0px)) max(var(--gutter), env(safe-area-inset-right, 0px));
-  padding-top: clamp(var(--space-9), 3rem + 6vw, 10rem); /* 96 → 160 */
+  padding-top: clamp(7rem, 2rem + 10vw, 12.5rem); /* 112 → 200 */
   scroll-margin-top: var(--space-6);
+  counter-increment: cs-section;
 }
 
-/* Section heading: small label on the left, heading + text on the right */
+.cs-head,
+.cs-ps,
+.cs-process,
+.cs-flow,
+.cs-row,
+.cs-profile,
+.cs-stat {
+  max-width: var(--content-narrow);
+  margin-inline: auto;
+}
+
+/* Section heading: label line, then the heading set as a lead statement */
 .cs-head {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  row-gap: var(--space-4);
+  row-gap: clamp(var(--space-5), 1rem + 1vw, var(--space-6));
 }
 
 .cs-head__main {
   display: flex;
   flex-direction: column;
-  gap: var(--space-5);
+  gap: clamp(var(--space-5), 1rem + 1vw, var(--space-6));
 }
 
 .cs-head--sub {
-  margin-top: clamp(var(--space-8), 1rem + 5vw, var(--space-9));
+  margin-top: clamp(5rem, 2rem + 5vw, var(--space-10)); /* 80 → 128 */
 }
 
-@media (min-width: 1024px) {
-  .cs-head {
-    grid-template-columns: 3fr 9fr;
-    column-gap: var(--gap);
-  }
+/* Section number + label (sections are separated by whitespace, no rule) */
+.cs-section > .cs-head:first-child > .cs-label,
+.cs-final__inner > .cs-head:first-child > .cs-label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--ink);
+}
 
-  .cs-head > .cs-label {
-    padding-top: 0.6em; /* sit on the heading's first line */
-  }
+.cs-section > .cs-head:first-child > .cs-label::before,
+.cs-final__inner > .cs-head:first-child > .cs-label::before {
+  content: counter(cs-section, decimal-leading-zero);
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
 }
 
 /* Figures: a plain white plate (the diagrams are transparent), no border */
 .cs-figure {
-  margin: clamp(var(--space-6), 1rem + 3vw, var(--space-8)) 0 0;
+  margin: clamp(2.5rem, 1.5rem + 3.5vw, 5.5rem) 0 0; /* 40 → 88 */
   padding: clamp(var(--space-4), 4%, var(--space-8));
-  border-radius: var(--radius-card);
+  border-radius: var(--radius-image);
   background: #ffffff;
 }
 
@@ -284,7 +296,7 @@
 .cs-gallery {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: var(--space-6) var(--gap);
+  gap: clamp(var(--space-6), 1rem + 2vw, var(--space-7)) var(--gap);
 }
 
 .cs-gallery__item {
@@ -333,7 +345,7 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   row-gap: var(--space-5);
-  margin-top: clamp(var(--space-7), 1rem + 4vw, var(--space-9));
+  margin-top: clamp(3.5rem, 1.5rem + 4.5vw, 7rem); /* 56 → 112 */
 }
 
 .cs-steps {
@@ -358,7 +370,7 @@
 }
 
 .cs-steps__name {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-size: var(--fs-lead);
   font-weight: var(--weight-medium);
   letter-spacing: -0.01em;
@@ -382,19 +394,14 @@
   }
 }
 
-@media (min-width: 1024px) {
-  .cs-process {
-    grid-template-columns: 3fr 9fr;
-    column-gap: var(--gap);
-  }
-}
+
 
 /* Problem → Solution: two columns of type, no cards */
 .cs-ps {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--space-7) var(--gap);
-  margin-top: clamp(var(--space-6), 1rem + 3vw, var(--space-8));
+  margin-top: clamp(2.5rem, 1.5rem + 3.5vw, 5.5rem); /* 40 → 88 */
 }
 
 .cs-ps__item {
@@ -423,11 +430,6 @@
   }
 }
 
-@media (min-width: 1024px) {
-  .cs-ps {
-    margin-left: calc((100% + 3 * var(--gap)) / 4); /* align with the heading column (3fr of 3fr/9fr + gap) */
-  }
-}
 
 /* User flow written as steps (no diagram image): a wrapped row of type with
    quiet arrows — no pills, no borders. */
@@ -436,7 +438,7 @@
   flex-wrap: wrap;
   align-items: baseline;
   gap: var(--space-3) var(--space-4);
-  margin: clamp(var(--space-6), 1rem + 3vw, var(--space-8)) 0 0;
+  margin: clamp(2.5rem, 1.5rem + 3.5vw, 5.5rem) 0 0;
   padding: 0;
   list-style: none;
 }
@@ -448,7 +450,7 @@
 }
 
 .cs-flow__step {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-size: var(--fs-lead);
   font-weight: var(--weight-medium);
   letter-spacing: -0.01em;
@@ -459,11 +461,6 @@
   color: #6b6b6b; /* 5.22:1 on --bg */
 }
 
-@media (min-width: 1024px) {
-  .cs-flow {
-    margin-left: calc((100% + 3 * var(--gap)) / 4); /* heading column */
-  }
-}
 
 /* Label column + content column (same grid as the section heads), used for
    blocks without a heading of their own (e.g. personas). */
@@ -471,21 +468,16 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   row-gap: var(--space-5);
-  margin-top: clamp(var(--space-8), 1rem + 5vw, var(--space-9));
+  margin-top: clamp(5rem, 2rem + 5vw, var(--space-10)); /* 80 → 128 */
 }
 
-@media (min-width: 1024px) {
-  .cs-row {
-    grid-template-columns: 3fr 9fr;
-    column-gap: var(--gap);
-  }
-}
+
 
 /* Personas as plain columns of type — no cards, no borders */
 .cs-personas {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: var(--space-8) var(--gap);
+  gap: clamp(var(--space-8), 3rem + 2vw, var(--space-9)) var(--gap);
 }
 
 @media (min-width: 768px) {
@@ -526,8 +518,9 @@
 .cs-persona__name {
   font-family: var(--font-display);
   font-size: var(--fs-lead);
-  font-weight: var(--weight-medium);
-  letter-spacing: -0.015em;
+  font-weight: var(--weight-subheading);
+  letter-spacing: var(--tracking-subheading);
+  text-transform: var(--case-heading);
 }
 
 .cs-persona__facts {
@@ -561,7 +554,7 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--space-7) var(--gap);
-  margin-top: clamp(var(--space-6), 1rem + 3vw, var(--space-8));
+  margin-top: clamp(2.5rem, 1.5rem + 3.5vw, 5.5rem);
 }
 
 .cs-profile__photo {
@@ -583,20 +576,15 @@
   }
 }
 
-@media (min-width: 1024px) {
-  .cs-profile {
-    margin-left: calc((100% + 3 * var(--gap)) / 4); /* heading column */
-  }
-}
 
 /* ---- Final UI: the climax -------------------------------------------------- */
 
 .cs-body > .cs-final {
   max-width: none;
   padding-inline: 0;
-  margin-top: clamp(var(--space-9), 3rem + 6vw, 10rem);
-  padding-top: clamp(var(--space-9), 3rem + 6vw, 10rem);
-  padding-bottom: clamp(var(--space-9), 3rem + 6vw, 10rem);
+  margin-top: clamp(7rem, 2rem + 10vw, 12.5rem);
+  padding-top: clamp(7rem, 2rem + 10vw, 12.5rem);
+  padding-bottom: clamp(7rem, 2rem + 10vw, 12.5rem);
   background: color-mix(in srgb, var(--cs-tint, #ebe7f7) 55%, var(--bg)); /* --cs-tint: project tint, set on .cs-body */
 }
 
@@ -608,21 +596,22 @@
 }
 
 .cs-title--climax {
-  font-size: clamp(2.5rem, 1.5rem + 4vw, 4.5rem); /* 40 → 72 */
-  line-height: 1.02;
-  letter-spacing: -0.04em;
+  font-size: clamp(2.75rem, 1.4rem + 5vw, 5.5rem); /* 44 → 88 */
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-display);
+  font-weight: var(--weight-display);
 }
 
 .cs-screens {
   display: grid;
-  row-gap: clamp(var(--space-8), 2rem + 6vw, 10rem);
-  margin-top: clamp(var(--space-8), 2rem + 5vw, var(--space-10));
+  row-gap: clamp(5rem, 2rem + 7vw, 12rem); /* 80 → 192 */
+  margin-top: clamp(5rem, 2rem + 6vw, 10rem); /* 80 → 160 */
 }
 
 .cs-screen {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  row-gap: var(--space-5);
+  row-gap: clamp(var(--space-5), 1rem + 1vw, var(--space-6));
 }
 
 .cs-screen__text {
@@ -650,10 +639,8 @@
   display: block;
   width: 100%;
   height: auto;
-  border-radius: 12px;
-  box-shadow:
-    0 1px 2px rgb(17 17 17 / 0.05),
-    0 24px 48px -24px rgb(17 17 17 / 0.18);
+  border-radius: var(--radius-image);
+  box-shadow: var(--depth-edge), var(--shadow-rest);
 }
 
 /* Small device-mockup exports: kept near their source size (never stretched
@@ -679,9 +666,10 @@
   margin: 0;
   font-family: var(--font-display);
   font-size: clamp(2.5rem, 1.5rem + 4vw, 4.5rem); /* 40 → 72 */
-  font-weight: var(--weight-medium);
+  font-weight: var(--weight-display);
   line-height: 1;
-  letter-spacing: -0.04em;
+  letter-spacing: var(--tracking-display);
+  text-transform: var(--case-heading);
 }
 
 .cs-stat__unit {
@@ -701,11 +689,6 @@
   line-height: 1.3;
 }
 
-@media (min-width: 1024px) {
-  .cs-stat {
-    margin-left: calc((100% + 3 * var(--gap)) / 4); /* heading column */
-  }
-}
 
 /* Transparent device mockups: the device is the frame — no corners, no shadow */
 .cs-screen__media--bare img {
@@ -720,9 +703,7 @@
   border-radius: 12px;
   overflow: hidden;
   background: #ffffff;
-  box-shadow:
-    0 1px 2px rgb(17 17 17 / 0.05),
-    0 24px 48px -24px rgb(17 17 17 / 0.18);
+  box-shadow: var(--depth-edge), var(--shadow-rest);
 }
 
 .cs-screen__media .cs-scroll img {
@@ -760,25 +741,25 @@
 /* ---- Ending ---------------------------------------------------------------- */
 
 .cs-end {
-  padding-top: clamp(var(--space-9), 3rem + 6vw, 10rem);
+  padding-top: clamp(7rem, 2rem + 10vw, 12.5rem);
   padding-bottom: clamp(var(--space-9), 3rem + 7vw, 10rem);
 }
 
 .cs-end__outro {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: var(--space-3);
-  text-align: center;
+  align-items: flex-start;
+  gap: var(--space-4);
 }
 
 .cs-end__title {
   margin: 0;
   font-family: var(--font-display);
-  font-size: var(--fs-section);
-  font-weight: var(--weight-medium);
-  line-height: 1.1;
-  letter-spacing: -0.03em;
+  font-size: var(--fs-page);
+  font-weight: var(--weight-display);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-display);
+  text-transform: var(--case-heading);
 }
 
 .cs-end__text {
@@ -793,15 +774,6 @@
   margin-top: clamp(var(--space-8), 2rem + 5vw, var(--space-10));
 }
 
-.cs-end__contact {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-4) var(--space-6);
-  margin-top: clamp(var(--space-8), 2rem + 4vw, var(--space-9));
-}
-
 /* Same small dark pill as the Home "Send email" / "Resume" buttons */
 .cs-end__email {
   display: inline-flex;
@@ -809,26 +781,35 @@
   height: 44px;
   padding-inline: 22px;
   border-radius: 999px;
-  background: var(--ink);
+  background: var(--ink-surface);
   color: #ffffff;
   font-size: 0.9375rem;
   font-weight: var(--weight-medium);
   text-decoration: none;
-  transition: background-color var(--dur-fast) var(--ease-out);
+  box-shadow: var(--shadow-btn);
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-base) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
 }
 
 .cs-end__email:hover,
 .cs-end__email:focus-visible {
-  background: #333333;
+  background: var(--ink-surface-hover);
   color: #ffffff;
+  box-shadow: var(--shadow-btn-hover);
 }
 
-.cs-end__all {
-  font-size: var(--fs-body);
-  font-weight: var(--weight-medium);
-  color: var(--ink);
+.cs-end__email:active {
+  box-shadow: var(--shadow-btn-press);
 }
 
-.cs-end__all:hover {
-  color: var(--ink);
+@media (prefers-reduced-motion: no-preference) {
+  .cs-end__email:hover {
+    transform: translateY(-1px);
+  }
+
+  .cs-end__email:active {
+    transform: translateY(1px);
+  }
 }

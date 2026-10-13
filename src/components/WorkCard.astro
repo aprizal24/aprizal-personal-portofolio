@@ -1,0 +1,258 @@
+---
+/**
+ * Project card on the /work/ page.
+ *
+ * A white card with rounded corners and a soft shadow: the project image on
+ * the left fills its whole column edge to edge (no padding, no frame, clipped
+ * by the card's corners), and the title, summary and "Read case study"
+ * button sit on the right, vertically centred. Stacked on phones, image first.
+ *
+ * Interaction: the card itself is static. The button is the link and the
+ * only element that reacts to hover/focus: the label rolls (the site's
+ * shared text roll, typography.css), the fill darkens slightly and the
+ * arrow nudges right.
+ *
+ * Also used for "Next case study" at the end of each case study with
+ * `compact`: same card, shorter (4:3 image on desktop instead of square,
+ * a slightly smaller title and tighter padding).
+ */
+import { publicImageSize, publicImageSrcset } from '../lib/imageSize';
+import { projectArtFor } from '../data/projectArt';
+
+interface Props {
+  id: string;
+  slug: string;
+  href: string;
+  title: string;
+  summary: string;
+  cover: string;
+  coverAlt: string;
+  priority?: boolean;
+  /** Shorter variant (case-study "Next case study"). */
+  compact?: boolean;
+  headingLevel?: 'h2' | 'h3';
+}
+
+const { id, slug, href, title, summary, cover, coverAlt, priority = false, compact = false, headingLevel = 'h2' } = Astro.props;
+const Heading = headingLevel;
+const art = projectArtFor(slug);
+const size = publicImageSize(cover);
+const srcset = publicImageSrcset(cover);
+const titleId = `${id}-title`;
+---
+<article class:list={['wcard', { 'wcard--compact': compact }]} id={id} aria-labelledby={titleId} style={`--pos: ${art.position}`}>
+  <div class="wcard__media">
+    <img
+      class="wcard__img"
+      src={cover}
+      srcset={srcset}
+      sizes={srcset ? '(min-width: 1024px) 420px, (min-width: 768px) 40vw, 90vw' : undefined}
+      alt={coverAlt}
+      width={size?.width}
+      height={size?.height}
+      loading={priority ? 'eager' : 'lazy'}
+      decoding={priority ? 'auto' : 'async'}
+      fetchpriority={priority ? 'high' : undefined}
+    />
+  </div>
+
+  <div class="wcard__body">
+    <Heading class="wcard__title" id={titleId}>{title}</Heading>
+    <p class="wcard__summary">{summary}</p>
+    <a class="wcard__btn" href={href}>
+      <span class="roll"><span class="roll__text">Read case study</span></span><span class="visually-hidden">: {title}</span>
+      <svg class="wcard__arrow" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false">
+        <path d="M3 8h9.5M8.5 3.5 13 8l-4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </a>
+  </div>
+</article>
+
+<style>
+  .wcard {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    overflow: hidden; /* the image follows the card's rounded corners */
+    border-radius: 24px;
+    background: #ffffff;
+    box-shadow: var(--depth-edge), var(--shadow-rest);
+    scroll-margin-top: var(--space-7);
+  }
+
+  /* ---- Image: fills its column, no padding --------------------------------
+     Same white as the card, so transparent exports sit on the card itself. */
+  .wcard__media {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    background: #ffffff;
+  }
+
+  .wcard__img {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--pos);
+  }
+
+  /* ---- Text ----------------------------------------------------------------- */
+  .wcard__body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    padding: var(--space-6) var(--space-5) var(--space-6);
+  }
+
+  .wcard__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--fs-project); /* 24 → 40 */
+    font-weight: var(--weight-heading);
+    line-height: var(--lh-heading);
+    letter-spacing: var(--tracking-heading);
+    color: var(--ink);
+    text-transform: var(--case-heading);
+  }
+
+  .wcard__summary {
+    margin: var(--space-4) 0 0;
+    max-width: 42ch;
+    font-size: var(--fs-body);
+    line-height: 1.6;
+    color: var(--muted);
+    text-wrap: pretty;
+  }
+
+  /* ---- Button: the only interactive, hover-responsive element ------------ */
+  .wcard__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    max-width: 100%;
+    min-height: 44px;
+    margin-top: var(--space-6);
+    padding: 0 20px 0 22px;
+    border-radius: 999px;
+    background: var(--ink-surface);
+    color: #ffffff;
+    font-size: 0.9375rem;
+    font-weight: var(--weight-medium);
+    text-decoration: none;
+    white-space: nowrap;
+    box-shadow: var(--shadow-btn);
+    transition:
+      background-color var(--dur-base) var(--ease-out),
+      box-shadow var(--dur-base) var(--ease-out),
+      transform var(--dur-fast) var(--ease-out);
+  }
+
+  .wcard__arrow {
+    flex: none;
+    transition: transform var(--dur-base) var(--ease-out);
+  }
+
+  .wcard__btn:hover,
+  .wcard__btn:focus-visible {
+    background: var(--ink-surface-hover);
+    color: #ffffff;
+    box-shadow: var(--shadow-btn-hover);
+  }
+
+  .wcard__btn:active {
+    box-shadow: var(--shadow-btn-press);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .wcard__btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .wcard__btn:active {
+      transform: translateY(1px);
+    }
+  }
+
+  .wcard__btn:hover .wcard__arrow,
+  .wcard__btn:focus-visible .wcard__arrow {
+    transform: translateX(3px);
+  }
+
+  .wcard__btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  /* ---- Tablet: side by side, the image takes the smaller share ----------
+     The image may crop at its edges (object-fit: cover). */
+  @media (min-width: 768px) {
+    .wcard {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+      border-radius: 28px;
+    }
+
+    .wcard__media {
+      aspect-ratio: auto;
+      min-height: 100%;
+    }
+
+    .wcard__body {
+      padding: var(--space-6) clamp(var(--space-5), 3.5vw, var(--space-7));
+    }
+  }
+
+  /* ---- Desktop: a square image, about 45% of the card --------------------- */
+  @media (min-width: 1024px) {
+    .wcard {
+      grid-template-columns: minmax(0, 9fr) minmax(0, 11fr);
+      border-radius: 32px;
+    }
+
+    .wcard__media {
+      aspect-ratio: 1 / 1;
+    }
+
+    .wcard__body {
+      padding: var(--space-7) clamp(var(--space-6), 3.5vw, var(--space-8));
+    }
+  }
+
+  /* ---- Compact (Next case study): same card, shorter ---------------------- */
+  .wcard--compact .wcard__media {
+    aspect-ratio: 16 / 10;
+  }
+
+  .wcard--compact .wcard__title {
+    font-size: clamp(1.375rem, 1rem + 1.2vw, 2rem); /* 22 → 32 */
+  }
+
+  .wcard--compact .wcard__summary {
+    margin-top: var(--space-3);
+  }
+
+  .wcard--compact .wcard__btn {
+    margin-top: var(--space-5);
+  }
+
+  @media (min-width: 768px) {
+    .wcard--compact .wcard__media {
+      aspect-ratio: auto;
+    }
+
+    .wcard--compact .wcard__body {
+      padding-block: var(--space-6);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .wcard--compact .wcard__media {
+      aspect-ratio: 4 / 3;
+    }
+
+    .wcard--compact .wcard__body {
+      padding-block: var(--space-6);
+    }
+  }
+</style>

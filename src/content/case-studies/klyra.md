@@ -106,7 +106,7 @@ outroTitle: "Thanks for reading."
     </div>
   </div>
   <figure class="cs-figure">
-    <img src="/images/klyra/wireframes.webp" alt="Klyra wireframes" width="1400" height="1392" loading="lazy" decoding="async" />
+    <img src="/images/klyra/wireframes.webp" srcset="/images/klyra/wireframes-800w.webp 800w, /images/klyra/wireframes.webp 1400w" sizes="(min-width: 1280px) 1200px, 100vw" alt="Klyra wireframes" width="1400" height="1392" loading="lazy" decoding="async" />
   </figure>
 </section>
 

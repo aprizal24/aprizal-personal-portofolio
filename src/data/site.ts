@@ -17,8 +17,15 @@ export const site = {
   },
   /** Must match `site` in astro.config.mjs. No trailing slash. */
   url: 'https://www.aprizal.me',
-  /** Default social preview image (1200×630), served from /public. */
-  ogImage: { path: '/opengraph-image.png', width: 1200, height: 630, type: 'image/png' },
+  /** Default social preview image: a real screenshot of the desktop Home page
+   *  (hero + Selected work), 1200×630 JPEG, served from /public. */
+  ogImage: {
+    path: '/og-home.jpg',
+    width: 1200,
+    height: 630,
+    type: 'image/jpeg',
+    alt: 'Aprizal Triansyah portfolio home page: “Designing simple, intuitive digital products that solve real user problems.” above the Selected work projects',
+  },
   email: 'aprizaltriansyah24@gmail.com',
   emailSubject: "Let's Work Together",
   resume: '/assets/resume.pdf',
@@ -33,10 +40,10 @@ export const mailto = `mailto:${site.email}?subject=${encodeURIComponent(site.em
 
 /**
  * Feature switches.
- * experiments — flip to true only when at least one real experiment is
- * published. While false, /experiments/ stays out of the navigation and the
+ * playground — flip to true only when at least one real Playground item is
+ * published. While false, /playground/ stays out of the navigation and the
  * sitemap and is served with `noindex, nofollow`.
  */
 export const features = {
-  experiments: false,
+  playground: true,
 } as const;

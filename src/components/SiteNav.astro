@@ -1,34 +1,40 @@
 ---
 /**
- * Global navigation — a small floating dock, centred at the bottom.
+ * Global navigation — a small floating pill of icons, fixed at the top right
+ * (Home, Work, Playground, About). Labels appear as a dark tooltip under an
+ * icon on hover or keyboard focus, and while an icon is pressed on touch
+ * screens: the active pill's blue with white text for the current page, the hover tint with
+ * ink text for the others. Each link carries its label as its accessible name.
  *
- * Content: the name "Aprizal" on the left (the link to Home — there is no
- * Home menu item) and text labels on the right (Work, About, Contact). The
- * name stays inside the dock at every width; the gap between it and the menu
- * is generous from 1024px and tighter below, where the dock must stay narrow.
- *
- * States (unchanged)
- * - Active page: accent-blue item, always (idle, hovered, or while another
- *   item is hovered).
- * - Idle: quiet text on the white dock.
- * - Hover / keyboard focus: inactive items take the light grey tint and a
- *   very slight zoom. The tint/blue pill hugs the label (shorter than the
- *   tap area). The name "Aprizal" has no hover effect.
- * - Home: no menu item is active; the name is the way back.
+ * States (colours unchanged from the previous navbar):
+ * - Active page: raised dark graphite pill (#3A3F47 → #1E2126), white icon.
+ * - Hover / keyboard focus on other items: --hover-tint pill with a soft top
+ *   highlight, ink icon, a 1px lift.
+ * - Idle: #3f444d icon on the light bar.
+ * Icons: Tabler outline (@tabler/icons, already used by the footer).
  */
-import { site } from '../data/site';
-import { primaryNav, isActive, routes } from '../lib/routes';
+import { primaryNav, isActive, type NavIcon } from '../lib/routes';
+import { tablerIcon } from '../lib/icons';
 
 const pathname = Astro.url.pathname;
+const iconName: Record<NavIcon, string> = {
+  home: 'home',
+  work: 'stack-2',
+  playground: 'triangle-square-circle',
+  about: 'user',
+};
 ---
 <nav class="dock" aria-label="Primary">
-  <a class="dock__name" href={routes.home}>{site.shortName}</a>
   <ul class="dock__list" role="list">
     {primaryNav.map((item) => {
       const active = isActive(item.href, pathname);
+      const svg = tablerIcon(iconName[item.icon]);
       return (
-        <li>
-          <a class="dock__link" href={item.href} aria-current={active ? 'page' : undefined}><span class="roll"><span class="roll__text">{item.label}</span></span></a>
+        <li class="dock__item">
+          <a class="dock__link" href={item.href} aria-label={item.label} aria-current={active ? 'page' : undefined}>
+            {svg ? <span class="dock__icon" aria-hidden="true" set:html={svg} /> : <span class="dock__fallback">{item.label}</span>}
+          </a>
+          <span class="dock__tip" aria-hidden="true">{item.label}</span>
         </li>
       );
     })}
@@ -36,168 +42,146 @@ const pathname = Astro.url.pathname;
 </nav>
 
 <style>
-  /* ---- Dock ------------------------------------------------------------- */
+  /* ---- Bar ---------------------------------------------------------------- */
   .dock {
-    --item: 48px;
+    --item: 44px;
     --pad: 5px;
     position: fixed;
-    inset-inline: 0;
-    /* --nav-bottom (tokens.css): scales with viewport height (min 12px) so the
-       gap looks the same at any zoom, plus the iOS home-indicator inset. */
-    bottom: var(--nav-bottom);
+    top: calc(clamp(12px, 2vw, 24px) + env(safe-area-inset-top, 0px));
+    right: max(clamp(12px, 2.5vw, 32px), env(safe-area-inset-right, 0px));
     z-index: var(--z-nav);
-    /* Centred via auto margins (not left:50%), so the dock gets the full
-       viewport width to size into and labels never get squeezed. */
-    width: fit-content;
-    max-width: calc(100vw - 2 * var(--gutter));
-    margin-inline: auto;
-    padding: var(--pad);
-    background: #ffffff;
-    border-radius: 999px;
-    box-shadow:
-      0 1px 2px rgb(17 17 17 / 0.04),
-      0 10px 32px rgb(17 17 17 / 0.08);
-  }
-
-  @media (min-width: 768px) {
-    .dock {
-      --item: 54px;
-    }
-  }
-
-  /* With the name on the left, give the last item's pill the same breathing
-     room on the right as it has above and below: (dock height − pill) / 2,
-     i.e. (58 − 32) / 2 = 13px on mobile and (64 − 36) / 2 = 14px from 768px.
-     Top, bottom and left padding stay at --pad. */
-  .dock {
-    padding-right: 13px;
-  }
-
-  @media (min-width: 768px) {
-    .dock {
-      padding-right: 14px;
-    }
-  }
-
-  .dock {
-    display: flex;
-    align-items: center;
   }
 
   .dock__list {
     display: flex;
     align-items: center;
-    gap: 4px; /* 6px from 1024px */
+    gap: 4px;
     margin: 0;
-    padding: 0;
+    padding: var(--pad);
     list-style: none;
+    /* light, slightly cool surface lit from above (as before) */
+    background: linear-gradient(180deg, rgb(255 255 255 / 0.94) 0%, rgb(247 249 252 / 0.92) 100%);
+    -webkit-backdrop-filter: saturate(1.6) blur(14px);
+    backdrop-filter: saturate(1.6) blur(14px);
+    border-radius: 999px;
+    box-shadow: var(--depth-edge), var(--depth-highlight), var(--shadow-float);
   }
 
-  @media (min-width: 1024px) {
+  @media (min-width: 768px) {
+    .dock {
+      --item: 48px;
+      --pad: 6px;
+    }
+
     .dock__list {
       gap: 6px;
     }
   }
 
-  /* Menu items and the name: text centred in a box as tall as the dock's
-     item row (the tap area, which also sets the dock's height). */
-  .dock__link,
-  .dock__name {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    height: var(--item);
-    padding-inline: 14px;
-    color: #3d3d3d;
-    font-size: 0.9375rem;
-    font-weight: var(--weight-medium);
-    line-height: 1;
-    white-space: nowrap;
-    text-decoration: none;
+  .dock__item {
+    position: relative;
   }
 
-  /* Menu items below 1024px: 12px each side (the pill hugs the label with
-     equal space left and right, as on desktop). This keeps the dock, now with
-     the name inside, within 375px phones and clear of the footer text that
-     shares its line at 768–1023px. */
+  /* Entrance: the pill builds itself once per session (short). */
+  @media (prefers-reduced-motion: no-preference) {
+    .dock__list {
+      animation: dock-in 700ms var(--ease-expo) 200ms both;
+      transform-origin: 100% 0%;
+    }
+
+    .dock__item {
+      animation: dock-items 400ms var(--ease-out) 520ms both;
+    }
+  }
+
+  :global(html.dock-seen) .dock__list,
+  :global(html.dock-seen) .dock__item {
+    animation: none;
+  }
+
+  @keyframes dock-in {
+    from {
+      opacity: 0;
+      transform: translateY(-12px) scale(0.7);
+    }
+  }
+
+  @keyframes dock-items {
+    from {
+      opacity: 0;
+    }
+  }
+
+  /* ---- Items: round icon buttons ----------------------------------------- */
   .dock__link {
-    padding-inline: 12px;
-  }
-
-  /* Very narrow phones (< 360px): tighter still, so nothing overflows */
-  @media (max-width: 359px) {
-    .dock__link {
-      padding-inline: 8px;
-    }
-
-    .dock .dock__name {
-      padding-inline: 10px 4px;
-      margin-right: 0;
-    }
-  }
-
-  /* Roomier items only where the dock has space */
-  @media (min-width: 1024px) {
-    .dock__link,
-    .dock__name {
-      padding-inline: 18px;
-    }
-  }
-
-  /* ---- Menu items ---------------------------------------------------------
-     The visible pill (hover tint / active blue) is a layer behind the text,
-     shorter than the tap area so it hugs the label; the link box keeps the
-     full item height, so the dock's size doesn't change. */
-  .dock__link {
-    --pill: 32px;
     position: relative;
     isolation: isolate;
-    transition:
-      color var(--dur-base) var(--ease-out),
-      transform var(--dur-base) var(--ease-out);
-  }
-
-  @media (min-width: 768px) {
-    .dock__link {
-      --pill: 36px;
-    }
+    display: grid;
+    place-items: center;
+    width: var(--item);
+    height: var(--item);
+    border-radius: 50%;
+    color: #3f444d;
+    text-decoration: none;
+    transition: color var(--dur-base) var(--ease-out);
   }
 
   .dock__link::before {
     content: '';
     position: absolute;
     z-index: -1;
-    inset-inline: 0;
-    top: 50%;
-    height: var(--pill);
-    transform: translateY(-50%);
-    border-radius: 999px;
+    inset: 0;
+    border-radius: 50%;
     background-color: transparent;
-    transition: background-color var(--dur-base) var(--ease-out);
+    transition:
+      background-color var(--dur-base) var(--ease-out),
+      box-shadow var(--dur-base) var(--ease-out),
+      translate var(--dur-base) var(--ease-out);
   }
 
-  /* Active page: blue in every state */
+  .dock__icon {
+    display: grid;
+  }
+
+  .dock__icon :global(svg) {
+    width: 22px;
+    height: 22px;
+    stroke-width: 1.6;
+  }
+
+  .dock__fallback {
+    font-size: 0.75rem;
+  }
+
+  /* Active page: raised ink pill, white icon (unchanged colours) */
   .dock__link[aria-current='page'] {
-    color: var(--ink); /* #111 on the accent pill: 5.72:1 (AA); white was 3.30:1 */
-  }
-
-  /* The active item keeps its still label (text roll is for other items) */
-  .dock__link[aria-current='page'] .roll__text {
-    transform: none;
+    color: #ffffff;
   }
 
   .dock__link[aria-current='page']::before {
-    background-color: var(--accent);
+    /* Dark graphite, raised: volume gradient, light top edge, contact +
+       ambient shadow. Neutral, so it never competes with project colours. */
+    background-color: #2A2E35;
+    background-image: linear-gradient(180deg, #3A3F47 0%, #1E2126 100%);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.14),
+      0 1px 2px rgb(18 20 23 / 0.24),
+      0 6px 14px -6px rgb(18 20 23 / 0.42);
   }
 
-  /* Keyboard focus: same tint as hover for inactive items; the outline
-     follows the pill rather than the taller tap area. */
+  /* white icon on graphite: a slightly firmer stroke keeps it crisp */
+  .dock__link[aria-current='page'] .dock__icon :global(svg) {
+    stroke-width: 1.9;
+  }
+
+  /* Hover / keyboard focus on other items: light tinted pill (unchanged) */
   .dock__link:not([aria-current='page']):focus-visible {
     color: var(--ink);
   }
 
   .dock__link:not([aria-current='page']):focus-visible::before {
     background-color: var(--hover-tint);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.8), 0 0 0 1px rgb(20 30 50 / 0.04);
   }
 
   .dock__link:focus-visible {
@@ -212,36 +196,101 @@ const pathname = Astro.url.pathname;
   @media (hover: hover) and (pointer: fine) {
     .dock__link:not([aria-current='page']):hover {
       color: var(--ink);
-      transform: scale(1.04);
     }
 
     .dock__link:not([aria-current='page']):hover::before {
       background-color: var(--hover-tint);
+      box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.8), 0 0 0 1px rgb(20 30 50 / 0.04);
     }
   }
 
-  /* ---- Name ---------------------------------------------------------------
-     Static: no hover tint, zoom or colour change. Shown at every width.
-     Keyboard focus keeps the standard outline only. */
-  .dock__name {
-    color: var(--ink);
-    font-weight: var(--weight-semibold);
-    letter-spacing: -0.01em;
-    margin-right: 4px; /* tighter gap where the dock must stay narrow */
-  }
-
-  @media (min-width: 1024px) {
-    .dock__name {
-      margin-right: clamp(40px, 4vw, 64px); /* generous gap before the menu */
+  @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .dock__link:not([aria-current='page']):hover::before {
+      translate: 0 -1px;
     }
   }
 
-  .dock__name:hover {
-    color: var(--ink);
-  }
-
-  .dock__name:focus-visible {
+  /* ---- Tooltip: dark pill under the icon ---------------------------------
+     Positioned absolutely, so showing it never moves the bar or the other
+     icons. Hidden from assistive tech (the link already has the label). */
+  .dock__tip {
+    position: absolute;
+    top: calc(100% + var(--pad) + 8px);
+    left: 50%;
+    padding: 6px 12px;
     border-radius: 999px;
-    outline-offset: -4px;
+    /* non-active item: the same light tint as the icon's hover pill, ink
+       text (16:1), with the pill's fine edge + top highlight so it reads
+       against the page */
+    background: var(--hover-tint);
+    color: var(--ink);
+    font-size: 0.8125rem;
+    font-weight: var(--weight-medium);
+    line-height: 1.2;
+    white-space: nowrap;
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.8), 0 0 0 1px rgb(20 30 50 / 0.06), 0 6px 16px -8px rgb(30 50 90 / 0.25);
+    opacity: 0;
+    translate: -50% -4px;
+    pointer-events: none;
+    transition:
+      opacity 180ms var(--ease-out),
+      translate 220ms var(--ease-out);
+  }
+
+  /* active page's item: the same graphite as the active pill, white text */
+  .dock__item:has([aria-current='page']) .dock__tip {
+    background: #2A2E35 linear-gradient(180deg, #3A3F47 0%, #1E2126 100%);
+    color: #ffffff;
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.14),
+      0 6px 16px -8px rgb(18 20 23 / 0.45);
+  }
+
+  /* The last item's label would centre past the bar's right edge: align it
+     to the icon's right edge instead so it never leaves the viewport. */
+  .dock__item:last-child .dock__tip {
+    left: auto;
+    right: 0;
+    translate: 0 -4px;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .dock__item:hover .dock__tip {
+      opacity: 1;
+      translate: -50% 0;
+    }
+
+    .dock__item:last-child:hover .dock__tip {
+      translate: 0 0;
+    }
+  }
+
+  .dock__item:focus-within .dock__tip {
+    opacity: 1;
+    translate: -50% 0;
+  }
+
+  .dock__item:last-child:focus-within .dock__tip {
+    translate: 0 0;
+  }
+
+  /* Touch screens (no hover): the label shows while an icon is pressed
+     (a permanent label would sit over page titles on small screens). */
+  @media (hover: none) {
+    .dock__item:has(.dock__link:active) .dock__tip {
+      opacity: 1;
+      translate: -50% 0;
+      transition-duration: 80ms;
+    }
+
+    .dock__item:last-child:has(.dock__link:active) .dock__tip {
+      translate: 0 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dock__tip {
+      transition: opacity 120ms linear;
+    }
   }
 </style>

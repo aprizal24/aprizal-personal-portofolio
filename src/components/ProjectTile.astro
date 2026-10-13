@@ -1,47 +1,61 @@
 ---
 /**
- * Image-first project entry (Home Selected Work; reusable on Work).
+ * Home "Selected work" tile — Stan Reimg(en) reference.
  *
- * The visual: each cover sits whole (object-fit: contain, never cropped)
- * inside a calm 6:5 field washed with the project's own tint — one image,
- * not a card. No border, no shadow; corners use the shared --radius-card.
+ * The image is the tile: a near-square white field,
+ * the cover filling it (opaque screenshots crop edge to edge; transparent
+ * device mockups sit whole, scaled up to fill most of the field — see
+ * data/projectArt.ts). No border, no shadow, one radius.
  *
- * The label (title + tagline) is hidden at rest and slides up inside the
- * image near the bottom —
- *   - on hover (fine pointers),
- *   - on keyboard focus,
- *   - on touch screens, while the tile sits in the middle of the viewport
- *     (index.astro toggles .is-inview). Without JS, touch shows the label.
- * The label text is always in the DOM and names the link for assistive tech.
+ * Hover (fine pointers) / keyboard focus: the tile and its image stay still
+ * (no zoom, lift or movement); only the shadow becomes slightly more defined
+ * and a small white label with the title and tagline fades in at the bottom
+ * left (250ms).
+ * Touch screens have no hover, so the label is always shown there.
+ * The label text is always in the DOM and names the link.
  */
-import { publicImageSize } from '../lib/imageSize';
+import { publicImageSize, publicImageSrcset } from '../lib/imageSize';
 
 interface Props {
   id: string;
   href: string;
   title: string;
   tagline: string;
+  type?: string;
+  year?: number;
   cover: string;
   coverAlt: string;
-  /** Soft ground colour taken from the project's palette. */
   tint?: string;
+  fit?: 'cover' | 'contain';
+  position?: string;
   /** Load eagerly (above-the-fold tiles). */
   priority?: boolean;
   headingLevel?: 'h2' | 'h3';
 }
 
-const { id, href, title, tagline, cover, coverAlt, tint, priority = false, headingLevel = 'h3' } = Astro.props;
+const {
+  id, href, title, tagline, cover, coverAlt, tint,
+  fit = 'contain', position = '50% 50%', priority = false, headingLevel = 'h3',
+} = Astro.props;
 const Heading = headingLevel;
 const size = publicImageSize(cover);
+const srcset = publicImageSrcset(cover);
 const titleId = `${id}-title`;
 const taglineId = `${id}-tagline`;
 ---
-<article class="tile" id={id} data-tile>
-  <a class="tile__link" href={href} aria-labelledby={`${titleId} ${taglineId}`} style={tint ? `--tint: ${tint}` : undefined}>
+<article class="tile" id={id}>
+  <a
+    class:list={['tile__link', `tile__link--${fit}`]}
+    href={href}
+    aria-labelledby={`${titleId} ${taglineId}`}
+    style={`--pos: ${position}`}
+  >
     <div class="tile__field">
       <img
         class="tile__img"
         src={cover}
+        srcset={srcset}
+        sizes={srcset ? '(min-width: 768px) 36vw, 72vw' : undefined}
         alt={coverAlt}
         width={size?.width}
         height={size?.height}
@@ -63,7 +77,6 @@ const taglineId = `${id}-tagline`;
   }
 
   .tile__link {
-    --tint: var(--surface);
     position: relative;
     display: block;
     border-radius: var(--radius-card);
@@ -71,92 +84,124 @@ const taglineId = `${id}-tagline`;
     isolation: isolate; /* keeps the zooming image clipped to the radius in Safari */
     color: var(--ink);
     text-decoration: none;
+    /* resting elevation: fine edge + soft cool shadow */
+    box-shadow: var(--depth-edge), var(--shadow-rest);
+    transition: box-shadow 250ms var(--ease-out);
   }
 
   .tile__link:focus-visible {
-    outline-offset: 6px;
+    outline-offset: 4px;
   }
 
-  /* The field: a quiet wash of the project's tint, fading toward the page. */
+  /* Near-square field (Stan's tiles are ~1.04:1; 6:5 keeps landscape covers large) */
   .tile__field {
     position: relative;
     aspect-ratio: 6 / 5;
-    background-color: var(--tint);
-    background-image: linear-gradient(180deg, var(--tint) 0%, color-mix(in srgb, var(--tint) 30%, var(--bg)) 100%);
+    background: #ffffff;
   }
 
-  /* Breathing room inside the field; a little more below for the label. */
   .tile__img {
     position: absolute;
-    inset: 6% 6% 12%;
+    inset: 0;
     display: block;
-    width: 88%;
-    height: 82%;
-    object-fit: contain;
-    transition: transform 500ms var(--ease-out);
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--pos);
   }
 
-  /* ---- Label inside the image, bottom-left ------------------------------ */
+  /* Transparent mockups: whole, with an even white margin around them */
+  .tile__link--contain .tile__img {
+    inset: 7%;
+    width: 86%;
+    height: 86%;
+    object-fit: contain;
+  }
+
+  /* ---- Label: white tag at the bottom left ------------------------------- */
   .tile__label {
     position: absolute;
-    left: clamp(12px, 3%, 20px);
-    bottom: clamp(12px, 3%, 20px);
-    max-width: calc(100% - 2 * clamp(12px, 3%, 20px));
-    padding: 10px 14px;
+    left: 16px;
+    bottom: 16px;
+    max-width: calc(100% - 32px);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 2px 10px;
+    padding: 10px 16px;
     background: #ffffff;
-    border-radius: 4px;
-    line-height: 1.3;
+    border-radius: 8px;
+    box-shadow: var(--depth-edge), 0 6px 16px -8px rgb(30 50 90 / 0.25);
+    line-height: 1.4;
     opacity: 0;
-    transform: translateY(10px) scale(0.98);
-    transform-origin: left bottom;
+    transform: translateY(4px); /* inside the overlay: never moves the layout */
     transition:
-      opacity 300ms var(--ease-out),
-      transform 380ms var(--ease-out);
+      opacity 250ms var(--ease-out),
+      transform 250ms var(--ease-out);
     pointer-events: none;
   }
 
   .tile__title {
-    display: inline;
-    margin: 0 10px 0 0;
+    margin: 0;
+    color: #3f444d;
+    transition: color 250ms var(--ease-out);
+    font-size: 0.9375rem;
+    font-weight: var(--weight-subheading);
+    letter-spacing: var(--tracking-subheading);
     font-family: var(--font-display);
-    font-size: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
-    font-weight: var(--weight-medium);
-    letter-spacing: -0.01em;
+    text-transform: var(--case-heading);
   }
 
   .tile__tagline {
-    font-size: 0.8125rem;
-    color: #444;
+    font-size: 0.875rem;
+    color: var(--muted);
   }
 
-  /* Reveal: keyboard focus */
+  /* Hover / focus: a slightly firmer edge and a little more depth — the
+     tile itself does not move or scale. */
+  .tile__link:focus-visible {
+    box-shadow: 0 0 0 1px rgb(20 30 50 / 0.08), var(--shadow-raised);
+  }
+
   .tile__link:focus-visible .tile__label {
     opacity: 1;
     transform: none;
   }
 
-  /* Reveal: hover */
+  .tile__link:focus-visible .tile__title {
+    color: var(--ink);
+  }
+
   @media (hover: hover) and (pointer: fine) {
-    .tile__link:hover .tile__img {
-      transform: scale(1.02);
+    .tile__link:hover {
+      box-shadow: 0 0 0 1px rgb(20 30 50 / 0.08), var(--shadow-raised);
     }
 
     .tile__link:hover .tile__label {
       opacity: 1;
       transform: none;
     }
+
+    .tile__link:hover .tile__title {
+      color: var(--ink);
+    }
   }
 
-  /* Reveal: touch. No JS → always visible; with JS → only while in view. */
   @media (hover: none) {
     .tile__label {
       opacity: 1;
       transform: none;
     }
 
-    :global(html.tiles-inview) .tile:not(.is-inview) .tile__label {
-      opacity: 0;
-      transform: translateY(10px) scale(0.98);
+    .tile__title {
+      color: var(--ink);
+    }
+  }
+
+  /* Reduced motion: the label only fades */
+  @media (prefers-reduced-motion: reduce) {
+    .tile__label {
+      transform: none;
     }
   }
 </style>

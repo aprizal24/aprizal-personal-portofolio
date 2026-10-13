@@ -2,22 +2,21 @@
 /**
  * /about/ — who Aprizal is, what he works on, where to find him.
  * Content comes from src/data/about.ts (the pre-redesign About copy, verbatim)
- * and src/data/site.ts (resume and social links). Layout follows the approved
- * editorial system: page title like Work, a label column on the left and the
- * content column on the right from 1024px, no cards, pills or borders.
+ * and src/data/site.ts. Layout: page title, then a two-column grid from
+ * 768px: portrait / labels on the left, statement, copy and lists on the
+ * right. A short "Let's connect." row with the email closes the page (the
+ * Contact page was retired); social links stay in the footer.
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
 import '../../styles/about.css';
-import { site } from '../../data/site';
+import { site, mailto } from '../../data/site';
 import { about } from '../../data/about';
 import { personSchema } from '../../lib/seo';
+import { tablerIcon } from '../../lib/icons';
 
-const links = [
-  { label: 'Resume', href: site.resume, note: 'PDF, opens in a new tab' },
-  { label: site.social.linkedin.label, href: site.social.linkedin.url, note: 'opens in a new tab' },
-  { label: site.social.instagram.label, href: site.social.instagram.url, note: 'opens in a new tab' },
-];
+const mailIcon = tablerIcon('mail');
+
 ---
 <BaseLayout
   title={`About · ${site.name}`}
@@ -28,12 +27,23 @@ const links = [
 <main id="main-content" tabindex="-1">
 
   <header class="about-head container">
-    <h1 class="about-head__title">About</h1>
+    <h1 class="about-head__title"><span class="drop" style="--i: 0">About</span></h1>
   </header>
 
+  <!-- Intro: portrait in the label column, statement and copy in the content column -->
   <section class="about-intro container" aria-labelledby="about-statement">
     <div class="about-row">
-      <div class="about-row__aside" aria-hidden="true"></div>
+      <div class="about-row__aside">
+        <img
+          class="about-photo"
+          src="/images/about/profile.webp"
+          alt={`Portrait of ${site.name}`}
+          width="480"
+          height="480"
+          loading="eager"
+          decoding="async"
+        />
+      </div>
       <div class="about-row__main">
         <h2 class="about-statement" id="about-statement">{about.statement}</h2>
         <div class="about-copy">
@@ -58,20 +68,21 @@ const links = [
     </div>
   </section>
 
-  <nav class="about-links container" aria-label="Resume and profiles">
+  <!-- Contact: heading, a line of copy and the email (mailto) -->
+  <section class="about-connect container" aria-labelledby="about-connect-title">
     <div class="about-row">
       <div class="about-row__aside" aria-hidden="true"></div>
-      <ul class="about-links__list" role="list">
-        {links.map((l) => (
-          <li>
-            <a class="about-link link-arrow" href={l.href} target="_blank" rel="noopener">
-              <span class="about-link__text"><span class="roll"><span class="roll__text">{l.label}</span></span></span><span class="visually-hidden"> ({l.note})</span> <span aria-hidden="true">↗</span>
-            </a>
-          </li>
-        ))}
-      </ul>
+      <div class="about-connect__main">
+        <h2 class="about-connect__title" id="about-connect-title">Let's connect.</h2>
+        <p class="about-connect__text">If you'd like to discuss an opportunity, collaborate, or simply say hello, feel free to reach out.</p>
+        <a class="about-email link-arrow" href={mailto}>
+          {mailIcon && <span class="about-email__icon" aria-hidden="true" set:html={mailIcon} />}
+          <span class="about-email__text"><span class="roll"><span class="roll__text">{site.email}</span></span></span><span class="visually-hidden"> (opens your email app)</span>
+          <span class="about-email__arrow" aria-hidden="true">↗</span>
+        </a>
+      </div>
     </div>
-  </nav>
+  </section>
 
 </main>
 
