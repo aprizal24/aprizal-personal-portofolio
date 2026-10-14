@@ -6,6 +6,11 @@
  *
  * Grid: 1 column on phones, 2 from 640px, 3 from 1024px; on /playground/
  * a 4th column is added from 1440px (`maxColumns={4}`), the homepage keeps 3.
+ *
+ * Video cards (`thumbnail.video`): a muted, looping, inline video with the
+ * still as its poster. Nothing is fetched until the card nears the viewport;
+ * it plays only while visible and never with prefers-reduced-motion (the
+ * poster stays). Without JavaScript the poster is shown.
  */
 import PlaygroundModal from './PlaygroundModal.astro';
 import { publicImageSize } from '../lib/imageSize';
@@ -15,10 +20,13 @@ interface Item {
   id: string;
   data: {
     title: string;
+    subtitle?: string;
     category: string;
     description?: string;
+    tools?: string[];
     year?: number;
-    thumbnail: { src: string; alt: string };
+    thumbnail: { src: string; alt: string; video?: string };
+    video?: { src: string; poster: string; label: string };
     images: { src: string; alt: string }[];
   };
 }
@@ -39,14 +47,30 @@ const { items, maxColumns = 4, eager = 0 } = Astro.props;
       <li>
         <button class="xp-card" type="button" data-open={`xp-${id}`} aria-haspopup="dialog" aria-label={`Open preview: ${data.title}`}>
           <span class="xp-card__media">
-            <img
-              src={data.thumbnail.src}
-              alt={data.thumbnail.alt}
-              width={size?.width}
-              height={size?.height}
-              loading={i < eager ? 'eager' : 'lazy'}
-              decoding="async"
-            />
+            {data.thumbnail.video ? (
+              <video
+                class="xp-card__video"
+                src={data.thumbnail.video}
+                poster={data.thumbnail.src}
+                width={size?.width}
+                height={size?.height}
+                muted
+                loop
+                playsinline
+                preload="none"
+                disablepictureinpicture
+                aria-label={data.thumbnail.alt}
+              />
+            ) : (
+              <img
+                src={data.thumbnail.src}
+                alt={data.thumbnail.alt}
+                width={size?.width}
+                height={size?.height}
+                loading={i < eager ? 'eager' : 'lazy'}
+                decoding="async"
+              />
+            )}
           </span>
         </button>
       </li>
@@ -58,9 +82,12 @@ const { items, maxColumns = 4, eager = 0 } = Astro.props;
   <PlaygroundModal
     id={`xp-${id}`}
     title={data.title}
+    subtitle={data.subtitle}
     category={data.category}
     year={data.year}
     description={data.description}
+    tools={data.tools}
+    video={data.video}
     images={data.images}
   />
 ))}
@@ -71,6 +98,39 @@ const { items, maxColumns = 4, eager = 0 } = Astro.props;
   // locking, backdrop clicks and returning focus to the card.
   const root = document.documentElement;
   let opener: HTMLElement | null = null;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  // Video cards: play while on screen, pause when off screen or while a
+  // preview is open (only one copy of a motion piece plays at a time).
+  const cardVideos = [...document.querySelectorAll<HTMLVideoElement>('.xp-card__video')];
+  const visible = new Set<HTMLVideoElement>();
+  let previewOpen = false;
+
+  const syncCards = () => {
+    cardVideos.forEach((v) => {
+      if (visible.has(v) && !previewOpen && !reduceMotion.matches) {
+        v.play().catch(() => {}); // autoplay can still be refused (e.g. data saver): the poster stays
+      } else if (!v.paused) {
+        v.pause();
+      }
+    });
+  };
+
+  if (cardVideos.length && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(({ target, isIntersecting }) => {
+          const v = target as HTMLVideoElement;
+          if (isIntersecting) visible.add(v);
+          else visible.delete(v);
+        });
+        syncCards();
+      },
+      { threshold: 0.25 },
+    );
+    cardVideos.forEach((v) => io.observe(v));
+    reduceMotion.addEventListener('change', syncCards);
+  }
 
   const lockScroll = () => {
     const gap = window.innerWidth - root.clientWidth; // scrollbar width, so the page doesn't shift
@@ -89,9 +149,15 @@ const { items, maxColumns = 4, eager = 0 } = Astro.props;
       if (!dialog) return;
       opener = btn;
       lockScroll();
+      previewOpen = true;
+      syncCards();
       dialog.showModal();
       dialog.querySelector<HTMLElement>('.xp-modal__panel')!.scrollTop = 0;
       dialog.querySelector<HTMLElement>('[data-close]')?.focus();
+      // Motion piece at the top of the preview: muted autoplay, unless the
+      // visitor prefers reduced motion (then the poster shows; controls stay).
+      const video = dialog.querySelector<HTMLVideoElement>('.xp-modal__video');
+      if (video && !reduceMotion.matches) video.play().catch(() => {});
     });
   });
 
@@ -106,6 +172,9 @@ const { items, maxColumns = 4, eager = 0 } = Astro.props;
     });
 
     dialog.addEventListener('close', () => {
+      dialog.querySelector<HTMLVideoElement>('.xp-modal__video')?.pause();
+      previewOpen = false;
+      syncCards();
       unlockScroll();
       opener?.focus();
       opener = null;

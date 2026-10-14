@@ -11,27 +11,36 @@
  * which are stacked edge to edge with no gaps, each at the full panel width
  * and its own aspect ratio. Only the panel's outer corners are rounded.
  * Images load lazily, so nothing is fetched until the dialog opens.
+ * An optional motion piece (`video`) sits first in that stack: muted, looping,
+ * with native controls and a poster; it is fetched only when the dialog opens
+ * and played/paused by the gallery script. The description and optional
+ * `tools` come last, after all the media, as the closing note.
  */
 import { publicImageSize } from '../lib/imageSize';
 
 interface Props {
   id: string;
   title: string;
+  subtitle?: string;
   category: string;
   year?: number;
   description?: string;
+  tools?: string[];
+  video?: { src: string; poster: string; label: string };
   images: { src: string; alt: string }[];
 }
 
-const { id, title, category, year, description, images } = Astro.props;
+const { id, title, subtitle, category, year, description, tools, video, images } = Astro.props;
 const titleId = `${id}-title`;
+const meta = [subtitle, [category, year].filter(Boolean).join(', ')].filter(Boolean).join(' · ');
+const videoSize = video ? publicImageSize(video.poster) : undefined;
 ---
 <dialog class="xp-modal" id={id} aria-labelledby={titleId}>
   <div class="xp-modal__panel">
     <header class="xp-modal__head">
       <div class="xp-modal__heading">
         <h2 class="xp-modal__title" id={titleId}>{title}</h2>
-        <p class="xp-modal__meta">{[category, year].filter(Boolean).join(', ')}</p>
+        <p class="xp-modal__meta">{meta}</p>
       </div>
       <button class="xp-modal__close" type="button" data-close aria-label="Close preview">
         <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
@@ -39,8 +48,24 @@ const titleId = `${id}-title`;
         </svg>
       </button>
     </header>
-    {description && <p class="xp-modal__desc">{description}</p>}
     <div class="xp-modal__images">
+      {video && (
+        <video
+          class="xp-modal__video"
+          src={video.src}
+          poster={video.poster}
+          width={videoSize?.width}
+          height={videoSize?.height}
+          muted
+          loop
+          playsinline
+          controls
+          preload="none"
+          disablepictureinpicture
+          aria-label={video.label}
+          style={videoSize ? `aspect-ratio: ${videoSize.width} / ${videoSize.height}` : undefined}
+        />
+      )}
       {images.map((img) => {
         const size = publicImageSize(img.src);
         return (
@@ -48,6 +73,14 @@ const titleId = `${id}-title`;
         );
       })}
     </div>
+    {(description || (tools && tools.length > 0)) && (
+      <div class="xp-modal__info">
+        {description && <p class="xp-modal__desc">{description}</p>}
+        {tools && tools.length > 0 && (
+          <p class="xp-modal__tools"><span class="xp-modal__tools-label">Tools</span> {tools.join(', ')}</p>
+        )}
+      </div>
+    )}
   </div>
 </dialog>
 
@@ -121,9 +154,20 @@ const titleId = `${id}-title`;
     color: var(--muted);
   }
 
+  /* Project info closes the preview, after all the media: plain text on the
+     panel (no card), aligned with the header's left edge. */
+  .xp-modal__info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding:
+      clamp(var(--space-6), 1rem + 2vw, var(--space-7))
+      clamp(var(--space-5), 3vw, var(--space-6))
+      clamp(var(--space-7), 1.5rem + 2.5vw, var(--space-8));
+  }
+
   .xp-modal__desc {
     margin: 0;
-    padding: 0 clamp(var(--space-5), 3vw, var(--space-6)) var(--space-4);
     max-width: 60ch;
     font-size: var(--fs-body);
     line-height: 1.6;
@@ -169,7 +213,21 @@ const titleId = `${id}-title`;
     line-height: 0;
   }
 
-  .xp-modal__images img {
+  .xp-modal__tools {
+    margin: 0;
+    font-size: var(--fs-meta);
+    line-height: 1.5;
+    color: var(--muted);
+  }
+
+  .xp-modal__tools-label {
+    margin-right: 0.5em;
+    font-weight: var(--weight-medium);
+    color: var(--ink);
+  }
+
+  .xp-modal__images img,
+  .xp-modal__video {
     display: block;
     width: 100%;
     height: auto;
