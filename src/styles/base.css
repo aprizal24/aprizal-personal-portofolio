@@ -115,17 +115,22 @@ svg {
 }
 
 /* ---- Page transitions ----------------------------------------------------
-   Cross-document view transitions: a short cross-fade between pages in
-   browsers that support it. No JavaScript; other browsers navigate normally. */
+   Cross-document view transitions (no JavaScript, no client router): the
+   outgoing page fades out (300ms) while the incoming one fades in and rises
+   12px (580ms, starting 80ms later), overlapping so there is never a blank
+   frame. Back/Forward use the
+   same transition. Browsers without support navigate normally. */
 @media (prefers-reduced-motion: no-preference) {
   @view-transition {
     navigation: auto;
   }
 
-  ::view-transition-old(root),
+  ::view-transition-old(root) {
+    animation: vt-out var(--dur-page-out) var(--ease-smooth) both;
+  }
+
   ::view-transition-new(root) {
-    animation-duration: 320ms;
-    animation-timing-function: var(--ease-expo);
+    animation: vt-in var(--dur-page-in) var(--ease-smooth) 80ms both;
   }
 
   /* The dock stays put while the page underneath changes. */
@@ -134,33 +139,78 @@ svg {
   }
 }
 
-/* ---- Shared entrance -----------------------------------------------------
-   One orchestrated moment per page: the title block drops in line by line.
-   Markup: <span class="drop" style="--i: 0">…</span>. Without the animation
-   (reduced motion) the text is simply there. */
-@media (prefers-reduced-motion: no-preference) {
-  .drop {
-    display: inline-block;
-    animation: drop-in 720ms var(--ease-spring) both;
-    animation-delay: calc(var(--i, 0) * 90ms + 60ms);
-  }
-
-  .rise {
-    animation: rise-in 900ms var(--ease-expo) both;
-    animation-delay: calc(var(--i, 0) * 90ms + 120ms);
+@keyframes vt-out {
+  to {
+    opacity: 0;
   }
 }
 
-@keyframes drop-in {
+@keyframes vt-in {
   from {
     opacity: 0;
-    transform: translateY(-0.18em);
+    transform: translateY(12px);
+  }
+}
+
+/* ---- Shared entrance -----------------------------------------------------
+   One short moment per page: the title block rises in line by line (small
+   distance, soft ease-out, 140ms between lines; ~1.1s in total, text is
+   readable well before it settles).
+   Markup: <span class="drop" style="--i: 0">…</span> for page titles,
+   class="rise" for blocks. Without the animation (reduced motion) the text
+   is simply there. */
+@media (prefers-reduced-motion: no-preference) {
+  .drop {
+    display: inline-block;
+    animation: rise-in var(--dur-enter) var(--ease-smooth) both;
+    animation-delay: calc(var(--i, 0) * 140ms + 80ms);
+  }
+
+  .rise {
+    animation: rise-in var(--dur-enter) var(--ease-smooth) both;
+    animation-delay: calc(var(--i, 0) * 140ms + 80ms);
   }
 }
 
 @keyframes rise-in {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(14px);
+  }
+}
+
+/* ---- Scroll reveal ---------------------------------------------------------
+   Major headings, section intros and project images fade in once as they
+   enter the viewport (see the script in BaseLayout.astro, which lists the
+   targets). Only elements the script has tagged `.rv` are ever hidden, so
+   without JavaScript, or with reduced motion, everything is simply visible.
+   Fill mode `backwards`: once finished, no transform or clip stays applied,
+   so hover states, shadows and layout are exactly as before. */
+.rv:not(.is-in) {
+  opacity: 0;
+}
+
+.rv.is-in {
+  animation: rv-up var(--dur-reveal) var(--ease-smooth) var(--rv-delay, 0ms) backwards;
+}
+
+.rv--media.is-in {
+  animation-name: rv-media;
+  animation-duration: var(--dur-reveal-media);
+}
+
+@keyframes rv-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+
+/* Images: a soft fade with the lower edge unmasking upwards (no zoom, no
+   movement, original crop and proportions). */
+@keyframes rv-media {
+  from {
+    opacity: 0;
+    clip-path: inset(0 0 10% 0);
   }
 }

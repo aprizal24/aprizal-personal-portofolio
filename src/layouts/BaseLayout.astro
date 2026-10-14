@@ -88,5 +88,65 @@ const schemas = schema ? (Array.isArray(schema) ? schema : [schema]) : [];
 <a class="skip-link" href="#main-content">Skip to content</a>
 {nav && <SiteNav />}
 <slot />
+
+<!-- Scroll reveal (styles in base.css). Runs inline at the end of the body,
+     before first paint, so nothing visible is hidden afterwards. Each target
+     is tagged `.rv` only once the observer exists; it is revealed once and
+     then unobserved. Skipped entirely with reduced motion or without
+     IntersectionObserver, leaving all content visible. -->
+<script is:inline>
+  (() => {
+    if (!('IntersectionObserver' in window)) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    // Text blocks: fade + 16px rise.
+    const up = [
+      '.home-work__title',
+      '.home-work__grid > li',
+      '.xp-grid > li',
+      '.home-contact__title',
+      '.wcard__body',
+      '.cs-head',
+      '.about-skills .about-row',
+      '.about-connect .about-row',
+    ];
+    // Project images: fade + soft lower-edge unmask.
+    const media = [
+      '.wcard__img',
+      '.cs-figure img',
+      '.cs-gallery img',
+      '.cs-screen__media img',
+      '.cs-profile__photo img',
+    ];
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        // Items entering together get a gentle stagger (110ms, max 3 steps).
+        entries
+          .filter((e) => e.isIntersecting)
+          .forEach((e, k) => {
+            e.target.style.setProperty('--rv-delay', Math.min(k, 3) * 110 + 'ms');
+            e.target.classList.add('is-in');
+            io.unobserve(e.target);
+          });
+      },
+      // The huge top margin counts everything above the viewport as already
+      // seen (e.g. after Back restores a scroll position), so nothing is left
+      // hidden behind the reader; below, items reveal a little before 100%.
+      { rootMargin: '100000px 0px -8% 0px' },
+    );
+
+    const tag = (selectors, extra) => {
+      document.querySelectorAll(selectors.join(',')).forEach((el) => {
+        if (el.closest('.rise, .drop, dialog')) return; // already animated, or inside a modal
+        el.classList.add('rv');
+        if (extra) el.classList.add(extra);
+        io.observe(el);
+      });
+    };
+    tag(up);
+    tag(media, 'rv--media');
+  })();
+</script>
 </body>
 </html>

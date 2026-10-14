@@ -91,7 +91,7 @@
   border-radius: var(--radius-image);
   background: var(--surface);
   box-shadow: var(--depth-edge), var(--shadow-rest);
-  transition: box-shadow 250ms var(--ease-out);
+  transition: box-shadow var(--dur-base) var(--ease-smooth);
 }
 
 .xp-card__media img,
@@ -101,7 +101,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 300ms var(--ease-out);
+  transition: transform 320ms var(--ease-smooth);
 }
 
 .xp-card:focus-visible .xp-card__media {

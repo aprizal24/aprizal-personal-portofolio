@@ -239,11 +239,11 @@ const videoSize = video ? publicImageSize(video.poster) : undefined;
   /* Opening: a short fade and rise. */
   @media (prefers-reduced-motion: no-preference) {
     .xp-modal[open] {
-      animation: xp-in 320ms var(--ease-expo);
+      animation: xp-in 460ms var(--ease-smooth);
     }
 
     .xp-modal[open]::backdrop {
-      animation: xp-fade 320ms var(--ease-out);
+      animation: xp-fade 460ms var(--ease-smooth);
     }
   }
 

@@ -10,7 +10,7 @@
  * Hover (fine pointers) / keyboard focus: the tile and its image stay still
  * (no zoom, lift or movement); only the shadow becomes slightly more defined
  * and a small white label with the title and tagline fades in at the bottom
- * left (250ms).
+ * left (--dur-base).
  * Touch screens have no hover, so the label is always shown there.
  * The label text is always in the DOM and names the link.
  */
@@ -86,7 +86,7 @@ const taglineId = `${id}-tagline`;
     text-decoration: none;
     /* resting elevation: fine edge + soft cool shadow */
     box-shadow: var(--depth-edge), var(--shadow-rest);
-    transition: box-shadow 250ms var(--ease-out);
+    transition: box-shadow var(--dur-base) var(--ease-smooth);
   }
 
   .tile__link:focus-visible {
@@ -136,15 +136,15 @@ const taglineId = `${id}-tagline`;
     opacity: 0;
     transform: translateY(4px); /* inside the overlay: never moves the layout */
     transition:
-      opacity 250ms var(--ease-out),
-      transform 250ms var(--ease-out);
+      opacity var(--dur-base) var(--ease-smooth),
+      transform var(--dur-base) var(--ease-smooth);
     pointer-events: none;
   }
 
   .tile__title {
     margin: 0;
     color: #3f444d;
-    transition: color 250ms var(--ease-out);
+    transition: color var(--dur-base) var(--ease-smooth);
     font-size: 0.9375rem;
     font-weight: var(--weight-subheading);
     letter-spacing: var(--tracking-subheading);

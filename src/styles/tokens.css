@@ -119,9 +119,16 @@
   --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);      /* long, settling transitions (Koziol reference) */
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1); /* small overshoot for the hero entrance */
   --ease-media: cubic-bezier(0, 0, 0.2, 1);        /* image zoom on hover */
+  --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);   /* page transitions, entrances, reveals */
   --dur-media: 700ms;
-  --dur-fast: 150ms;      /* colour, underline */
-  --dur-base: 250ms;      /* interface transitions */
+  --dur-fast: 200ms;      /* colour, underline, press */
+  --dur-base: 280ms;      /* interface transitions (hover) */
+  --dur-page-out: 300ms;  /* outgoing page fade */
+  --dur-page-in: 580ms;   /* incoming page fade + rise */
+  --dur-enter: 850ms;     /* page title / hero lines */
+  --dur-reveal: 750ms;    /* scroll reveal: headings, cards, section intros */
+  --dur-reveal-media: 900ms; /* scroll reveal: project images */
+  --stagger: 110ms;       /* between related items */
   --dur-slow: 400ms;      /* project hover */
 
   /* ---- Navigation (floating dock) --------------------------------------- */
