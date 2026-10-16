@@ -14,7 +14,10 @@
  * An optional motion piece (`video`) sits first in that stack: muted, looping,
  * with native controls and a poster; it is fetched only when the dialog opens
  * and played/paused by the gallery script. The description and optional
- * `tools` come last, after all the media, as the closing note.
+ * `tools` / `details` come last, after all the media, as the closing note.
+ * The video fills the width at its poster's ratio (object-fit: cover), so a
+ * motion piece exported on a larger flat canvas (e.g. 9:16) shows its
+ * content without the empty margins; the poster sets that ratio.
  */
 import { publicImageSize } from '../lib/imageSize';
 
@@ -26,11 +29,12 @@ interface Props {
   year?: number;
   description?: string;
   tools?: string[];
+  details?: { label: string; value: string }[];
   video?: { src: string; poster: string; label: string };
   images: { src: string; alt: string }[];
 }
 
-const { id, title, subtitle, category, year, description, tools, video, images } = Astro.props;
+const { id, title, subtitle, category, year, description, tools, details, video, images } = Astro.props;
 const titleId = `${id}-title`;
 const meta = [subtitle, [category, year].filter(Boolean).join(', ')].filter(Boolean).join(' · ');
 const videoSize = video ? publicImageSize(video.poster) : undefined;
@@ -73,12 +77,15 @@ const videoSize = video ? publicImageSize(video.poster) : undefined;
         );
       })}
     </div>
-    {(description || (tools && tools.length > 0)) && (
+    {(description || (tools && tools.length > 0) || (details && details.length > 0)) && (
       <div class="xp-modal__info">
         {description && <p class="xp-modal__desc">{description}</p>}
         {tools && tools.length > 0 && (
           <p class="xp-modal__tools"><span class="xp-modal__tools-label">Tools</span> {tools.join(', ')}</p>
         )}
+        {details?.map((d) => (
+          <p class="xp-modal__tools"><span class="xp-modal__tools-label">{d.label}</span> {d.value}</p>
+        ))}
       </div>
     )}
   </div>
@@ -234,6 +241,11 @@ const videoSize = video ? publicImageSize(video.poster) : undefined;
     margin: 0;
     border: 0;
     border-radius: 0;
+  }
+
+  .xp-modal__video {
+    object-fit: cover;
+    object-position: 50% 50%;
   }
 
   /* Opening: a short fade and rise. */

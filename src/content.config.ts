@@ -49,6 +49,7 @@ const playground = defineCollection({
     category: z.string(),              // e.g. "UI/UX Design"
     description: z.string().optional(),
     tools: z.array(z.string()).optional(),
+    details: z.array(z.object({ label: z.string(), value: z.string() })).optional(), // e.g. Type / Focus / Format, under the description
     year: z.number().optional(),
     thumbnail: z.object({
       src: z.string(),                 // still image (also the poster of `video`)
