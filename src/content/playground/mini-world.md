@@ -3,6 +3,7 @@ title: "MINI WORLD"
 subtitle: "Collectible Objects"
 category: "3D Motion / Interaction Design"
 description: "A playful 3D motion exploration featuring collectible objects, soft materials, color variations, and smooth spatial transitions. This project explores how subtle motion and tactile visual details can make a digital collection feel more expressive and interactive."
+tools: ["Figma", "Claude", "HTML", "CSS", "JavaScript"]
 details:
   - label: "Type"
     value: "3D Motion & Interaction Design"
