@@ -1,6 +1,7 @@
 /**
  * About page content. Carried over word for word from the About section the
  * site had before the redesign (Home, commit ae7a4d5) — no new claims.
+ * Tools: Claude AI added at Aprizal's request (Oct 2026).
  */
 
 export const about = {
@@ -19,5 +20,5 @@ export const about = {
     'Information Architecture',
     'Prototype',
   ],
-  tools: ['Figma', 'FigJam'],
+  tools: ['Figma', 'FigJam', 'Claude AI'],
 } as const;
