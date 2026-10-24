@@ -32,6 +32,7 @@ export const site = {
   social: {
     linkedin: { label: 'LinkedIn', url: 'https://www.linkedin.com/in/aprizal-triansyah', handle: 'in/aprizal-triansyah' },
     instagram: { label: 'Instagram', url: 'https://www.instagram.com/byaprizal', handle: '@byaprizal' },
+    dribbble: { label: 'Dribbble', url: 'https://dribbble.com/aprizal-triansyah', handle: 'aprizal-triansyah' },
   },
 } as const;
 

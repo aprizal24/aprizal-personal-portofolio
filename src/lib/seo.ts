@@ -22,5 +22,5 @@ export const personSchema = () => ({
     addressLocality: site.location.locality,
     addressCountry: site.location.country,
   },
-  sameAs: [site.social.linkedin.url, site.social.instagram.url],
+  sameAs: [site.social.linkedin.url, site.social.instagram.url, site.social.dribbble.url],
 });
