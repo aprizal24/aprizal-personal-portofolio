@@ -60,7 +60,8 @@ const playground = defineCollection({
       .object({ src: z.string(), poster: z.string(), label: z.string() })
       .optional(),
     images: z.array(z.object({ src: z.string(), alt: z.string() })).min(1),
-    order: z.number().default(0),
+    dateAdded: z.coerce.date().optional(), // YYYY-MM-DD; newest is shown first (src/lib/playground.ts)
+    order: z.number().default(0),          // tie-break for items added the same day (higher = newer)
     draft: z.boolean().default(false),
   }),
 });

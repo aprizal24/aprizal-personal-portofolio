@@ -12,5 +12,6 @@ images:
     alt: "Queue screen with the currently playing track and the next songs, with a floating playback panel"
   - src: "/images/playground/mobile-music-experience/02-player.webp"
     alt: "Now-playing screen up close, with album art, track title and progress bar"
+dateAdded: 2026-10-13
 order: 1
 ---

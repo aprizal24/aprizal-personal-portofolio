@@ -20,7 +20,8 @@ thumbnail:
 images:                                    # shown top to bottom in the preview
   - src: "/images/playground/{slug}/01.webp"
     alt: "What this image shows"
-order: 2                                   # position in the gallery
+dateAdded: 2026-10-23                      # the day you add it; newest is shown first
+order: 1                                   # only breaks ties between items added the same day (higher = newer)
 draft: false                               # true hides it
 ---
 ```
@@ -42,4 +43,6 @@ video:                                     # shown above the images in the previ
 
 Videos: H.264 MP4, no audio track, `-movflags +faststart`.
 
-The gallery and the preview modal pick it up automatically.
+The gallery and the preview modal pick it up automatically. Set `dateAdded`
+to the day you add the item and it appears first; nothing else needs
+reordering.

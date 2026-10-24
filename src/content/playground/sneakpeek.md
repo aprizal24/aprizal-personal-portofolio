@@ -19,5 +19,6 @@ images:
     alt: "SNEAKPEEK landing page in the orange colorway"
   - src: "/images/playground/sneakpeek/03-red.webp"
     alt: "SNEAKPEEK landing page in the red colorway"
+dateAdded: 2026-10-14
 order: 2
 ---

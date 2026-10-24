@@ -24,5 +24,6 @@ images:
     alt: "MINI WORLD collection page: “Small Objects, Big Joys.” with Echo Headphones, Snap Camera, Pebble Speaker and Duo Earbuds on a round stage"
   - src: "/images/playground/mini-world/02-modal.webp"
     alt: "MINI WORLD object detail for Echo Headphones, with colour swatches, material options and specifications"
+dateAdded: 2026-10-16
 order: 3
 ---

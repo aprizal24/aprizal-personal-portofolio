@@ -9,6 +9,7 @@ import { site, mailto, features } from '../data/site';
 import { projectArtFor } from '../data/projectArt';
 import { caseStudyPath } from '../lib/routes';
 import { personSchema } from '../lib/seo';
+import { sortPlayground } from '../lib/playground';
 
 const projects = (await getCollection('case-studies'))
   .sort((a, b) => a.data.order - b.data.order)
@@ -16,7 +17,7 @@ const projects = (await getCollection('case-studies'))
 
 // Playground under Selected work (same cards and preview modal as /playground/)
 const playground = features.playground
-  ? (await getCollection('playground', ({ data }) => !data.draft)).sort((a, b) => a.data.order - b.data.order)
+  ? sortPlayground(await getCollection('playground', ({ data }) => !data.draft))
   : [];
 
 ---
